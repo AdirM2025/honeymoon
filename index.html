@@ -372,14 +372,30 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-const hasStore=typeof window!=="undefined"&&window.storage&&typeof window.storage.get==="function";
 let state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
 const openForms=new Set();
 
-async function loadState(){if(hasStore){try{const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}}return null;}
+// Storage: localStorage (GitHub Pages) + window.storage fallback (Claude viewer)
+const store={
+  async get(k){
+    try{const v=localStorage.getItem(k);if(v!=null)return{value:v};}catch(e){}
+    try{if(window.storage){const r=await window.storage.get(k);if(r&&r.value)return r;}}catch(e){}
+    return null;
+  },
+  async set(k,v){
+    try{localStorage.setItem(k,v);}catch(e){}
+    try{if(window.storage)await window.storage.set(k,v);}catch(e){}
+  },
+  async del(k){
+    try{localStorage.removeItem(k);}catch(e){}
+    try{if(window.storage)await window.storage.delete(k);}catch(e){}
+  }
+};
+
+async function loadState(){try{const r=await store.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
 let svT=null;
 async function saveState(flash=true){
-  if(hasStore){try{await window.storage.set(KEY,JSON.stringify(state));}catch(e){}}
+  try{await store.set(KEY,JSON.stringify(state));}catch(e){}
   if(flash){const s=document.getElementById("saved");s.classList.add("show");clearTimeout(svT);svT=setTimeout(()=>s.classList.remove("show"),1100);}
 }
 function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -588,7 +604,7 @@ document.getElementById("shareBtn").addEventListener("click",async()=>{
 document.getElementById("reset").addEventListener("click",async()=>{
   if(!confirm("לאפס את כל העריכות?")) return;
   state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
-  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  await store.del(KEY);
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>{
     const d={couple:"אדיר ❤ לירון",tagline:"מתחילים את שאר החיים שלנו ✨",lovemsg:"לירון,\n\nהכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.\nיפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.\nואז דובאי בשביל לנשום.\n\nזה ירח הדבש שאנחנו מגיעים לו ❤",lovestay:"אדיר"};
     const el=document.getElementById(id);if(el)el.textContent=d[id];
