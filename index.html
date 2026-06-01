@@ -182,6 +182,9 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .btotal{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;border-top:2px solid rgba(255,210,119,.4)}
 .btotal .t{font-family:var(--serif);font-size:20px;font-weight:900;color:#fff}
 .btotal .tv{font-family:var(--serif);font-size:28px;font-weight:900;background:linear-gradient(100deg,var(--gold),var(--amber));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.bsub{font-size:12px;letter-spacing:.08em;color:var(--gold);font-weight:800;margin:6px 0 8px;text-transform:uppercase}
+.budget-input{width:80px;background:rgba(0,0,0,.3);border:1px solid var(--line);color:var(--gold);font-family:var(--sans);font-size:14px;font-weight:800;padding:5px 8px;border-radius:8px;text-align:left;direction:ltr;outline:none}
+.budget-input:focus{border-color:var(--gold)}
 
 /* CHECKLIST */
 .check{display:grid;gap:10px}
@@ -360,8 +363,8 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
   <div class="tl" id="tl"></div>
 
   <section class="panel">
-    <h3>תקציב הלינה 💴</h3>
-    <div class="hint">מתעדכן לפי המלון הנבחר בכל תחנה · מחירים משוערים</div>
+    <h3>תקציב הטיול 💴</h3>
+    <div class="hint">טיסות + לינה · הלינה מתעדכנת לפי המלון הנבחר (כולל מלון שהוספתם) · ערכו מחירי טיסות למחיר בפועל</div>
     <div id="budget"></div>
   </section>
 
@@ -515,7 +518,7 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[]};}
+function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null};}
 let state=DEF();
 const openForms=new Set();
 
@@ -676,19 +679,49 @@ function attachListeners(){
   }));
 }
 
-function renderBudget(){
+const FLIGHT_DEFS=[
+ {k:"out",label:"✈️ הלוך · תל אביב → טוקיו",note:"אל על · ישיר · לשניכם",def:6700},
+ {k:"jpdxb",label:"✈️ יפן → דובאי",note:"Emirates · ישיר · לשניכם · משוער",def:6600},
+ {k:"dxbtlv",label:"🛬 חזור · דובאי → תל אביב",note:"ישיר · לשניכם · משוער",def:1500}
+];
+function fcVal(k){const f=FLIGHT_DEFS.find(x=>x.k===k);return (state.tripcost&&state.tripcost[k]!=null)?state.tripcost[k]:f.def;}
+function lodgeCalc(){
   let total=0,partial=false;
-  const rows=SEGS.map(s=>{
-    const st=state.seg[s.id]||{};
-    const chosen=st.hotel!=null?st.hotel:s.chosen;
-    const custom=st.custom||[];
-    const all=[...s.hotels,...custom];
-    const h=all[chosen]; let sub="—",ppn=null;
-    if(h){ppn=h.ppn;if(!ppn&&h.price){const m=h.price.match(/[\d,]+/);if(m)ppn=parseInt(m[0].replace(/,/g,""));}}
-    if(ppn){const v=ppn*s.nn;total+=v;sub=fmt(v);}else partial=true;
+  SEGS.forEach(s=>{
+    const st=state.seg[s.id]||{}; const chosen=st.hotel!=null?st.hotel:s.chosen;
+    const all=[...s.hotels,...(st.custom||[])]; const h=all[chosen];
+    let ppn=null; if(h){ppn=h.ppn; if(!ppn&&h.price){const m=h.price.match(/[\d,]+/); if(m)ppn=parseInt(m[0].replace(/,/g,""));}}
+    if(ppn)total+=ppn*s.nn; else partial=true;
+  });
+  return {total,partial};
+}
+function recomputeTotal(){
+  const lodge=lodgeCalc(); let flights=0; FLIGHT_DEFS.forEach(f=>flights+=fcVal(f.k));
+  const g=document.getElementById("grandtotal"); if(g)g.textContent=fmt(flights+lodge.total);
+  const fs=document.getElementById("flightsub"); if(fs)fs.textContent=fmt(flights);
+}
+function renderBudget(){
+  const flightRows=FLIGHT_DEFS.map(f=>`<div class="brow"><div><div class="bc">${f.label}</div><div class="bh">${f.note}</div></div>
+    <div class="bv"><input class="budget-input" type="number" inputmode="numeric" data-fc="${f.k}" value="${fcVal(f.k)}"> ₪</div></div>`).join("");
+  let flights=0; FLIGHT_DEFS.forEach(f=>flights+=fcVal(f.k));
+  const lodge=lodgeCalc();
+  const lodgeRows=SEGS.map(s=>{
+    const st=state.seg[s.id]||{}; const chosen=st.hotel!=null?st.hotel:s.chosen;
+    const all=[...s.hotels,...(st.custom||[])]; const h=all[chosen];
+    let ppn=null,sub="—"; if(h){ppn=h.ppn; if(!ppn&&h.price){const m=h.price.match(/[\d,]+/); if(m)ppn=parseInt(m[0].replace(/,/g,""));}}
+    if(ppn)sub=fmt(ppn*s.nn);
     return `<div class="brow"><div><div class="bc">${esc(s.city)}</div><div class="bh">${esc(h?h.name:"לא נבחר")} · ${s.nn} לילות</div></div><div class="bv">${sub}</div></div>`;
   }).join("");
-  document.getElementById("budget").innerHTML=rows+`<div class="btotal"><div class="t">סה"כ לינה${partial?" (חלקי)":""}</div><div class="tv">${fmt(total)}</div></div>`;
+  document.getElementById("budget").innerHTML=
+    `<div class="bsub">✈️ טיסות · <span id="flightsub">${fmt(flights)}</span></div>`+flightRows+
+    `<div class="bsub" style="margin-top:16px">🏨 לינה${lodge.partial?" (חלקי)":""}</div>`+lodgeRows+
+    `<div class="btotal"><div class="t">סה"כ הטיול</div><div class="tv" id="grandtotal">${fmt(flights+lodge.total)}</div></div>`;
+  document.querySelectorAll(".budget-input").forEach(el=>el.addEventListener("input",()=>{
+    state.tripcost=state.tripcost||{};
+    state.tripcost[el.dataset.fc]=el.value===""?0:parseFloat(el.value);
+    recomputeTotal();
+    clearTimeout(el._t); el._t=setTimeout(()=>saveState(),500);
+  }));
 }
 
 function renderCheck(){
