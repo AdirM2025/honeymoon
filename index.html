@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#070617">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ירח דבש">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <title>ירח דבש · יפן ← דובאי 🍁</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,6 +213,89 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(7px);opacity:1}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* ===== NEW FEATURES ===== */
+/* install banner */
+.install-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:55;display:none;align-items:center;gap:12px;background:linear-gradient(90deg,var(--magenta),var(--violet));color:#fff;padding:11px 16px;border-radius:99px;box-shadow:0 8px 30px rgba(255,61,158,.45);font-size:13.5px;font-weight:700}
+.install-bar.show{display:flex}
+.install-bar button{background:#fff;color:#1a1320;border:none;border-radius:99px;padding:7px 14px;font-family:var(--sans);font-weight:800;font-size:13px;cursor:pointer}
+.install-bar .x{background:none;color:#fff;font-size:18px;padding:0 4px;font-weight:400}
+
+/* currency converter */
+.cc{display:grid;gap:10px}
+.cc-row{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:10px 14px;transition:.2s}
+.cc-row:focus-within{border-color:var(--gold)}
+.cc-flag{font-size:24px;flex:none}
+.cc-cur{flex:none;width:46px;font-weight:800;color:var(--gold);font-size:14px}
+.cc-row input{flex:1;background:none;border:none;color:#fff;font-family:var(--sans);font-size:22px;font-weight:700;text-align:left;direction:ltr;outline:none;min-width:0}
+.cc-name{flex:none;font-size:11.5px;color:var(--muted)}
+.cc-meta{font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px}
+.cc-meta b{color:var(--cyan)}
+
+/* flights */
+.flight{border:1px solid var(--line);border-radius:16px;padding:0;margin-bottom:12px;overflow:hidden;background:rgba(255,255,255,.03)}
+.flight-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:linear-gradient(90deg,rgba(63,232,255,.14),transparent)}
+.flight-head .fp{font-size:20px}
+.flight-route{font-weight:800;font-size:15px;color:#fff;flex:1}
+.flight-route small{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:1px}
+.flight-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.flight-grid label{background:var(--card);padding:9px 13px;display:flex;flex-direction:column;gap:3px}
+.flight-grid .fl-l{font-size:10.5px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.flight-grid input{background:none;border:none;color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;outline:none;padding:0;width:100%;direction:ltr;text-align:right}
+.flight-grid input::placeholder{color:rgba(196,191,230,.45);font-weight:400}
+
+/* bookings */
+.bk{display:grid;gap:9px}
+.bk-item{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:13px;padding:11px 13px;background:rgba(255,255,255,.03)}
+.bk-status{flex:none;cursor:pointer;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;border:1px solid;transition:.2s}
+.bk-s0{color:var(--muted);border-color:var(--line);background:rgba(255,255,255,.04)}
+.bk-s1{color:var(--cyan);border-color:rgba(63,232,255,.5);background:rgba(63,232,255,.12)}
+.bk-s2{color:var(--gold);border-color:rgba(255,210,119,.5);background:rgba(255,210,119,.14)}
+.bk-info{flex:1;min-width:0}
+.bk-name{font-weight:700;color:#fff;font-size:14.5px;outline:none}
+.bk-name:focus{color:var(--gold)}
+.bk-conf{font-size:12px;color:var(--muted);outline:none;direction:ltr;text-align:right;margin-top:2px}
+.bk-conf:empty:before{content:"מספר אישור / תאריך...";color:rgba(196,191,230,.4)}
+.bk-del{flex:none;background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer}
+.bk-del:hover{color:var(--red)}
+.add-btn{margin-top:10px;width:100%;padding:11px;border:1px dashed rgba(255,210,119,.4);border-radius:12px;background:rgba(255,210,119,.05);color:var(--gold);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer}
+.add-btn:hover{background:rgba(255,210,119,.1)}
+
+/* moment letters */
+.letters{display:grid;gap:12px}
+.letter{border-radius:16px;border:1px solid rgba(255,210,119,.32);overflow:hidden;background:linear-gradient(135deg,rgba(40,22,60,.7),rgba(26,14,38,.85))}
+.letter-seal{display:flex;align-items:center;gap:13px;padding:16px;cursor:pointer;transition:.2s}
+.letter-seal:hover{background:rgba(255,210,119,.06)}
+.letter-wax{flex:none;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ff6b7e,#b3162a);display:grid;place-items:center;font-size:18px;box-shadow:0 3px 12px rgba(179,22,42,.5)}
+.letter-trigger{flex:1;font-family:var(--serif);font-weight:700;font-size:15.5px;color:var(--sand)}
+.letter-trigger small{display:block;font-family:var(--sans);font-weight:400;font-size:11.5px;color:var(--muted);margin-top:2px}
+.letter.open .letter-seal{border-bottom:1px dashed rgba(255,210,119,.25)}
+.letter-body{display:none;padding:0 18px 18px;font-family:var(--serif);font-size:16px;line-height:1.85;color:var(--sand);white-space:pre-wrap;outline:none}
+.letter.open .letter-body{display:block;animation:rise .6s}
+.letter-lockmsg{font-size:11px;color:var(--muted);flex:none}
+
+/* journal */
+.jr-add{display:grid;gap:9px;margin-bottom:14px}
+.jr-add textarea{min-height:60px;resize:vertical;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font-family:var(--sans);font-size:14.5px;padding:11px 13px;outline:none}
+.jr-add textarea:focus{border-color:var(--violet)}
+.jr-add .jr-controls{display:flex;gap:9px}
+.jr-add select{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--line);color:#fff;font-family:var(--sans);font-size:14px;padding:10px;border-radius:10px;outline:none}
+.jr-add .add-btn{margin-top:0;flex:none;width:auto;padding:10px 20px}
+.jr-entry{border-right:3px solid var(--violet);background:rgba(255,255,255,.03);border-radius:0 12px 12px 0;padding:12px 14px;margin-bottom:10px;position:relative}
+.jr-meta{font-size:11.5px;color:var(--violet);font-weight:700;margin-bottom:4px}
+.jr-text{font-size:14.5px;color:#ece9fb;white-space:pre-wrap}
+.jr-del{position:absolute;left:10px;top:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px}
+.jr-del:hover{color:var(--red)}
+.jr-empty{font-size:13px;color:var(--muted);text-align:center;padding:10px}
+
+/* concierge */
+.cnc-q{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.cnc-qbtn{font-size:13px;padding:9px 14px;border-radius:13px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#fff;cursor:pointer;transition:.2s;text-align:right}
+.cnc-qbtn:hover{border-color:var(--cyan);background:rgba(63,232,255,.08)}
+.cnc-qbtn.active{border-color:var(--cyan);background:rgba(63,232,255,.14);color:var(--cyan)}
+.cnc-answer{border-radius:14px;border:1px solid rgba(63,232,255,.3);background:rgba(63,232,255,.06);padding:16px 18px;font-size:14.5px;line-height:1.7;color:#eaf8ff;min-height:40px}
+.cnc-answer.empty{color:var(--muted);border-style:dashed;text-align:center}
+.cnc-answer b{color:var(--cyan)}
 </style>
 </head>
 <body>
@@ -280,6 +369,57 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
     <div class="check" id="check"></div>
   </section>
 
+  <section class="panel" style="background:linear-gradient(180deg,rgba(63,232,255,.08),rgba(20,16,42,.9))">
+    <h3>✈️ פרטי טיסות</h3>
+    <div class="hint">ערכו ישירות — מספר טיסה, שעות, אישור ומושב נשמרים אוטומטית</div>
+    <div id="flights"></div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(255,210,119,.08),rgba(20,16,42,.9))">
+    <h3>💱 ממיר מטבעות</h3>
+    <div class="hint">הקלידו סכום בכל שדה — השאר מתעדכן</div>
+    <div class="cc">
+      <div class="cc-row"><span class="cc-flag">🇮🇱</span><span class="cc-cur">ILS</span><input type="number" id="cc-ILS" inputmode="decimal" placeholder="0"><span class="cc-name">שקל</span></div>
+      <div class="cc-row"><span class="cc-flag">🇯🇵</span><span class="cc-cur">JPY</span><input type="number" id="cc-JPY" inputmode="decimal" placeholder="0"><span class="cc-name">ין</span></div>
+      <div class="cc-row"><span class="cc-flag">🇦🇪</span><span class="cc-cur">AED</span><input type="number" id="cc-AED" inputmode="decimal" placeholder="0"><span class="cc-name">דירהם</span></div>
+    </div>
+    <div class="cc-meta" id="cc-meta">טוען שערים...</div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(63,232,255,.08),rgba(20,16,42,.9))">
+    <h3>📋 מנהל הזמנות</h3>
+    <div class="hint">מסעדות ואטרקציות שצריך להזמין מראש · לחיצה על הסטטוס מחליפה ממתין ← אושר ← שולם</div>
+    <div class="bk" id="bookings"></div>
+    <button class="add-btn" id="addBooking">＋ הוסף הזמנה</button>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(135deg,rgba(255,61,158,.1),rgba(255,210,119,.06),rgba(20,16,42,.92))">
+    <h3>💌 מכתבי הרגע</h3>
+    <div class="hint">מכתבים אטומים שנפתחים רק ברגע הנכון. כתבו אחד לשני — ופתחו כשמגיע הרגע. שימו לב: פתיחה היא לתמיד.</div>
+    <div class="letters" id="letters"></div>
+    <button class="add-btn" id="addLetter">＋ הוסף מכתב רגע</button>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(176,124,255,.1),rgba(20,16,42,.9))">
+    <h3>📖 יומן המסע שלנו</h3>
+    <div class="hint">כתבו זיכרונות בזמן אמת — תחזרו אליהם בעוד שנים</div>
+    <div class="jr-add">
+      <textarea id="jr-text" placeholder="מה קרה היום? איך הרגשתם?..."></textarea>
+      <div class="jr-controls">
+        <select id="jr-loc"></select>
+        <button class="add-btn" id="addJournal">הוסף ✓</button>
+      </div>
+    </div>
+    <div id="journal"></div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(63,232,255,.08),rgba(20,16,42,.9))">
+    <h3>🧭 מדריך חכם לטיול</h3>
+    <div class="hint">תשובות לשאלות שתשאלו את עצמכם — מותאם בדיוק למסלול שלכם</div>
+    <div class="cnc-q" id="cnc-q"></div>
+    <div class="cnc-answer empty" id="cnc-answer">בחרו שאלה למעלה כדי לקבל תשובה</div>
+  </section>
+
   <section class="practical">
     <h3>טיפים שיהפכו את זה לחלק 🍵</h3>
     <ul>
@@ -302,6 +442,7 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
   </footer>
 </div>
 <div class="saved" id="saved">נשמר ✓</div>
+<div class="install-bar" id="installBar"><span>📲 התקינו כאפליקציה למסך הבית</span><button id="installBtn">התקן</button><button class="x" id="installX">✕</button></div>
 
 <script>
 const SILO={
@@ -372,7 +513,8 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-let state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
+function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[]};}
+let state=DEF();
 const openForms=new Set();
 
 // Storage: localStorage (GitHub Pages) + window.storage fallback (Claude viewer)
@@ -603,22 +745,197 @@ document.getElementById("shareBtn").addEventListener("click",async()=>{
 
 document.getElementById("reset").addEventListener("click",async()=>{
   if(!confirm("לאפס את כל העריכות?")) return;
-  state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
+  state=DEF();
   await store.del(KEY);
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>{
     const d={couple:"אדיר ❤ לירון",tagline:"מתחילים את שאר החיים שלנו ✨",lovemsg:"לירון,\n\nהכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.\nיפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.\nואז דובאי בשביל לנשום.\n\nזה ירח הדבש שאנחנו מגיעים לו ❤",lovestay:"אדיר"};
     const el=document.getElementById(id);if(el)el.textContent=d[id];
   });
-  openForms.clear(); render(); renderCheck();
+  openForms.clear(); render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
 });
 
+/* ===== FLIGHTS ===== */
+const FLIGHTS=[
+ {id:"f1",icon:"🛫",route:"תל אביב ← טוקיו",sub:"אל על · 24–25.10"},
+ {id:"f2",icon:"🛫",route:"יפן ← דובאי",sub:"Emirates · 17.11"},
+ {id:"f3",icon:"🛬",route:"דובאי ← תל אביב",sub:"סוף נובמבר"}
+];
+function renderFlights(){
+  state.flights=state.flights||{};
+  document.getElementById("flights").innerHTML=FLIGHTS.map(f=>{
+    const d=state.flights[f.id]||{};
+    const fld=(k,l,ph)=>`<label><span class="fl-l">${l}</span><input data-fid="${f.id}" data-k="${k}" value="${esc(d[k]||"")}" placeholder="${ph}"></label>`;
+    return `<div class="flight"><div class="flight-head"><span class="fp">${f.icon}</span><div class="flight-route">${esc(f.route)}<small>${esc(f.sub)}</small></div></div>
+      <div class="flight-grid">${fld("num","מס׳ טיסה","LY 095")}${fld("seat","מושב","32A, 32B")}${fld("dep","המראה","23:30")}${fld("arr","נחיתה","17:05")}${fld("pnr","מס׳ הזמנה (PNR)","ABC123")}${fld("date","תאריך","24.10.26")}</div></div>`;
+  }).join("");
+  document.querySelectorAll("#flights input").forEach(el=>el.addEventListener("input",()=>{
+    const id=el.dataset.fid,k=el.dataset.k;
+    state.flights[id]=state.flights[id]||{}; state.flights[id][k]=el.value;
+    clearTimeout(el._t); el._t=setTimeout(()=>saveState(),650);
+  }));
+}
+
+/* ===== BOOKINGS ===== */
+const BOOKINGS_DEF=[
+ {name:"teamLab Planets (טוקיו)",status:0,conf:""},
+ {name:"ארוחת קאיסקי רומנטית",status:0,conf:""},
+ {name:"ריוקאן Rakuyu (פוג'י)",status:0,conf:""},
+ {name:"בקר קובה (קובה/אוסקה)",status:0,conf:""},
+ {name:"ספארי מדברי (דובאי)",status:0,conf:""},
+ {name:"בורג' חליפה At the Top",status:0,conf:""}
+];
+const STATUS=[["ממתין","bk-s0"],["אושר","bk-s1"],["שולם ✓","bk-s2"]];
+function renderBookings(){
+  if(!state.bookings)state.bookings=BOOKINGS_DEF.map(b=>({...b}));
+  document.getElementById("bookings").innerHTML=state.bookings.map((b,i)=>{
+    const st=STATUS[b.status||0];
+    return `<div class="bk-item">
+      <span class="bk-status ${st[1]}" data-i="${i}">${st[0]}</span>
+      <div class="bk-info"><div class="bk-name" contenteditable="true" data-i="${i}" data-f="name">${esc(b.name)}</div>
+      <div class="bk-conf" contenteditable="true" data-i="${i}" data-f="conf">${esc(b.conf||"")}</div></div>
+      <button class="bk-del" data-i="${i}">🗑</button></div>`;
+  }).join("");
+  const box=document.getElementById("bookings");
+  box.querySelectorAll(".bk-status").forEach(el=>el.addEventListener("click",()=>{
+    const i=+el.dataset.i; state.bookings[i].status=((state.bookings[i].status||0)+1)%3; renderBookings(); saveState();
+  }));
+  box.querySelectorAll(".bk-del").forEach(el=>el.addEventListener("click",()=>{
+    const i=+el.dataset.i; if(confirm("להסיר?")){state.bookings.splice(i,1); renderBookings(); saveState();}
+  }));
+  box.querySelectorAll("[contenteditable]").forEach(el=>el.addEventListener("blur",()=>{
+    state.bookings[+el.dataset.i][el.dataset.f]=el.textContent.trim(); saveState();
+  }));
+}
+document.getElementById("addBooking").addEventListener("click",()=>{
+  if(!state.bookings)state.bookings=BOOKINGS_DEF.map(b=>({...b}));
+  state.bookings.push({name:"הזמנה חדשה",status:0,conf:""}); renderBookings(); saveState();
+});
+
+/* ===== MOMENT LETTERS ===== */
+const LETTERS_DEF=[
+ {id:"l1",trigger:"לפתוח כשנראה את פוג'י בפעם הראשונה",body:"לחצו כאן וכתבו את המכתב...",opened:false},
+ {id:"l2",trigger:"לפתוח בלילה האחרון ביפן",body:"לחצו כאן וכתבו את המכתב...",opened:false},
+ {id:"l3",trigger:"לפתוח על החוף בדובאי",body:"לחצו כאן וכתבו את המכתב...",opened:false},
+ {id:"l4",trigger:"לפתוח בטיסה הביתה",body:"לחצו כאן וכתבו את המכתב...",opened:false}
+];
+function renderLetters(){
+  if(!state.letterList)state.letterList=LETTERS_DEF.map(l=>({...l}));
+  document.getElementById("letters").innerHTML=state.letterList.map((l,i)=>`
+    <div class="letter ${l.opened?"open":""}" data-i="${i}">
+      <div class="letter-seal" data-i="${i}">
+        <div class="letter-wax">${l.opened?"💛":"❤"}</div>
+        <div class="letter-trigger" contenteditable="true" data-i="${i}" data-f="trigger">${esc(l.trigger)}</div>
+        ${l.opened?"":'<span class="letter-lockmsg">🔒 נעול</span>'}
+      </div>
+      <div class="letter-body" contenteditable="true" data-i="${i}" data-f="body">${esc(l.body)}</div>
+    </div>`).join("");
+  const box=document.getElementById("letters");
+  box.querySelectorAll(".letter-seal").forEach(el=>el.addEventListener("click",e=>{
+    if(e.target.classList.contains("letter-trigger"))return;
+    const i=+el.dataset.i;
+    if(!state.letterList[i].opened){ if(!confirm("לפתוח את המכתב? אי אפשר לסגור אותו שוב 💌"))return; state.letterList[i].opened=true; renderLetters(); saveState(); }
+  }));
+  box.querySelectorAll("[contenteditable]").forEach(el=>el.addEventListener("blur",()=>{
+    state.letterList[+el.dataset.i][el.dataset.f]=el.textContent.trim(); saveState();
+  }));
+}
+document.getElementById("addLetter").addEventListener("click",()=>{
+  if(!state.letterList)state.letterList=LETTERS_DEF.map(l=>({...l}));
+  state.letterList.push({id:"lc"+Date.now(),trigger:"לפתוח כש...",body:"לחצו כאן וכתבו את המכתב...",opened:false});
+  renderLetters(); saveState();
+});
+
+/* ===== JOURNAL ===== */
+function renderJournal(){
+  const sel=document.getElementById("jr-loc");
+  if(!sel.options.length){ sel.innerHTML='<option value="">בחרו מיקום (לא חובה)</option>'+SEGS.map(s=>`<option value="${esc(s.city)}">${esc(s.city)}</option>`).join("")+'<option value="דובאי">דובאי</option>'; }
+  const box=document.getElementById("journal");
+  const j=state.journal||[];
+  if(!j.length){box.innerHTML='<div class="jr-empty">עוד אין רשומות — הרשומה הראשונה שלכם תופיע כאן ✨</div>';return;}
+  box.innerHTML=j.map((e,i)=>`<div class="jr-entry"><button class="jr-del" data-i="${i}">🗑</button>
+    <div class="jr-meta">${esc(e.date)}${e.loc?" · "+esc(e.loc):""}</div><div class="jr-text">${esc(e.text)}</div></div>`).join("");
+  box.querySelectorAll(".jr-del").forEach(el=>el.addEventListener("click",()=>{
+    const i=+el.dataset.i; if(confirm("למחוק רשומה?")){state.journal.splice(i,1); renderJournal(); saveState();}
+  }));
+}
+document.getElementById("addJournal").addEventListener("click",()=>{
+  const t=document.getElementById("jr-text").value.trim(); if(!t)return;
+  const loc=document.getElementById("jr-loc").value;
+  const d=new Date().toLocaleDateString("he-IL",{day:"numeric",month:"long",year:"numeric"});
+  state.journal=state.journal||[]; state.journal.unshift({date:d,loc,text:t});
+  document.getElementById("jr-text").value=""; document.getElementById("jr-loc").value="";
+  renderJournal(); saveState();
+});
+
+/* ===== CONCIERGE ===== */
+const CONCIERGE=[
+ {q:"מתי ללכת לפושימי אינארי?",a:"<b>מוקדם בבוקר — לפני 8:00.</b> המקדש פתוח 24/7 וללא תשלום. עד 9:00 השבילים מתמלאים. אם תגיעו ב-7:00 תקבלו את מנהרות הטורי כמעט לעצמכם — מושלם לתמונות. ההליכה עד הפסגה ובחזרה ~2-3 שעות; רוב האנשים מסתובבים רק בחלק התחתון, אז כמה דקות מעלה והקהל נעלם."},
+ {q:"יום גשום בטוקיו — מה עושים?",a:"שפע אופציות מקורות: <b>teamLab Planets</b> (אמנות דיגיטלית סוחפת), אקווריום סומידה בסקייטרי, מוזיאון גיבלי (להזמין מראש!), קניות בגינזה Six או בשכונת שיבויה, אמבטיות אונסן עירוניות כמו Thermae-Yu בשינג'וקו, או יום קפה-ומאפים בדייקאנימה. גם דפאצ'יקה (קומת המזון בכלבו) מושלמת לטעימות בלי להירטב."},
+ {q:"מה לאכול ליד ה-Rakuyu?",a:"בקוואגוצ'יקו: <b>הוטו</b> (אטריות אודון שטוחות במרק מיסו עם דלעת — מנה מקומית של אזור פוג'י, מושלמת לערב קר), דגי אגם טריים, ומוצ'י. רוב הארוחות אצלכם יהיו בריוקאן עצמו (קאיסקי בארוחת ערב ובוקר כלולות לרוב). שמרו בטן לקאיסקי — זו חוויה."},
+ {q:"איך מגיעים מקוואגוצ'יקו לקיוטו?",a:"הדרך הנוחה: <b>אוטובוס מהיר מתחנת קוואגוצ'יקו למישימה</b> (~1.5 שעות), ומשם <b>שינקנסן Hikari/Kodama לקיוטו</b> (~2 שעות). סה\"כ ~4 שעות דלת-לדלת. הזמינו מקום באוטובוס מראש בעונת השלכת. חלופה: חזרה לאוטובוס לטוקיו ומשם שינקנסן — ארוך יותר. שלחו מזוודות גדולות מראש בטאקיוביקן."},
+ {q:"כמה מזומן להחזיק ביפן?",a:"יפן עדיין אוהבת מזומן — מקדשים, אוכל רחוב, מסעדות קטנות וכמה ריוקאנים מקבלים <b>רק מזומן</b>. החזיקו ~20,000-30,000 ין ביד ומשכו מ-7-Eleven (מקבל כרטיסים זרים). כרטיס IC (Suica/ICOCA) מכסה תחבורה וקניות קטנות. בדובאי לעומת זאת — כרטיס אשראי בכל מקום."},
+ {q:"מה ללבוש בנובמבר?",a:"<b>יפן בנובמבר: 8-17°C</b> — שכבות. ז'קט, סוודר, צעיף, ונעליים נוחות (תהלכו המון). ערב בהר פוג'י קר יותר. גשם אפשרי — מטרייה קטנה. <b>דובאי: 25-30°C</b> — קיצי לגמרי, בגד ים, אבל גם שכבה דקה לערבים ולמיזוג החזק. למקדשים ולמסגד בדובאי — כתפיים וברכיים מכוסות."},
+ {q:"יום מושלם בקיוטו",a:"<b>בוקר:</b> פושימי אינארי מוקדם. <b>צהריים:</b> ארשייאמה — חורש הבמבוק, גן טנריו-ג'י, ואולי קימונו. <b>אחה\"צ:</b> שביל הפילוסוף לכיוון גינקאקו-ג'י (יפהפה בשלכת). <b>ערב:</b> שקיעה בהיגשייאמה, רחובות סאננֶנזאקה, וארוחת קאיסקי בגיון. בין לבין — מאצ'ה ומתוקים."},
+ {q:"ספארי מדברי בדובאי — מה לדעת?",a:"בחרו ספארי <b>שקיעה</b> (יוצאים ~15:00, חוזרים ~21:00). כולל נהיגה על דיונות (dune bashing — מרגש!), צילומי שקיעה, רכיבת גמלים, וארוחת ערב בדואית עם מופע. לבשו בגדים נוחים, קחו סווטשירט לערב המדברי הקריר. אם רגישים לבחילה — בקשו נהיגה מתונה. חוויה קלאסית של ירח דבש."}
+];
+function renderConcierge(){
+  const q=document.getElementById("cnc-q"),a=document.getElementById("cnc-answer");
+  q.innerHTML=CONCIERGE.map((c,i)=>`<button class="cnc-qbtn" data-i="${i}">${esc(c.q)}</button>`).join("");
+  q.querySelectorAll(".cnc-qbtn").forEach(el=>el.addEventListener("click",()=>{
+    q.querySelectorAll(".cnc-qbtn").forEach(x=>x.classList.remove("active"));
+    el.classList.add("active");
+    a.classList.remove("empty"); a.innerHTML=CONCIERGE[+el.dataset.i].a;
+  }));
+}
+
+/* ===== CURRENCY ===== */
+let RATES={ILS:1,JPY:42,AED:0.99};
+function updateCC(src){
+  const ils=src==="ILS"?parseFloat(document.getElementById("cc-ILS").value||0):
+    (parseFloat(document.getElementById("cc-"+src).value||0)/RATES[src]);
+  ["ILS","JPY","AED"].forEach(c=>{ if(c!==src){ const v=ils*RATES[c]; document.getElementById("cc-"+c).value=v?(Math.round(v*100)/100):""; }});
+}
+function setupCurrency(){
+  ["ILS","JPY","AED"].forEach(c=>document.getElementById("cc-"+c).addEventListener("input",()=>updateCC(c)));
+  // cached rates
+  try{const cached=JSON.parse(localStorage.getItem("cc-rates")||"null");
+    if(cached&&cached.r&&Date.now()-cached.t<864e5){RATES=cached.r; ccMeta(cached.t);}else ccMeta(0);}catch(e){ccMeta(0);}
+  // live fetch
+  fetch("https://open.er-api.com/v6/latest/ILS").then(r=>r.json()).then(d=>{
+    if(d&&d.rates&&d.rates.JPY&&d.rates.AED){RATES={ILS:1,JPY:d.rates.JPY,AED:d.rates.AED};
+      localStorage.setItem("cc-rates",JSON.stringify({r:RATES,t:Date.now()})); ccMeta(Date.now());}
+  }).catch(()=>{});
+}
+function ccMeta(t){
+  const el=document.getElementById("cc-meta");
+  el.innerHTML=`1 ₪ ≈ <b>${(Math.round(RATES.JPY*10)/10)}</b> ¥ ≈ <b>${(Math.round(RATES.AED*100)/100)}</b> AED`+(t?` · עודכן ${new Date(t).toLocaleDateString("he-IL")}`:" · שערים משוערים (לא מקוון)");
+}
+
+/* ===== PWA ===== */
+let deferredPrompt=null;
+function setupPWA(){
+  if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
+  window.addEventListener("beforeinstallprompt",e=>{
+    e.preventDefault(); deferredPrompt=e;
+    if(!localStorage.getItem("install-dismissed"))document.getElementById("installBar").classList.add("show");
+  });
+  document.getElementById("installBtn").addEventListener("click",async()=>{
+    document.getElementById("installBar").classList.remove("show");
+    if(deferredPrompt){deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null;}
+  });
+  document.getElementById("installX").addEventListener("click",()=>{
+    document.getElementById("installBar").classList.remove("show"); localStorage.setItem("install-dismissed","1");
+  });
+}
+
+/* ===== INIT ===== */
 (async function(){
   const saved=await loadState();
-  if(saved)state=Object.assign({couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}},saved);
-  render(); renderCheck();
+  if(saved)state=Object.assign(DEF(),saved);
+  render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  countdown(); leaves();
+  setupCurrency(); setupPWA(); countdown(); leaves();
 })();
 </script>
 </body>
