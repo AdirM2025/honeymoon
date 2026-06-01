@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070617">
+<title>ירח דבש · יפן ← דובאי 🍁</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Frank+Ruhl+Libre:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--ink:#070617;--card:#15112e;--magenta:#ff3d9e;--cyan:#3fe8ff;--violet:#b07cff;--gold:#ffd277;--amber:#ff9a3d;--sand:#f6e0b5;--red:#ff5a6b;--text:#f5f3ff;--muted:#c4bfe6;--line:rgba(255,255,255,.12);--serif:"Frank Ruhl Libre",serif;--sans:"Assistant",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:#070617}
+body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.62;overflow-x:hidden;min-height:100vh;font-size:16px}
+.bg{position:fixed;inset:0;z-index:-3;background:#070617}
+.bg::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 82% 6%,rgba(255,61,158,.26),transparent 60%),radial-gradient(55% 45% at 12% 20%,rgba(63,232,255,.16),transparent 60%),radial-gradient(75% 60% at 50% 108%,rgba(255,210,119,.22),transparent 60%),radial-gradient(50% 40% at 90% 78%,rgba(176,124,255,.15),transparent 60%),linear-gradient(180deg,#070617 0%,#0d0a24 42%,#181024 74%,#1f1522 100%)}
+.pattern{position:fixed;inset:0;z-index:-2;opacity:.055;pointer-events:none;background-image:radial-gradient(circle at 10px 16px,transparent 7px,rgba(255,255,255,.6) 7px,rgba(255,255,255,.6) 8px,transparent 9px);background-size:20px 16px}
+#leaves{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden}
+.leaf{position:absolute;top:-8%;font-size:22px;will-change:transform;opacity:.9;animation:fall linear infinite}
+@keyframes fall{0%{transform:translateY(-12vh) translateX(0) rotate(0)}100%{transform:translateY(114vh) translateX(40px) rotate(380deg)}}
+.wrap{max-width:780px;margin:0 auto;padding:0 18px 80px}
+
+/* HERO */
+.hero{min-height:96vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:84px 18px 30px;position:relative;overflow:hidden}
+.rays{position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:160vmax;height:160vmax;z-index:0;opacity:.08;background:conic-gradient(from 0deg,transparent 0 6deg,rgba(255,210,119,.9) 6deg 8deg,transparent 8deg 18deg);animation:spin 90s linear infinite}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+.hero>*:not(.rays):not(.lanterns){position:relative;z-index:2}
+.lanterns{position:absolute;top:0;left:0;right:0;height:150px;display:flex;justify-content:space-around;z-index:1}
+.lantern{width:32px;height:44px;border-radius:50%/42%;position:relative;transform-origin:top center;animation:sway 4.5s ease-in-out infinite}
+.lantern::before{content:"";position:absolute;top:-26px;left:50%;width:1px;height:26px;background:rgba(255,255,255,.22);transform:translateX(-50%)}
+.lantern i{position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 50% 35%,#ff7b7b,#d11f2e 70%);box-shadow:0 0 22px rgba(255,60,80,.6);border-top:3px solid #2a0d10;border-bottom:3px solid #2a0d10}
+.lantern b{position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.25);box-shadow:0 -6px 0 rgba(0,0,0,.18),0 6px 0 rgba(0,0,0,.18)}
+.lantern:nth-child(2){animation-delay:.6s;transform:scale(.85)}.lantern:nth-child(3){animation-delay:1.2s}.lantern:nth-child(4){animation-delay:.3s;transform:scale(.9)}.lantern:nth-child(5){animation-delay:.9s;transform:scale(.8)}
+@keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+.kicker{font-size:12px;letter-spacing:.5em;color:var(--cyan);text-transform:uppercase;margin-bottom:16px;opacity:0;animation:rise .9s .1s forwards}
+.title{font-family:var(--serif);font-weight:900;font-size:clamp(56px,17vw,118px);line-height:.9;color:#fff;opacity:0;animation:rise 1s .25s forwards;text-shadow:0 0 18px rgba(255,61,158,.55),0 0 54px rgba(255,61,158,.28)}
+.title .b{background:linear-gradient(100deg,var(--gold),var(--amber) 55%,var(--sand));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 14px rgba(255,154,61,.45))}
+.couple{margin-top:24px;opacity:0;animation:rise 1s .5s forwards}
+.couple .label{font-size:11px;letter-spacing:.35em;color:var(--muted);text-transform:uppercase}
+.names{font-family:var(--serif);font-weight:700;font-size:clamp(28px,7vw,44px);margin-top:6px;color:#fff;outline:none;border-bottom:1px dashed transparent;transition:.3s;display:inline-block;padding:0 6px}
+.names:hover,.names:focus{border-bottom-color:rgba(255,210,119,.55)}
+.editpen{font-size:13px;color:var(--gold);opacity:.7;vertical-align:super;margin-inline-start:4px}
+.tagline{margin-top:10px;font-family:var(--serif);font-style:italic;font-size:clamp(16px,4.4vw,20px);color:var(--sand);opacity:.92;outline:none;border-bottom:1px dashed transparent;display:inline-block;padding:2px 8px}
+.tagline:hover,.tagline:focus{border-bottom-color:rgba(255,210,119,.45)}
+.dates{margin-top:20px;font-size:15px;color:var(--muted);letter-spacing:.04em;opacity:0;animation:rise 1s .65s forwards}
+.dates b{color:#fff;font-weight:700}
+.countdown{display:flex;gap:9px;margin-top:30px;opacity:0;animation:rise 1s .8s forwards}
+.cd{min-width:62px;padding:12px 8px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.06);backdrop-filter:blur(8px)}
+.cd .n{font-family:var(--serif);font-weight:900;font-size:28px;line-height:1;background:linear-gradient(180deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cd .l{font-size:10px;letter-spacing:.18em;color:var(--muted);margin-top:6px;text-transform:uppercase}
+.scrollhint{margin-top:40px;font-size:12px;letter-spacing:.3em;color:var(--muted);animation:bob 2s ease-in-out infinite}
+
+/* LOVE CARD */
+.love-card{margin-top:44px;border-radius:24px;padding:30px 24px 26px;border:1px solid rgba(255,210,119,.38);background:linear-gradient(135deg,rgba(30,18,50,.97),rgba(22,12,36,.98));position:relative;overflow:hidden}
+.love-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% -10%,rgba(255,210,119,.14),transparent 60%);pointer-events:none}
+.love-crown{text-align:center;font-size:28px;margin-bottom:16px;letter-spacing:.3em;color:var(--gold);opacity:.75}
+.love-hint{font-size:10.5px;letter-spacing:.25em;color:var(--muted);text-align:center;margin-bottom:14px;text-transform:uppercase}
+.love-body{font-family:var(--serif);font-size:17.5px;line-height:1.9;color:var(--sand);white-space:pre-wrap;outline:none;min-height:110px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px dashed rgba(255,210,119,.22);position:relative;z-index:1}
+.love-body:focus{border-bottom-color:rgba(255,210,119,.5)}
+.love-from{font-family:var(--serif);font-size:16px;color:var(--gold);text-align:left;font-style:italic;position:relative;z-index:1}
+
+/* ROUTE STRIP */
+.route-header{margin-top:46px;margin-bottom:4px;font-size:11px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;text-align:center}
+.route-strip{display:flex;align-items:center;overflow-x:auto;padding:18px 4px 14px;gap:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-top:8px}
+.route-strip::-webkit-scrollbar{display:none}
+.rstop{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:54px}
+.rstop .ricon{font-size:20px}
+.rstop .rlabel{font-size:9.5px;color:var(--muted);white-space:nowrap;font-weight:700;letter-spacing:.04em;text-align:center}
+.rstop .rdot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);margin:2px 0}
+.rstop.home .rdot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.rline{flex:1;min-width:14px;height:2px;border-top:2px dashed rgba(255,255,255,.18);position:relative;top:-14px}
+.rline.flight{border-top-style:dotted;border-top-color:rgba(255,210,119,.45)}
+
+/* PROGRESS */
+.progress{position:sticky;top:0;z-index:35;backdrop-filter:blur(12px);background:rgba(7,6,23,.82);border-bottom:1px solid var(--line);padding:11px 18px}
+.progress .inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:13px;font-size:13px;color:var(--muted)}
+.pbar{flex:1;height:7px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--magenta),var(--gold));transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.progress b{color:#fff}
+
+/* TIMELINE */
+.tl{position:relative;margin-top:50px}
+.tl::before{content:"";position:absolute;top:8px;bottom:40px;right:21px;width:2px;background:linear-gradient(180deg,var(--magenta),var(--cyan),var(--red),var(--gold));opacity:.5}
+.seg{position:relative;padding-right:52px;margin-bottom:32px;opacity:0;transform:translateY(26px);transition:.7s cubic-bezier(.2,.8,.2,1)}
+.seg.in{opacity:1;transform:none}
+.node{position:absolute;right:11px;top:128px;width:24px;height:24px;border-radius:50%;background:var(--ink);border:2px solid var(--a1);box-shadow:0 0 0 4px var(--ink),0 0 16px var(--a1);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--a1);z-index:3}
+.card{border:1px solid var(--line);border-radius:24px;overflow:hidden;background:linear-gradient(180deg,rgba(24,18,46,.96),rgba(14,11,30,.97));box-shadow:0 14px 40px -22px #000;transition:.4s}
+.card:hover{border-color:color-mix(in srgb,var(--a1) 55%,transparent);box-shadow:0 22px 60px -24px var(--a1)}
+
+/* SCENE */
+.scene{position:relative;height:174px;overflow:hidden}
+.scene .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4}
+.scene .sky{position:absolute;inset:0}
+.scene .sun{position:absolute;border-radius:50%}
+.scene .silo{position:absolute;left:0;right:0;bottom:-1px;height:98px;color:#05030f}
+.scene .silo svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 10px var(--a1))}
+.scene .haze{position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(7,6,23,.25) 76%,rgba(7,6,23,.9) 100%)}
+.scene .tag{position:absolute;bottom:12px;right:20px;z-index:5}
+.city{font-family:var(--serif);font-weight:900;font-size:clamp(32px,8.5vw,46px);line-height:1;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.75)}
+.city .en{display:block;font-family:var(--sans);font-weight:800;font-size:11px;letter-spacing:.42em;color:#fff;opacity:.95;margin-bottom:6px;text-shadow:0 0 12px var(--a1),0 1px 6px #000}
+.nights-pill{position:absolute;top:14px;left:16px;z-index:5;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:99px;backdrop-filter:blur(4px)}
+.type-tokyo .sky{background:linear-gradient(180deg,#1a0a2e,#3a0e4e 55%,#7a1850)}.type-tokyo .sun{display:none}
+.type-fuji .sky{background:linear-gradient(180deg,#3b2c66,#a85a87 60%,#ffb37a)}.type-fuji .sun{width:70px;height:70px;top:24px;left:30px;background:radial-gradient(circle,#fff7e6,#ffd9a0);box-shadow:0 0 40px #ffd9a0}
+.type-kyoto .sky{background:linear-gradient(180deg,#3a0f2a,#8a1f3a 55%,#e0632e)}.type-kyoto .sun{width:60px;height:60px;top:30px;left:32px;background:radial-gradient(circle,#ffe9c0,#ff9d4d);box-shadow:0 0 38px #ff9d4d}
+.type-osaka .sky{background:linear-gradient(180deg,#0a1230,#181a5a 50%,#3a1a6a)}.type-osaka .sun{display:none}
+.type-tokyo2 .sky{background:linear-gradient(180deg,#1a0a2e,#5a1450 55%,#b06a2a)}.type-tokyo2 .sun{width:60px;height:60px;top:26px;left:34px;background:radial-gradient(circle,#fff3d6,#ffce7a);box-shadow:0 0 36px #ffce7a;opacity:.85}
+.type-dubai .sky{background:linear-gradient(180deg,#4a2a6a,#c46a4a 50%,#ffce7a)}.type-dubai .sun{width:84px;height:84px;top:30px;left:30px;background:radial-gradient(circle,#fff6e0,#ffb24d);box-shadow:0 0 60px #ffb24d}
+.type-dubai .silo{color:#2a1430}.type-dubai .silo svg{filter:drop-shadow(0 0 12px var(--gold))}.type-dubai .haze{background:linear-gradient(180deg,transparent 42%,rgba(29,20,32,.3) 76%,rgba(29,20,32,.9) 100%)}
+.scene .spk{position:absolute;color:#fff;font-size:12px;opacity:0;animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.6)}50%{opacity:.9;transform:scale(1)}}
+
+/* CARD BODY */
+.cb{padding:18px 20px 22px}
+.lbl{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin:6px 0 11px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{font-size:13px;padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff}
+.hw{margin:4px 0 18px;border-radius:16px;padding:15px 16px;position:relative;overflow:hidden;background:linear-gradient(120deg,rgba(255,122,24,.22),rgba(176,124,255,.22));border:1px solid rgba(255,122,24,.5)}
+.hw h4{font-family:var(--serif);font-weight:900;font-size:19px;color:#fff;margin-bottom:6px}
+.hw p{font-size:13.5px;color:#fff;opacity:.95}
+.hw .bat{position:absolute;font-size:16px;opacity:.6;animation:flap 3s ease-in-out infinite}
+@keyframes flap{0%,100%{transform:translateY(0) scaleX(1)}50%{transform:translateY(-6px) scaleX(.7)}}
+
+/* HOTELS */
+.hotels-wrap{display:flex;flex-direction:column;gap:9px}
+.hotel{display:flex;gap:11px;align-items:flex-start;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.045);cursor:pointer;transition:.25s}
+.hotel:hover{border-color:color-mix(in srgb,var(--a1) 50%,transparent);background:rgba(255,255,255,.07)}
+.hotel.sel{border-color:var(--a1);background:color-mix(in srgb,var(--a1) 18%,var(--card));box-shadow:inset 0 0 0 1px var(--a1)}
+.radio{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);margin-top:3px;position:relative;transition:.25s}
+.hotel.sel .radio{border-color:var(--a1)}
+.hotel.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--a1);box-shadow:0 0 8px var(--a1)}
+.hinfo{flex:1;min-width:0}
+.hname{font-weight:700;font-size:15px;color:#fff}.hname .star{color:var(--gold)}
+.cust-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;background:rgba(255,210,119,.25);color:var(--gold);border:1px solid rgba(255,210,119,.4);margin-inline-start:5px;vertical-align:middle}
+.harea{font-size:13px;color:var(--muted);margin-top:1px}
+.hnote{font-size:13px;color:#e6e3fb;opacity:.9;margin-top:5px}
+.hprice{font-size:13px;font-weight:800;color:var(--a1);white-space:nowrap;margin-top:2px}
+.del-hotel{background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:0;line-height:1;transition:.2s}
+.del-hotel:hover{color:var(--red)}
+.add-hotel-btn{margin-top:10px;width:100%;padding:11px;border:1px dashed rgba(255,210,119,.4);border-radius:12px;background:rgba(255,210,119,.05);color:var(--gold);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:.25s;letter-spacing:.04em}
+.add-hotel-btn:hover{background:rgba(255,210,119,.1);border-color:rgba(255,210,119,.7)}
+.add-hotel-form{display:none;margin-top:10px;padding:16px;border-radius:14px;border:1px solid rgba(255,210,119,.3);background:rgba(255,210,119,.06);flex-direction:column;gap:9px}
+.add-hotel-form.open{display:flex}
+.ahf-input{background:rgba(0,0,0,.3);border:1px solid var(--line);color:#fff;font-family:var(--sans);font-size:14px;padding:10px 13px;border-radius:10px;width:100%;outline:none;transition:.2s}
+.ahf-input:focus{border-color:var(--gold)}
+.ahf-input::placeholder{color:var(--muted)}
+.ahf-btns{display:flex;gap:10px}
+.ahf-submit{flex:1;background:var(--gold);color:#1a1320;border:none;border-radius:10px;padding:10px;font-family:var(--sans);font-size:14px;font-weight:800;cursor:pointer;transition:.2s}
+.ahf-submit:hover{opacity:.88}
+.ahf-cancel{flex:none;background:rgba(255,255,255,.08);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:10px 16px;font-family:var(--sans);font-size:14px;cursor:pointer}
+
+.tip{margin-top:14px;font-size:13px;color:#dcd8f5;background:rgba(255,255,255,.05);padding:11px 13px;border-radius:0 10px 10px 0;border-right:3px solid var(--a1)}
+.imgrow{margin-top:12px;display:flex;gap:8px;align-items:center}
+.imgrow input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--line);color:#fff;font-family:var(--sans);font-size:13px;padding:10px 12px;border-radius:10px;direction:ltr;text-align:left;outline:none;transition:.2s}
+.imgrow input:focus{border-color:var(--a1)}
+.notes{width:100%;margin-top:12px;min-height:52px;resize:vertical;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:#fff;font-family:var(--sans);font-size:14.5px;padding:11px 13px;transition:.25s;outline:none}
+.notes:focus{border-color:var(--a1);box-shadow:0 0 0 3px color-mix(in srgb,var(--a1) 22%,transparent)}
+.notes::placeholder{color:var(--muted)}
+.notes.food{min-height:44px;border-color:rgba(255,154,61,.35)}
+.notes.food:focus{border-color:var(--amber)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}
+.booked{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none;font-size:14.5px;color:var(--muted)}
+.box{width:23px;height:23px;border-radius:7px;border:2px solid var(--muted);display:grid;place-items:center;transition:.25s}
+.booked.on .box{border-color:var(--gold);background:var(--gold)}
+.booked.on .box::after{content:"✓";color:#1a1320;font-weight:900;font-size:14px}
+.booked.on .txt{color:var(--gold)}
+
+/* BUDGET */
+.panel{margin-top:38px;border:1px solid var(--line);border-radius:22px;padding:24px 22px;background:linear-gradient(180deg,rgba(255,210,119,.08),rgba(20,16,42,.9))}
+.panel h3{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:6px;color:#fff}
+.panel .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
+.brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
+.brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
+.btotal{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding-top:14px;border-top:2px solid rgba(255,210,119,.4)}
+.btotal .t{font-family:var(--serif);font-size:20px;font-weight:900;color:#fff}
+.btotal .tv{font-family:var(--serif);font-size:28px;font-weight:900;background:linear-gradient(100deg,var(--gold),var(--amber));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* CHECKLIST */
+.check{display:grid;gap:10px}
+.citem{display:flex;align-items:center;gap:12px;cursor:pointer;padding:11px 13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.04);transition:.2s;font-size:14.5px;color:#fff}
+.citem:hover{border-color:rgba(255,210,119,.4)}
+.citem.on{background:rgba(255,210,119,.1);border-color:rgba(255,210,119,.45)}
+.citem .cbx{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--muted);display:grid;place-items:center;transition:.2s}
+.citem.on .cbx{background:var(--gold);border-color:var(--gold)}
+.citem.on .cbx::after{content:"✓";color:#1a1320;font-weight:900;font-size:13px}
+.citem.on span:last-child{color:var(--gold);text-decoration:line-through;text-decoration-color:rgba(255,210,119,.5)}
+
+.practical{margin-top:38px;border:1px solid var(--line);border-radius:22px;padding:24px 22px;background:linear-gradient(180deg,rgba(63,232,255,.06),rgba(20,16,42,.9))}
+.practical h3{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:14px;color:#fff}
+.practical ul{list-style:none;display:grid;gap:11px}
+.practical li{font-size:14px;color:#e9e6fb;padding-right:24px;position:relative}
+.practical li::before{content:"🍁";position:absolute;right:0;top:1px;font-size:13px}
+
+footer{text-align:center;margin-top:48px;padding-top:30px;border-top:1px solid var(--line)}
+footer .heart{font-family:var(--serif);font-size:22px;font-weight:700;color:#fff}
+footer .heart span{color:var(--magenta)}
+footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
+.fbtns{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.reset{background:none;border:1px solid var(--line);color:var(--muted);font-family:var(--sans);font-size:12px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:.25s}
+.reset:hover{border-color:var(--magenta);color:var(--magenta)}
+.share-btn{background:linear-gradient(90deg,var(--magenta),var(--violet));color:#fff;border:none;font-family:var(--sans);font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;cursor:pointer;transition:.25s;box-shadow:0 4px 18px rgba(255,61,158,.35)}
+.share-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,61,158,.45)}
+.saved{position:fixed;bottom:18px;left:50%;transform:translate(-50%,40px);background:var(--gold);color:#1a1320;font-weight:700;font-size:13px;padding:9px 18px;border-radius:99px;opacity:0;transition:.4s;z-index:60;pointer-events:none}
+.saved.show{transform:translate(-50%,0);opacity:1}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(7px);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="pattern"></div><div id="leaves"></div>
+
+<section class="hero">
+  <div class="rays"></div>
+  <div class="lanterns">
+    <div class="lantern"><i></i><b></b></div><div class="lantern"><i></i><b></b></div>
+    <div class="lantern"><i></i><b></b></div><div class="lantern"><i></i><b></b></div>
+    <div class="lantern"><i></i><b></b></div>
+  </div>
+  <div class="kicker">המסע שלנו · 日本 ← دبي</div>
+  <h1 class="title">ירח <span class="b">דבש</span></h1>
+  <div class="couple">
+    <div class="label">למסע של</div>
+    <div class="names" id="couple" contenteditable="true" spellcheck="false">אדיר ❤ לירון<span class="editpen">✎</span></div>
+    <div class="tagline" id="tagline" contenteditable="true" spellcheck="false">מתחילים את שאר החיים שלנו ✨</div>
+  </div>
+  <div class="dates">24 באוקטובר — סוף נובמבר <b>2026</b> · שלושה שבועות ביפן ושבוע בדובאי</div>
+  <div class="countdown" id="cd"></div>
+  <div class="scrollhint">↓ המסלול שלנו ↓</div>
+</section>
+
+<div class="progress"><div class="inner"><span>מלונות שנסגרו</span><div class="pbar"><i id="barfill"></i></div><b id="barnum">0 / 6</b></div></div>
+
+<div class="wrap">
+  <section class="love-card">
+    <div class="love-crown">✦ ❤ ✦</div>
+    <div class="love-hint">מכתב אישי — ניתן לעריכה ✎</div>
+    <div class="love-body" id="lovemsg" contenteditable="true" spellcheck="false">לירון,
+
+הכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.
+יפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.
+ואז דובאי בשביל לנשום.
+
+זה ירח הדבש שאנחנו מגיעים לו ❤</div>
+    <div class="love-from">— <span id="lovestay" contenteditable="true" spellcheck="false">אדיר</span></div>
+  </section>
+
+  <div class="route-header">מסלול המסע</div>
+  <div class="route-strip">
+    <div class="rstop home"><div class="ricon">🏠</div><div class="rdot"></div><div class="rlabel">ישראל</div></div>
+    <div class="rline flight"></div>
+    <div class="rstop"><div class="ricon">🗼</div><div class="rdot"></div><div class="rlabel">טוקיו א'</div></div>
+    <div class="rline"></div>
+    <div class="rstop"><div class="ricon">🗻</div><div class="rdot"></div><div class="rlabel">פוג'י</div></div>
+    <div class="rline"></div>
+    <div class="rstop"><div class="ricon">⛩️</div><div class="rdot"></div><div class="rlabel">קיוטו</div></div>
+    <div class="rline"></div>
+    <div class="rstop"><div class="ricon">🏯</div><div class="rdot"></div><div class="rlabel">אוסקה</div></div>
+    <div class="rline"></div>
+    <div class="rstop"><div class="ricon">🗼</div><div class="rdot"></div><div class="rlabel">טוקיו ב'</div></div>
+    <div class="rline flight"></div>
+    <div class="rstop"><div class="ricon">🌇</div><div class="rdot"></div><div class="rlabel">דובאי</div></div>
+    <div class="rline flight"></div>
+    <div class="rstop home"><div class="ricon">🏠</div><div class="rdot"></div><div class="rlabel">הבית</div></div>
+  </div>
+
+  <div class="tl" id="tl"></div>
+
+  <section class="panel">
+    <h3>תקציב הלינה 💴</h3>
+    <div class="hint">מתעדכן לפי המלון הנבחר בכל תחנה · מחירים משוערים</div>
+    <div id="budget"></div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(255,61,158,.08),rgba(20,16,42,.9))">
+    <h3>צ'ק-ליסט הזמנות ✅</h3>
+    <div class="hint">מה צריך לסגור לפני שטסים — לחיצה מסמנת כבוצע</div>
+    <div class="check" id="check"></div>
+  </section>
+
+  <section class="practical">
+    <h3>טיפים שיהפכו את זה לחלק 🍵</h3>
+    <ul>
+      <li>להזמין את קיוטו ואת הריוקאן בפוג'י <b>עכשיו</b> — נובמבר זה שיא עונת השלכת.</li>
+      <li>שילוח מזוודות (takkyubin) בין הערים — לפוג'י נוסעים עם תיק לילה בלבד.</li>
+      <li>כרטיס IC (Welcome Suica / ICOCA) לכל התחבורה הציבורית.</li>
+      <li>eSIM לאינטרנט, ומעט מזומן — כספומטים ב-7-Eleven מקבלים כרטיסים זרים.</li>
+      <li>מקוואגוצ'יקו לקיוטו: אוטובוס למישימה (~1.5 שעות) ואז שינקנסן.</li>
+      <li>לבדוק דרישות כניסה לאיחוד האמירויות לדרכון ישראלי קרוב למועד.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <div class="heart">לאדיר ולירון <span>❤</span> ירח דבש מושלם</div>
+    <div class="sub">כל הטקסטים, המלונות, ההערות והאוכל — ניתנים לעריכה ונשמרים אוטומטית</div>
+    <div class="fbtns">
+      <button class="share-btn" id="shareBtn">🔗 שתפו את הלינק</button>
+      <button class="reset" id="reset">איפוס הכל</button>
+    </div>
+  </footer>
+</div>
+<div class="saved" id="saved">נשמר ✓</div>
+
+<script>
+const SILO={
+tokyo:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentColor" d="M0 96V58h22v38zm26 0V44h16v52zm20 0V64h28v32zm32 0V40h14v56zm18 0V70h30v26zm150 0V52h24v44zm28 0V60h18v36zm22 0V46h26v50zm30 0V66h24v30zM150 96 168 18l18 78z"/><g fill="#ff5a6b"><path d="M168 18l-7 30h14z" opacity=".85"/><rect x="160" y="48" width="16" height="3"/><rect x="156" y="62" width="24" height="3"/></g><g fill="#3fe8ff"><rect x="6" y="64" width="4" height="4"/><rect x="14" y="72" width="4" height="4"/><rect x="84" y="48" width="4" height="5"/><rect x="262" y="58" width="4" height="5"/><rect x="318" y="54" width="4" height="5"/></g><g fill="#ffd277"><rect x="34" y="52" width="4" height="4"/><rect x="232" y="62" width="4" height="4"/><rect x="372" y="72" width="4" height="4"/></g></svg>`,
+fuji:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentColor" d="M0 96 140 14q22-20 44 0L400 96z"/><path fill="#f4f6ff" d="M150 30q14-26 32-26t32 26q-18-10-32 4-14-14-32-4z"/><g fill="#0a0618"><path d="M286 96V70h6v26zm6 0V62h16v34zm16 0V74h6v22z"/></g><path stroke="#ff5a6b" stroke-width="2" d="M296 62h10M298 68h6"/></svg>`,
+kyoto:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><g fill="#e0322e"><path d="M-6 30h70v8H-6zM-2 22q34-10 62 0v6q-30-9-62 0z"/><rect x="6" y="36" width="8" height="60"/><rect x="46" y="36" width="8" height="60"/><path d="M30 30h60v7H30zM34 24q26-8 50 0v5q-24-7-50 0z" opacity=".9"/><rect x="40" y="36" width="6" height="60" opacity=".9"/><rect x="74" y="36" width="6" height="60" opacity=".9"/><path d="M64 32h44v6H64z" opacity=".8"/><rect x="70" y="37" width="5" height="59" opacity=".8"/><rect x="98" y="37" width="5" height="59" opacity=".8"/></g><g fill="currentColor"><path d="M300 96V46h60v50zM294 46l36-22 36 22z"/><path d="M312 30h36v6h-36zM320 24l10-8 10 8z"/></g><g fill="#ffd277"><rect x="324" y="40" width="12" height="9"/></g></svg>`,
+osaka:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentColor" d="M0 96V40h60v56zm70 0V30h70v66zm150 0V36h80v60zm90 0V44h50v52z"/><g><rect x="10" y="50" width="40" height="16" rx="2" fill="#ff3d9e"/><rect x="80" y="40" width="50" height="14" rx="2" fill="#3fe8ff"/><rect x="80" y="60" width="34" height="10" rx="2" fill="#ffd277"/><rect x="230" y="46" width="60" height="16" rx="2" fill="#36e07a"/><rect x="318" y="54" width="34" height="12" rx="2" fill="#ff7a18"/></g><circle cx="105" cy="84" r="7" fill="#fff"/></svg>`,
+tokyo2:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentColor" d="M0 96V58h22v38zm26 0V44h16v52zm20 0V64h28v32zm32 0V40h14v56zm200 0V52h24v44zm28 0V60h18v36zm22 0V46h26v50zm30 0V66h24v30z"/><g fill="#ffd277"><path d="M150 96c0-30 8-46 20-46s20 16 20 46z" opacity=".9"/><circle cx="158" cy="58" r="5"/><circle cx="182" cy="56" r="5"/><circle cx="170" cy="48" r="5"/><circle cx="150" cy="70" r="4"/><circle cx="190" cy="70" r="4"/></g><rect x="168" y="72" width="4" height="24" fill="currentColor"/></svg>`,
+dubai:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentColor" d="M150 96 162 6q2-6 4 0l12 90zm-150 0V54h40v42zm44 0V62h26v34zm210 0V44h30v52zm34 0V58h22v38zm26 0V50h28v46zm32 0V64h34v32z"/><g fill="#0a0618"><path d="M70 96c2-14 8-22 8-22s-10 2-14 10c-3-10-10-14-10-14s2 16 8 26z"/><rect x="66" y="84" width="4" height="12"/><path d="M360 96c2-12 8-20 8-20s-10 2-14 9c-3-9-9-13-9-13s2 14 7 24z"/><rect x="356" y="86" width="4" height="10"/></g><g fill="#fff"><rect x="162" y="20" width="3" height="3" opacity=".8"/><rect x="161" y="36" width="4" height="3" opacity=".8"/><rect x="160" y="52" width="5" height="3" opacity=".8"/></g></svg>`
+};
+
+const SEGS=[
+{id:"tok1",type:"tokyo",en:"TOKYO",city:"טוקיו",dates:"25.10 — 1.11",nights:"7 לילות",nn:7,a1:"var(--magenta)",halloween:true,
+ chips:["מקדש מייג'י","שיבויה + Shibuya Sky","אסאקוסה","teamLab Planets","טיול יום לניקו"],
+ tip:"שבוע נדיב להתאוששות מג'ט-לג + טיול יום לשלכת בגבהים (ניקו).",
+ food:"🍜 ראמן בתור ראשון · 🍣 סושי במצויה (Tsukiji) · 🥟 גיוזה · 🍛 קארי יפני · 🦀 קאיסקי בסיום",
+ chosen:0,hotels:[
+  {name:"Shibuya Stream Excel Hotel Tokyu",area:"שיבויה · מחובר לתחנה",price:"~1,150₪/לילה",ppn:1150,note:"בסיס תוסס ומרכזי לשבוע הראשון"},
+  {name:"Hotel Century Southern Tower",area:"שינג'וקו · מעל התחנה",price:"~1,050₪/לילה",ppn:1050,note:"מיקום מנצח, נוף עירוני מהחדרים"},
+  {name:"Cerulean Tower Tokyu",area:"שיבויה · יוקרתי",price:"~1,400₪/לילה",ppn:1400,note:"שדרוג אם בא לכם לפנק בפתיחה"}]},
+{id:"fuji",type:"fuji",en:"MT. FUJI",city:"פוג'י · קוואגוצ'יקו",dates:"1.11 — 3.11",nights:"2 לילות",nn:2,a1:"var(--violet)",
+ chips:["פגודת צ'וריטו","אגם קוואגוצ'יקו","אונסן פרטי","רכבל קאצ'י-קאצ'י","שלכת בשיא"],
+ tip:"התזמון מושלם — פוג'י בשיא השלכת. ערב ריוקאן רומנטי.",
+ food:"🍱 בנטו בקיאוסק · 🍡 מיצי דנגו · ☕ קפה הר בלאונג' הריוקאן",
+ chosen:0,hotels:[
+  {name:"Fuji Kawaguchiko Onsen Rakuyu",star:true,area:"קוואגוצ'יקו · נוף לאגם ולפוג'י",price:"~1,400₪/לילה",ppn:1400,note:"הבחירה שלכם — ריוקאן למבוגרים, אונסן פרטי, לאונג' עם אוכל ושתייה חופשי"},
+  {name:"Kozantei Ubuya",area:"קוואגוצ'יקו · נוף פוג'י מפורסם",price:"~2,000₪/לילה",ppn:2000,note:"שדרוג: אמבט אונסן פרטי בחדר מול ההר"},
+  {name:"Hoshinoya Fuji",area:"גלמפינג יוקרה ביער",price:"מחיר גבוה",ppn:null,note:"חוויה ייחודית לפינוק יוצא דופן"}]},
+{id:"kyo",type:"kyoto",en:"KYOTO",city:"קיוטו",dates:"3.11 — 8.11",nights:"5 לילות",nn:5,a1:"var(--red)",
+ chips:["פושימי אינארי","ארשייאמה","קינקאקו-ג'י","גיון + קימונו","טקס תה","נארה"],
+ tip:"השלכת רק מתחילה — לצבע מלא כוונו לטופוקו-ג'י, אייקאן-דו וארשייאמה.",
+ food:"🍵 מאצ'ה בכל צורה · 🫕 יודופו (טופו) · 🦀 קייסקי מסורתי · 🍡 יצ'י ווארה מוצ'י · 🍣 אומאקאסה",
+ chosen:0,hotels:[
+  {name:"Hotel Kanra Kyoto",area:"קאראסומה · בוטיק בסגנון מאצ'יה",price:"~1,150₪/לילה",ppn:1150,note:"המומלץ בקטגוריית הביניים — עיצוב יפני מודרני"},
+  {name:"Cross Hotel Kyoto",area:"מרכז · ליד נישיקי ופונטוצ'ו",price:"~1,050₪/לילה",ppn:1050,note:"מודרני, מרכזי ואהוב מאוד על זוגות"},
+  {name:"The Celestine Kyoto Gion",area:"גיון",price:"~1,300₪/לילה",ppn:1300,note:"אלגנטי ושקט בלב רובע הגיישות"}]},
+{id:"osa",type:"osaka",en:"OSAKA",city:"אוסקה",dates:"8.11 — 12.11",nights:"4 לילות",nn:4,a1:"var(--cyan)",osakaHw:true,
+ chips:["דוטונבורי","טירת אוסקה","שוק קורומון","הימג'י","קובה · בקר","האלווין ב-USJ"],
+ tip:"בסיס מעולה לטיולי יום: קיוטו 30 דק', קובה 25, הימג'י פחות משעה.",
+ food:"🐙 טקויאקי (אוסקה-די!) · 🥩 בקר קובה בקובה · 🍜 אוקונומיאקי · 🦑 יאקיניקו · 🍺 שוט שוצ'ו עם חברה",
+ chosen:0,hotels:[
+  {name:"Cross Hotel Osaka",area:"שינסאיבאשי · צעדים מדוטונבורי",price:"~1,050₪/לילה",ppn:1050,note:"מעוצב, מרכזי ומצוין לזוגות"},
+  {name:"Swissôtel Nankai Osaka",area:"מעל תחנת נמבה",price:"~1,200₪/לילה",ppn:1200,note:"נוח מאוד, קו ישיר ל-KIX אם תטוסו מקנסאי"},
+  {name:"Mitsui Garden Osaka Premier",area:"נקנושימה · שקט ורומנטי",price:"~1,000₪/לילה",ppn:1000,note:"חדרים מרווחים ואווירה רגועה"}]},
+{id:"tok2",type:"tokyo2",en:"TOKYO",city:"טוקיו · סיבוב שני",dates:"12.11 — 17.11",nights:"5 לילות",nn:5,a1:"var(--gold)",
+ chips:["שלכת בריקוגיֵן","שדרת הגינקו במייג'י גאיין","הר טאקאו","קניות בגינזה","טיסה לדובאי"],
+ tip:"שלכת מתחילה בטוקיו, הגנים המוארים בלילה קסומים. ואז טסים לדובאי.",
+ food:"🍣 אומאקאסה בגינזה · 🍜 צורוטונטאן אודון · 🥩 שאבו-שאבו · 🍱 דפרטמנט סטור דפחן (depachika)",
+ chosen:0,hotels:[
+  {name:"Hotel Keihan Tsukiji Ginza Grande",star:true,area:"גינזה / צוקיג'י",price:"~1,100₪/לילה",ppn:1100,note:"הבחירה שלכם — ליד שוק צוקיג'י, אלגנטי"},
+  {name:"Solaria Nishitetsu Hotel Ginza",star:true,area:"גינזה",price:"~1,000₪/לילה",ppn:1000,note:"הבחירה שלכם — מעוצב יפני-שיק. שתיהן מצוינות"},
+  {name:"Mitsui Garden Ginza Premier",area:"גינזה · נוף",price:"~1,150₪/לילה",ppn:1150,note:"חלופה עם נוף יפה לקו הרקיע"}]},
+{id:"dub",type:"dubai",en:"DUBAI",city:"דובאי",dates:"17.11 — סוף נובמבר",nights:"~7 לילות",nn:7,a1:"var(--gold)",
+ chips:["ספארי מדברי","בורג' חליפה","דובאי הישנה + אברה","JBR + מרינה","יום באבו דאבי","חוף ובריכה"],
+ tip:"מזג אוויר מושלם (~25-30°). הקצב הפוך מיפן: חוף, בריכה, ופינוק.",
+ food:"🥩 בשר בבאר דובאי · 🫕 חומוס ופלאפל · 🐟 סייפוד פרסי במרינה · 🍦 ג'לאטו בJBR · ☕ קפה טורקי בשוק הישן",
+ chosen:0,hotels:[
+  {name:"Fairmont The Palm",area:"דקל ג'ומיירה · חוף פרטי",price:"~1,100₪/לילה",ppn:1100,note:"ריזורט חוף קלאסי ומפנק על הדקל"},
+  {name:"Address Beach Resort (JBR)",area:"JBR · על החוף והטיילת",price:"~1,300₪/לילה",ppn:1300,note:"בריכת אינפיניטי מדהימה, חוף וטיילת מסעדות ברגל"},
+  {name:"Five Palm Jumeirah",area:"דקל ג'ומיירה",price:"~1,200₪/לילה",ppn:1200,note:"חוף, בריכות ואווירה תוססת"}]}
+];
+
+const CHECKLIST=[
+{id:"fl1",t:"טיסת אל על תל אביב ← טוקיו"},{id:"fl2",t:"טיסת Emirates יפן ← דובאי"},{id:"fl3",t:"טיסת חזרה דובאי ← ישראל"},
+{id:"ins",t:"ביטוח נסיעות"},{id:"uae",t:"אישור כניסה לאיחוד האמירויות"},{id:"htl",t:"הזמנת כל 6 המלונות"},
+{id:"trn",t:"שינקנסן / כרטיס IC (Suica)"},{id:"sim",t:"eSIM לאינטרנט"},{id:"saf",t:"ספארי מדברי בדובאי"},
+{id:"act",t:"כרטיסים: teamLab + בורג' חליפה"},{id:"bag",t:"שילוח מזוודות (takkyubin)"}
+];
+
+const KEY="honeymoon-v4";
+const hasStore=typeof window!=="undefined"&&window.storage&&typeof window.storage.get==="function";
+let state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
+const openForms=new Set();
+
+async function loadState(){if(hasStore){try{const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}}return null;}
+let svT=null;
+async function saveState(flash=true){
+  if(hasStore){try{await window.storage.set(KEY,JSON.stringify(state));}catch(e){}}
+  if(flash){const s=document.getElementById("saved");s.classList.add("show");clearTimeout(svT);svT=setTimeout(()=>s.classList.remove("show"),1100);}
+}
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function fmt(n){return n.toLocaleString("en-US")+" ₪";}
+
+function hotelsHTML(seg){
+  const st=state.seg[seg.id]||{};
+  const custom=st.custom||[];
+  const all=[...seg.hotels,...custom.map((c,i)=>({...c,isCustom:true,ci:i}))];
+  const chosen=st.hotel!=null?st.hotel:seg.chosen;
+  const items=all.map((h,hi)=>`<div class="hotel ${hi===chosen?"sel":""}" data-seg="${seg.id}" data-h="${hi}">
+    <div class="radio"></div>
+    <div class="hinfo">
+      <div class="hname">${esc(h.name)}${h.star?" <span class='star'>★</span>":""}${h.isCustom?" <span class='cust-badge'>שלי</span>":""}</div>
+      ${h.area?`<div class="harea">${esc(h.area)}</div>`:""}
+      ${h.note?`<div class="hnote">${esc(h.note)}</div>`:""}
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
+      <div class="hprice">${esc(h.price||"")}</div>
+      ${h.isCustom?`<button class="del-hotel" data-seg="${seg.id}" data-ci="${h.ci}" onclick="delHotel(event)">🗑</button>`:""}
+    </div>
+  </div>`).join("");
+  const formOpen=openForms.has(seg.id);
+  return `<div class="hotels-wrap" id="hw-${esc(seg.id)}">${items}
+    <div class="add-hotel-form${formOpen?" open":""}" id="ahf-${esc(seg.id)}">
+      <input class="ahf-input" type="text" placeholder="שם המלון *" id="ahf-name-${esc(seg.id)}">
+      <input class="ahf-input" type="text" placeholder="אזור / עיר" id="ahf-area-${esc(seg.id)}">
+      <input class="ahf-input" type="text" placeholder="מחיר (לדוגמה: ~1,200₪/לילה)" id="ahf-price-${esc(seg.id)}">
+      <input class="ahf-input" type="text" placeholder="הערה (אופציונלי)" id="ahf-note-${esc(seg.id)}">
+      <div class="ahf-btns">
+        <button class="ahf-submit" onclick="addHotel('${esc(seg.id)}')">הוסף ✓</button>
+        <button class="ahf-cancel" onclick="toggleForm('${esc(seg.id)}',false)">ביטול</button>
+      </div>
+    </div>
+    <button class="add-hotel-btn" onclick="toggleForm('${esc(seg.id)}',true)">＋ הוסף מלון משלי</button>
+  </div>`;
+}
+
+function toggleForm(segId,open){
+  if(open)openForms.add(segId); else openForms.delete(segId);
+  rerender();
+}
+function addHotel(segId){
+  const name=document.getElementById("ahf-name-"+segId)?.value?.trim();
+  if(!name){alert("שם המלון הוא שדה חובה"); return;}
+  const area=document.getElementById("ahf-area-"+segId)?.value?.trim();
+  const price=document.getElementById("ahf-price-"+segId)?.value?.trim();
+  const note=document.getElementById("ahf-note-"+segId)?.value?.trim();
+  state.seg[segId]=state.seg[segId]||{};
+  state.seg[segId].custom=state.seg[segId].custom||[];
+  const newIdx=SEGS.find(s=>s.id===segId).hotels.length+state.seg[segId].custom.length;
+  state.seg[segId].custom.push({name,area,price,note});
+  state.seg[segId].hotel=newIdx;
+  openForms.delete(segId);
+  rerender(); renderBudget(); saveState();
+}
+function delHotel(e){
+  e.stopPropagation();
+  const segId=e.target.dataset.seg,ci=+e.target.dataset.ci;
+  if(!confirm("להסיר את המלון?")) return;
+  const seg=SEGS.find(s=>s.id===segId);
+  state.seg[segId]=state.seg[segId]||{};
+  state.seg[segId].custom=state.seg[segId].custom||[];
+  state.seg[segId].custom.splice(ci,1);
+  const chosen=state.seg[segId].hotel;
+  if(chosen>=seg.hotels.length+state.seg[segId].custom.length) state.seg[segId].hotel=0;
+  rerender(); renderBudget(); saveState();
+}
+
+function render(){
+  document.getElementById("tl").innerHTML=SEGS.map((s,i)=>{
+    const st=state.seg[s.id]||{};
+    const booked=!!st.booked, img=st.img||"";
+    const spk=s.type==="dubai"?'<span class="spk" style="top:20px;right:60px">✦</span><span class="spk" style="top:46px;right:120px;animation-delay:1s">✦</span>':"";
+    const hw=s.halloween?`<div class="hw"><span class="bat" style="top:8px;left:14px">🦇</span><span class="bat" style="top:20px;left:46px;animation-delay:.8s">🦇</span>
+      <h4>🎃 האלווין · 31.10 בטוקיו</h4><p>אתם בטוקיו בדיוק בליל האלווין! שיבויה <b>אוסרת</b> התקהלויות (גדרות סביב האצ'יקו, איסור שתייה). הקסם האמיתי: מצעדי האלווין ב-<b>טוקיו דיסני</b>, ב-<b>שינג'וקו / הרג'וקו</b>, וממתקים בכל חנות נוחות 🍬</p></div>`:
+      s.osakaHw?`<div class="hw"><span class="bat" style="top:10px;left:16px">🦇</span><h4>👻 Halloween Horror Nights · USJ</h4><p>אם עדיין פעיל בתחילת נובמבר — שווה ערב: זומבים ברחובות ובתי רעב בלילה. (לאמת תאריכים 2026 באתר USJ.)</p></div>`:"";
+    return `<div class="seg" style="--a1:${s.a1}"><div class="node">${i+1}</div>
+      <div class="card">
+        <div class="scene type-${s.type}"><div class="sky"></div><div class="sun"></div>${spk}
+          <div class="silo">${SILO[s.type]}</div><div class="haze"></div>
+          <img class="photo" alt="" ${img?`src="${esc(img)}"`:'style="display:none"'} onerror="this.style.display='none'">
+          <div class="nights-pill">${esc(s.nights)} · ${esc(s.dates)}</div>
+          <div class="tag"><div class="city"><span class="en">${s.en}</span>${esc(s.city)}</div></div>
+        </div>
+        <div class="cb">
+          ${hw}
+          <div class="lbl">מה עושים</div>
+          <div class="chips">${s.chips.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div>
+          <div class="lbl">מלון — לבחור אחד</div>
+          ${hotelsHTML(s)}
+          <div class="tip">${esc(s.tip)}</div>
+          <div class="lbl" style="margin-top:14px">🍜 מה לאכול ולנסות</div>
+          <textarea class="notes food" data-seg="${s.id}" data-field="food" placeholder="מסעדות ומאכלים שאסור להחמיץ...">${esc(st.food!==undefined?st.food:s.food)}</textarea>
+          <div class="imgrow"><span style="font-size:16px">📷</span><input type="url" data-seg="${s.id}" placeholder="קישור לתמונה (יופיע ברקע)" value="${esc(img)}"></div>
+          <textarea class="notes" data-seg="${s.id}" data-field="notes" placeholder="הערות, לינקים, רעיונות...">${esc(st.notes||"")}</textarea>
+          <div class="row"><label class="booked ${booked?"on":""}" data-seg="${s.id}"><span class="box"></span><span class="txt">המלון סגור ומוזמן</span></label></div>
+        </div>
+      </div></div>`;
+  }).join("");
+  attachListeners();
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.1});
+  document.querySelectorAll(".seg").forEach(s=>io.observe(s));
+  updateProgress(); renderBudget();
+}
+
+function rerender(){
+  const y=window.scrollY; render(); requestAnimationFrame(()=>window.scrollTo(0,y));
+}
+
+function attachListeners(){
+  document.querySelectorAll(".hotel").forEach(el=>el.addEventListener("click",()=>{
+    const id=el.dataset.seg,hi=+el.dataset.h;
+    state.seg[id]=Object.assign({},state.seg[id],{hotel:hi});
+    el.closest(".hotels-wrap").querySelectorAll(".hotel").forEach(x=>x.classList.remove("sel"));
+    el.classList.add("sel"); renderBudget(); saveState();
+  }));
+  document.querySelectorAll(".booked").forEach(el=>el.addEventListener("click",()=>{
+    const id=el.dataset.seg,now=!(state.seg[id]&&state.seg[id].booked);
+    state.seg[id]=Object.assign({},state.seg[id],{booked:now});
+    el.classList.toggle("on",now); updateProgress(); saveState();
+  }));
+  document.querySelectorAll("textarea.notes,textarea.food").forEach(el=>el.addEventListener("input",()=>{
+    const id=el.dataset.seg,field=el.dataset.field;
+    state.seg[id]=state.seg[id]||{}; state.seg[id][field]=el.value;
+    clearTimeout(el._t); el._t=setTimeout(()=>saveState(),650);
+  }));
+  document.querySelectorAll(".imgrow input[type=url]").forEach(el=>el.addEventListener("input",()=>{
+    const id=el.dataset.seg,url=el.value.trim();
+    state.seg[id]=Object.assign({},state.seg[id],{img:url});
+    const ph=el.closest(".card").querySelector(".photo");
+    if(url){ph.src=url;ph.style.display="block";}else ph.style.display="none";
+    clearTimeout(el._t); el._t=setTimeout(()=>saveState(),700);
+  }));
+}
+
+function renderBudget(){
+  let total=0,partial=false;
+  const rows=SEGS.map(s=>{
+    const st=state.seg[s.id]||{};
+    const chosen=st.hotel!=null?st.hotel:s.chosen;
+    const custom=st.custom||[];
+    const all=[...s.hotels,...custom];
+    const h=all[chosen]; let sub="—",ppn=null;
+    if(h){ppn=h.ppn;if(!ppn&&h.price){const m=h.price.match(/[\d,]+/);if(m)ppn=parseInt(m[0].replace(/,/g,""));}}
+    if(ppn){const v=ppn*s.nn;total+=v;sub=fmt(v);}else partial=true;
+    return `<div class="brow"><div><div class="bc">${esc(s.city)}</div><div class="bh">${esc(h?h.name:"לא נבחר")} · ${s.nn} לילות</div></div><div class="bv">${sub}</div></div>`;
+  }).join("");
+  document.getElementById("budget").innerHTML=rows+`<div class="btotal"><div class="t">סה"כ לינה${partial?" (חלקי)":""}</div><div class="tv">${fmt(total)}</div></div>`;
+}
+
+function renderCheck(){
+  document.getElementById("check").innerHTML=CHECKLIST.map(c=>{
+    const on=!!(state.check&&state.check[c.id]);
+    return `<div class="citem ${on?"on":""}" data-c="${c.id}"><span class="cbx"></span><span>${esc(c.t)}</span></div>`;
+  }).join("");
+  document.querySelectorAll(".citem").forEach(el=>el.addEventListener("click",()=>{
+    const id=el.dataset.c; state.check=state.check||{}; state.check[id]=!state.check[id];
+    el.classList.toggle("on",state.check[id]); saveState();
+  }));
+}
+
+function updateProgress(){
+  let d=0; SEGS.forEach(s=>{if(state.seg[s.id]&&state.seg[s.id].booked)d++;});
+  document.getElementById("barfill").style.width=(d/SEGS.length*100)+"%";
+  document.getElementById("barnum").textContent=d+" / "+SEGS.length;
+}
+
+function setupEditable(elId,key,def){
+  const el=document.getElementById(elId); if(!el)return;
+  if(state[key]!=null)el.textContent=state[key];
+  else{state[key]=el.textContent.replace("✎","").trim();}
+  el.addEventListener("focus",()=>{const p=el.querySelector(".editpen");if(p)p.remove();});
+  el.addEventListener("blur",()=>{state[key]=el.textContent.trim();saveState();});
+}
+
+function countdown(){
+  const target=new Date("2026-10-25T00:00:00+09:00").getTime(),cd=document.getElementById("cd");
+  (function tick(){
+    const diff=target-Date.now();
+    if(diff<=0){cd.innerHTML='<div class="cd" style="min-width:auto;padding:14px 22px"><div class="n">המסע התחיל! 🎉</div></div>';return;}
+    const d=Math.floor(diff/864e5),h=Math.floor(diff%864e5/36e5),m=Math.floor(diff%36e5/6e4),sc=Math.floor(diff%6e4/1e3);
+    cd.innerHTML=[[d,"ימים"],[h,"שעות"],[m,"דקות"],[sc,"שניות"]].map(x=>`<div class="cd"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+    setTimeout(tick,1000);
+  })();
+}
+
+function leaves(){
+  const box=document.getElementById("leaves"),kinds=["🍁","🍂","🍁","🍂","🌸"];
+  for(let i=0;i<16;i++){
+    const l=document.createElement("div");l.className="leaf";l.textContent=kinds[i%kinds.length];
+    l.style.left=Math.random()*100+"vw";l.style.fontSize=(16+Math.random()*16)+"px";
+    l.style.animationDuration=(9+Math.random()*10)+"s";l.style.animationDelay=(-Math.random()*16)+"s";
+    box.appendChild(l);
+  }
+}
+
+document.getElementById("shareBtn").addEventListener("click",async()=>{
+  const url=window.location.href;
+  if(navigator.share){try{await navigator.share({title:"ירח דבש שלנו",url});return;}catch(e){}}
+  if(navigator.clipboard){await navigator.clipboard.writeText(url);}
+  const s=document.getElementById("saved");s.textContent="הלינק הועתק! 🔗";s.classList.add("show");
+  setTimeout(()=>{s.classList.remove("show");s.textContent="נשמר ✓";},2000);
+});
+
+document.getElementById("reset").addEventListener("click",async()=>{
+  if(!confirm("לאפס את כל העריכות?")) return;
+  state={couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}};
+  if(hasStore){try{await window.storage.delete(KEY);}catch(e){}}
+  ["couple","tagline","lovemsg","lovestay"].forEach(id=>{
+    const d={couple:"אדיר ❤ לירון",tagline:"מתחילים את שאר החיים שלנו ✨",lovemsg:"לירון,\n\nהכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.\nיפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.\nואז דובאי בשביל לנשום.\n\nזה ירח הדבש שאנחנו מגיעים לו ❤",lovestay:"אדיר"};
+    const el=document.getElementById(id);if(el)el.textContent=d[id];
+  });
+  openForms.clear(); render(); renderCheck();
+  ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
+});
+
+(async function(){
+  const saved=await loadState();
+  if(saved)state=Object.assign({couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{}},saved);
+  render(); renderCheck();
+  ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
+  countdown(); leaves();
+})();
+</script>
+</body>
+</html>
