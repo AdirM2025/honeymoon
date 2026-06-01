@@ -223,6 +223,14 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
 .install-bar.show{display:flex}
 .install-bar button{background:#fff;color:#1a1320;border:none;border-radius:99px;padding:7px 14px;font-family:var(--sans);font-weight:800;font-size:13px;cursor:pointer}
 .install-bar .x{background:none;color:#fff;font-size:18px;padding:0 4px;font-weight:400}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(7,6,23,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+.modal.show{display:flex}
+.modal-box{max-width:380px;width:100%;background:linear-gradient(180deg,#1a1330,#120e26);border:1px solid rgba(255,210,119,.35);border-radius:22px;padding:26px 22px;box-shadow:0 24px 70px -20px #000}
+.modal-title{font-family:var(--serif);font-size:22px;font-weight:900;color:#fff;margin-bottom:14px;text-align:center}
+.modal-step{display:flex;gap:11px;align-items:flex-start;margin-bottom:13px;font-size:14.5px;color:#ece9fb;line-height:1.5}
+.modal-step .sn{flex:none;width:25px;height:25px;border-radius:50%;background:var(--gold);color:#1a1320;font-weight:800;font-size:13px;display:grid;place-items:center}
+.modal-note{font-size:12.5px;color:var(--muted);margin-top:6px;text-align:center}
+.modal-close{margin-top:14px;width:100%;background:var(--gold);color:#1a1320;border:none;border-radius:12px;padding:12px;font-family:var(--sans);font-weight:800;font-size:15px;cursor:pointer}
 
 /* currency converter */
 .cc{display:grid;gap:10px}
@@ -441,6 +449,7 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
     <div class="heart">לאדיר ולירון <span>❤</span> ירח דבש מושלם</div>
     <div class="sub">כל הטקסטים, המלונות, ההערות והאוכל — ניתנים לעריכה ונשמרים אוטומטית</div>
     <div class="fbtns">
+      <button class="share-btn" id="installApp" style="background:linear-gradient(90deg,var(--cyan),var(--violet))">📲 שמירה כאפליקציה</button>
       <button class="share-btn" id="shareBtn">🔗 שתפו את הלינק</button>
       <button class="reset" id="reset">איפוס הכל</button>
     </div>
@@ -448,6 +457,7 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
 </div>
 <div class="saved" id="saved">נשמר ✓</div>
 <div class="install-bar" id="installBar"><span>📲 התקינו כאפליקציה למסך הבית</span><button id="installBtn">התקן</button><button class="x" id="installX">✕</button></div>
+<div class="modal" id="installModal"><div class="modal-box"><div class="modal-title">📲 שמירה כאפליקציה</div><div id="installSteps"></div><button class="modal-close" id="installClose">הבנתי 👍</button></div></div>
 
 <script>
 const SILO={
@@ -680,9 +690,9 @@ function attachListeners(){
 }
 
 const FLIGHT_DEFS=[
- {k:"out",label:"✈️ הלוך · תל אביב → טוקיו",note:"אל על · ישיר · לשניכם",def:6700},
- {k:"jpdxb",label:"✈️ יפן → דובאי",note:"Emirates · ישיר · לשניכם · משוער",def:6600},
- {k:"dxbtlv",label:"🛬 חזור · דובאי → תל אביב",note:"ישיר · לשניכם · משוער",def:1500}
+ {k:"out",label:"✈️ הלוך · תל אביב ← טוקיו",note:"אל על · ישיר · לשניכם",def:6700},
+ {k:"jpdxb",label:"✈️ יפן ← דובאי",note:"Emirates · ישיר · לשניכם · משוער",def:6600},
+ {k:"dxbtlv",label:"🛬 חזור · דובאי ← תל אביב",note:"ישיר · לשניכם · משוער",def:1500}
 ];
 function fcVal(k){const f=FLIGHT_DEFS.find(x=>x.k===k);return (state.tripcost&&state.tripcost[k]!=null)?state.tripcost[k]:f.def;}
 function lodgeCalc(){
@@ -985,6 +995,32 @@ function setupPWA(){
   document.getElementById("installX").addEventListener("click",()=>{
     document.getElementById("installBar").classList.remove("show"); localStorage.setItem("install-dismissed","1");
   });
+  // manual install button (always available)
+  const modal=document.getElementById("installModal");
+  const steps=(arr,note)=>document.getElementById("installSteps").innerHTML=
+    arr.map((t,i)=>`<div class="modal-step"><span class="sn">${i+1}</span><span>${t}</span></div>`).join("")+(note?`<div class="modal-note">${note}</div>`:"");
+  document.getElementById("installApp").addEventListener("click",async()=>{
+    const standalone=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone;
+    if(standalone){ steps(["האפליקציה כבר מותקנת אצלכם 🎉 — חפשו את האייקון של 'ירח דבש' על מסך הבית."]); modal.classList.add("show"); return; }
+    if(deferredPrompt){ deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; return; }
+    const ios=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+    if(ios){
+      steps([
+        "לחצו על כפתור <b>השיתוף</b> (ריבוע עם חץ ⬆️) בתחתית או בראש Safari.",
+        "גללו ובחרו <b>\"הוסף למסך הבית\"</b> (Add to Home Screen).",
+        "לחצו <b>\"הוסף\"</b> — והאפליקציה תופיע על המסך עם אייקון משלה 🍁"
+      ],"חשוב: עובד רק בדפדפן Safari באייפון.");
+    } else {
+      steps([
+        "פתחו את תפריט הדפדפן (⋮ או ⋯).",
+        "בחרו <b>\"התקן אפליקציה\"</b> או <b>\"הוסף למסך הבית\"</b>.",
+        "אשרו — והאפליקציה תופיע על המסך 🍁"
+      ]);
+    }
+    modal.classList.add("show");
+  });
+  document.getElementById("installClose").addEventListener("click",()=>modal.classList.remove("show"));
+  modal.addEventListener("click",e=>{ if(e.target===modal)modal.classList.remove("show"); });
 }
 
 /* ===== INIT ===== */
