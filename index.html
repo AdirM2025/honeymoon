@@ -191,6 +191,20 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .panel{margin-top:38px;border:1px solid var(--line);border-radius:22px;padding:24px 22px;background:linear-gradient(180deg,rgba(255,210,119,.08),rgba(20,16,42,.9))}
 .panel h3{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:6px;color:#fff}
 .panel .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.tr-box{border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:12px;background:rgba(255,255,255,.03)}
+.tr-box-h{font-weight:800;font-size:15px;margin-bottom:7px;color:#fff}
+.tr-box p{font-size:13.5px;color:var(--text);opacity:.92;line-height:1.7}
+.tr-tip{margin-top:9px;font-size:13px;background:rgba(63,232,255,.1);border:1px solid rgba(63,232,255,.28);border-radius:10px;padding:9px 11px;line-height:1.6}
+.tr-warn{border-color:rgba(255,90,110,.35);background:rgba(255,90,110,.06)}
+.tr-legs-h{font-weight:800;font-size:14px;margin:16px 0 10px;color:var(--muted)}
+.tr-legs{display:grid;gap:10px}
+.tr-leg{border:1px solid var(--line);border-right:3px solid var(--violet);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.035)}
+.tr-route{display:flex;align-items:center;gap:9px;font-family:var(--serif);font-weight:700;font-size:17px;color:#fff;margin-bottom:6px;flex-wrap:wrap}
+.tr-route .tr-arr{color:var(--violet);font-size:18px}
+.tr-mode{font-size:13.5px;color:var(--text);margin-bottom:5px}
+.tr-meta{display:flex;gap:14px;font-size:13px;color:var(--cyan);font-weight:700;margin-bottom:5px;flex-wrap:wrap}
+.tr-note{font-size:12.5px;color:var(--muted);line-height:1.55}
+.tr-foot{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line);padding-top:12px}
 .brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
 .brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
 .brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
@@ -486,14 +500,54 @@ body{padding-bottom:74px}
     <div class="cnc-answer empty" id="cnc-answer">בחרו שאלה למעלה כדי לקבל תשובה</div>
   </section>
 
+  <section class="panel" style="background:linear-gradient(180deg,rgba(176,124,255,.1),rgba(20,16,42,.9))">
+    <h3>🚆 תחבורה ביפן</h3>
+    <div class="hint">כרטיס IC, שינקנסן וזמני נסיעה בין הערים — בדיוק למסלול שלכם</div>
+    <div class="tr-box">
+      <div class="tr-box-h">💳 כרטיס IC — התשלום לכל התחבורה</div>
+      <p>כרטיס נטען אחד (Suica / ICOCA / PASMO) שמצמידים בכניסה וביציאה — עובד ברכבות, במטרו ובאוטובוסים בכל יפן, וגם בחנויות נוחות ובמכונות אוטומטיות.</p>
+      <div class="tr-tip">📱 <b>טיפ לאייפון:</b> אין צורך בכרטיס פיזי — הוסיפו Suica ל-Apple Wallet (פתחו Wallet, לחצו ＋, בחרו "כרטיס נסיעה" ואז Suica), טוענים בכרטיס אשראי ומצמידים את הטלפון לשער. הכי נוח.</div>
+    </div>
+    <div class="tr-box tr-warn">
+      <div class="tr-box-h">🎫 JR Pass — <span style="color:var(--red)">לא כדאי לכם</span></div>
+      <p>מאז עליית המחיר הגדולה, ה-Pass הארצי עולה כ-50,000¥ ל-7 ימים. במסלול שלכם יש בעיקר קטע שינקנסן אמיתי אחד (אוסקה→טוקיו), כך שכרטיסים בודדים זולים משמעותית. קנו כרטיסים נקודתיים, והשתמשו ב-IC לנסיעות בתוך הערים.</p>
+    </div>
+    <div class="tr-legs-h">המסלול שלכם, קטע אחר קטע:</div>
+    <div class="tr-legs">
+      <div class="tr-leg">
+        <div class="tr-route"><span>טוקיו</span><span class="tr-arr">←</span><span>קוואגוצ'יקו</span></div>
+        <div class="tr-mode">🚌 אוטובוס אקספרס מתחנת Busta שינג'וקו</div>
+        <div class="tr-meta"><span>⏱️ ~1ש' 45ד'</span><span>💴 ~2,200¥ לאדם</span></div>
+        <div class="tr-note">אין שינקנסן לאזור פוג'י — האוטובוס הוא הדרך הישירה והנוחה.</div>
+      </div>
+      <div class="tr-leg">
+        <div class="tr-route"><span>קוואגוצ'יקו</span><span class="tr-arr">←</span><span>קיוטו</span></div>
+        <div class="tr-mode">🚌🚄 אוטובוס למישימה ואז שינקנסן</div>
+        <div class="tr-meta"><span>⏱️ ~3.5–4 שעות</span><span>💴 ~9,000¥ לאדם</span></div>
+        <div class="tr-note">אוטובוס לתחנת מישימה (~1ש' 35ד'), ומשם שינקנסן ישיר לקיוטו (~1ש' 40ד').</div>
+      </div>
+      <div class="tr-leg">
+        <div class="tr-route"><span>קיוטו</span><span class="tr-arr">←</span><span>אוסקה</span></div>
+        <div class="tr-mode">🚆 רכבת JR Special Rapid</div>
+        <div class="tr-meta"><span>⏱️ ~29 דקות</span><span>💴 ~580¥ לאדם</span></div>
+        <div class="tr-note">ה-IC עובד ישירות. שינקנסן מיותר למרחק כה קצר.</div>
+      </div>
+      <div class="tr-leg">
+        <div class="tr-route"><span>אוסקה</span><span class="tr-arr">←</span><span>טוקיו</span></div>
+        <div class="tr-mode">🚄 שינקנסן נוזומי משין-אוסקה</div>
+        <div class="tr-meta"><span>⏱️ ~2ש' 30ד'</span><span>💴 ~14,720¥ לאדם (מושב שמור)</span></div>
+        <div class="tr-note">בחרו מושב בצד שמאל לנוף הר פוג'י בדרך לטוקיו.</div>
+      </div>
+    </div>
+    <div class="tr-foot">🪑 לקטעי השינקנסן בעונת השלכת — שריינו מקומות מראש (אפליקציית <b>SmartEX</b> או בעמדה בתחנה). &nbsp; 🧳 שילוח מזוודות (takkyubin) בין הערים = נוסעים קליל, במיוחד לפוג'י עם תיק לילה בלבד.</div>
+  </section>
+
   <section class="practical">
     <h3>טיפים שיהפכו את זה לחלק 🍵</h3>
     <ul>
       <li>להזמין את קיוטו ואת הריוקאן בפוג'י <b>עכשיו</b> — נובמבר זה שיא עונת השלכת.</li>
       <li>שילוח מזוודות (takkyubin) בין הערים — לפוג'י נוסעים עם תיק לילה בלבד.</li>
-      <li>כרטיס IC (Welcome Suica / ICOCA) לכל התחבורה הציבורית.</li>
       <li>eSIM לאינטרנט, ומעט מזומן — כספומטים ב-7-Eleven מקבלים כרטיסים זרים.</li>
-      <li>מקוואגוצ'יקו לקיוטו: אוטובוס למישימה (~1.5 שעות) ואז שינקנסן.</li>
       <li>לבדוק דרישות כניסה לאיחוד האמירויות לדרכון ישראלי קרוב למועד.</li>
     </ul>
   </section>
