@@ -328,7 +328,7 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
     <div class="names" id="couple" contenteditable="true" spellcheck="false">אדיר ❤ לירון<span class="editpen">✎</span></div>
     <div class="tagline" id="tagline" contenteditable="true" spellcheck="false">מתחילים את שאר החיים שלנו ✨</div>
   </div>
-  <div class="dates">24 באוקטובר — סוף נובמבר <b>2026</b> · שלושה שבועות ביפן ושבוע בדובאי</div>
+  <div class="dates">25 באוקטובר — סוף נובמבר <b>2026</b> · שלושה שבועות ביפן ושבוע בדובאי</div>
   <div class="countdown" id="cd"></div>
   <div class="scrollhint">↓ המסלול שלנו ↓</div>
 </section>
@@ -470,7 +470,7 @@ dubai:`<svg viewBox="0 0 400 96" preserveAspectRatio="none"><path fill="currentC
 };
 
 const SEGS=[
-{id:"tok1",type:"tokyo",en:"TOKYO",city:"טוקיו",dates:"25.10 — 1.11",nights:"7 לילות",nn:7,a1:"var(--magenta)",halloween:true,
+{id:"tok1",type:"tokyo",en:"TOKYO",city:"טוקיו",dates:"26.10 — 1.11",nights:"6 לילות",nn:6,a1:"var(--magenta)",halloween:true,
  chips:["מקדש מייג'י","שיבויה + Shibuya Sky","אסאקוסה","teamLab Planets","טיול יום לניקו"],
  tip:"שבוע נדיב להתאוששות מג'ט-לג + טיול יום לשלכת בגבהים (ניקו).",
  food:"🍜 ראמן בתור ראשון · 🍣 סושי במצויה (Tsukiji) · 🥟 גיוזה · 🍛 קארי יפני · 🦀 קאיסקי בסיום",
@@ -521,7 +521,7 @@ const SEGS=[
 ];
 
 const CHECKLIST=[
-{id:"fl1",t:"טיסת אל על תל אביב ← טוקיו"},{id:"fl2",t:"טיסת Emirates יפן ← דובאי"},{id:"fl3",t:"טיסת חזרה דובאי ← ישראל"},
+{id:"fl1",t:"טיסת ארקיע תל אביב ← טוקיו"},{id:"fl2",t:"טיסת Emirates יפן ← דובאי"},{id:"fl3",t:"טיסת חזרה דובאי ← ישראל"},
 {id:"ins",t:"ביטוח נסיעות"},{id:"uae",t:"אישור כניסה לאיחוד האמירויות"},{id:"htl",t:"הזמנת כל 6 המלונות"},
 {id:"trn",t:"שינקנסן / כרטיס IC (Suica)"},{id:"sim",t:"eSIM לאינטרנט"},{id:"saf",t:"ספארי מדברי בדובאי"},
 {id:"act",t:"כרטיסים: teamLab + בורג' חליפה"},{id:"bag",t:"שילוח מזוודות (takkyubin)"}
@@ -690,7 +690,7 @@ function attachListeners(){
 }
 
 const FLIGHT_DEFS=[
- {k:"out",label:"✈️ הלוך · תל אביב ← טוקיו",note:"אל על · ישיר · לשניכם",def:6700},
+ {k:"out",label:"✈️ הלוך · תל אביב ← טוקיו",note:"ארקיע · ישיר · A330 · לשניכם",def:4500},
  {k:"jpdxb",label:"✈️ יפן ← דובאי",note:"Emirates · ישיר · לשניכם · משוער",def:6600},
  {k:"dxbtlv",label:"🛬 חזור · דובאי ← תל אביב",note:"ישיר · לשניכם · משוער",def:1500}
 ];
@@ -802,7 +802,7 @@ document.getElementById("reset").addEventListener("click",async()=>{
 
 /* ===== FLIGHTS ===== */
 const FLIGHTS=[
- {id:"f1",icon:"🛫",route:"תל אביב ← טוקיו",sub:"אל על · 24–25.10"},
+ {id:"f1",icon:"🛫",route:"תל אביב ← טוקיו",sub:"ארקיע · ישיר A330 · 25–26.10"},
  {id:"f2",icon:"🛫",route:"יפן ← דובאי",sub:"Emirates · 17.11"},
  {id:"f3",icon:"🛬",route:"דובאי ← תל אביב",sub:"סוף נובמבר"}
 ];
