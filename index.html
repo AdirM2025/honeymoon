@@ -229,6 +229,34 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .at-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
 .at-exp{margin-top:6px;font-size:12.5px;color:var(--muted);line-height:1.75;border-top:1px solid var(--line);padding-top:12px}
 .at-exp b{color:var(--text)}
+.planner{display:grid;gap:8px}
+.pl-day{border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.03);overflow:hidden}
+.pl-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;gap:10px}
+.pl-h-left{display:flex;align-items:center;gap:11px}
+.pl-num{flex:none;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--violet) 22%,var(--card));border:1px solid color-mix(in srgb,var(--violet) 50%,transparent);display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
+.pl-date{font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;line-height:1.25}
+.pl-city{font-size:12px;color:var(--violet)}
+.pl-chev{color:var(--muted);font-size:14px;transition:.25s}
+.pl-day.open .pl-chev{transform:rotate(180deg)}
+.pl-body{display:none;padding:0 14px 14px}
+.pl-day.open .pl-body{display:block}
+.pl-items{display:grid;gap:6px;margin-bottom:10px}
+.pl-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.04);cursor:pointer}
+.pl-item .pl-box{flex:none;width:18px;height:18px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center;transition:.2s}
+.pl-item.done .pl-box{background:var(--violet);border-color:var(--violet)}
+.pl-item.done .pl-box::after{content:"✓";color:#10081a;font-weight:900;font-size:11px}
+.pl-t{flex:1;font-size:13.5px;color:#fff}
+.pl-item.done .pl-t{text-decoration:line-through;color:var(--muted)}
+.pl-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
+.pl-del:hover{opacity:1}
+.pl-empty{font-size:12.5px;color:var(--muted);padding:4px 2px;font-style:italic}
+.pl-sugg-lbl{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.pl-sugg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.pl-chip{font-size:12px;color:var(--text);background:rgba(176,124,255,.12);border:1px solid color-mix(in srgb,var(--violet) 35%,transparent);border-radius:20px;padding:5px 10px;cursor:pointer;transition:.2s}
+.pl-chip:hover{background:color-mix(in srgb,var(--violet) 26%,transparent)}
+.pl-add{width:100%;background:rgba(255,255,255,.05);border:1px dashed var(--line);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;padding:9px;cursor:pointer;transition:.2s}
+.pl-add:hover{border-color:color-mix(in srgb,var(--violet) 50%,transparent)}
+.pl-notes{width:100%;margin-top:9px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:13px;padding:9px 11px;min-height:54px;resize:vertical}
 .brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
 .brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
 .brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
@@ -442,6 +470,13 @@ body{padding-bottom:74px}
   <div class="screen-head">🗺️ המסלול שלנו</div>
   <div class="progress-inline"><span>מלונות שנסגרו</span><div class="pbar"><i id="barfill"></i></div><b id="barnum">0 / 6</b></div>
   <div class="tl" id="tl"></div>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(176,124,255,.1),rgba(20,16,42,.9))">
+    <h3>🗓️ מתכנן יום-ביום</h3>
+    <div class="hint">לחצו על יום כדי לפתוח · הוסיפו משבצות מהירות מהמקומות, או כתבו משלכם · הכול נשמר אוטומטית</div>
+    <div id="planner" class="planner"></div>
+  </section>
+
   </div>
   </section>
 
@@ -732,9 +767,10 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null};}
+function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{}};}
 let state=DEF();
 const openForms=new Set();
+const openDays=new Set();
 
 // Storage: localStorage (GitHub Pages) + window.storage fallback (Claude viewer)
 const store={
@@ -1121,7 +1157,7 @@ document.getElementById("reset").addEventListener("click",async()=>{
     const d={couple:"אדיר ❤ לירון",tagline:"מתחילים את שאר החיים שלנו ✨",lovemsg:"לירון,\n\nהכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.\nיפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.\nואז דובאי בשביל לנשום.\n\nזה ירח הדבש שאנחנו מגיעים לו ❤",lovestay:"אדיר"};
     const el=document.getElementById(id);if(el)el.textContent=d[id];
   });
-  openForms.clear(); render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal();
+  openForms.clear(); openDays.clear(); render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderPlanner();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
 });
 
@@ -1421,12 +1457,79 @@ function buildPhrases(){
 }
 function setPhraseLang(l){phraseLang=l;buildPhrases();}
 
+/* ===== DAY-BY-DAY PLANNER ===== */
+function tripDays(){
+  const heb=["א","ב","ג","ד","ה","ו","ש"]; const out=[]; let n=1;
+  SEGS.forEach(s=>{
+    const first=s.dates.split(/[—\-]/)[0].trim();
+    const p=first.split("."); const d=parseInt(p[0],10), m=parseInt(p[1],10);
+    if(isNaN(d)||isNaN(m))return;
+    for(let i=0;i<s.nn;i++){
+      const dt=new Date(2026,m-1,d+i);
+      const key=dt.getDate()+"."+(dt.getMonth()+1);
+      out.push({key,seg:s.id,city:s.city,wd:heb[dt.getDay()],label:dt.getDate()+"."+(dt.getMonth()+1),n:n++});
+    }
+  });
+  return out;
+}
+function dayObj(k){ if(!state.days[k])state.days[k]={items:[],notes:""}; if(!state.days[k].items)state.days[k].items=[]; return state.days[k]; }
+function renderPlanner(){
+  const wrap=document.getElementById("planner"); if(!wrap)return;
+  wrap.innerHTML=tripDays().map(day=>{
+    const dd=state.days[day.key]||{}; const items=dd.items||[];
+    const open=openDays.has(day.key);
+    const sugg=((EXTRAS[day.seg]&&EXTRAS[day.seg].see)||[]).slice(0,6);
+    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span><span class="pl-t">${esc(it.t)}</span><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
+    const suggHTML=sugg.length?`<div class="pl-sugg-lbl">הוספה מהירה:</div><div class="pl-sugg">${sugg.map(t=>`<button class="pl-chip" data-key="${day.key}" data-t="${esc(t)}">＋ ${esc(t)}</button>`).join("")}</div>`:"";
+    return `<div class="pl-day ${open?"open":""}">
+      <div class="pl-head" data-key="${day.key}">
+        <div class="pl-h-left"><span class="pl-num">${day.n}</span><div><div class="pl-date">יום ${day.wd}׳ · ${esc(day.label)}</div><div class="pl-city">${esc(day.city)}</div></div></div>
+        <span class="pl-chev">▾</span>
+      </div>
+      <div class="pl-body">
+        <div class="pl-items">${itemsHTML}</div>
+        ${suggHTML}
+        <button class="pl-add" data-key="${day.key}">＋ הוסף משבצת</button>
+        <textarea class="pl-notes" data-key="${day.key}" placeholder="הערות ליום — מסעדה, שעות, רעיונות...">${esc(dd.notes||"")}</textarea>
+      </div>
+    </div>`;
+  }).join("");
+  attachPlanner();
+}
+function attachPlanner(){
+  document.querySelectorAll(".pl-head").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.key, card=el.closest(".pl-day");
+    if(openDays.has(k)){openDays.delete(k);card.classList.remove("open");}
+    else{openDays.add(k);card.classList.add("open");}
+  }));
+  document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
+    if(e.target.closest(".pl-del"))return;
+    const o=dayObj(el.dataset.key), i=+el.dataset.idx;
+    o.items[i].done=!o.items[i].done; el.classList.toggle("done",o.items[i].done); saveState();
+  }));
+  document.querySelectorAll(".pl-del").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    const o=dayObj(el.dataset.key); o.items.splice(+el.dataset.idx,1); saveState(); renderPlanner();
+  }));
+  document.querySelectorAll(".pl-chip").forEach(el=>el.addEventListener("click",()=>{
+    const o=dayObj(el.dataset.key); o.items.push({t:el.dataset.t,done:false}); openDays.add(el.dataset.key); saveState(); renderPlanner();
+  }));
+  document.querySelectorAll(".pl-add").forEach(el=>el.addEventListener("click",()=>{
+    const v=prompt('מה מתוכנן? (אפשר להתחיל בשעה, למשל "09:00 פושימי אינארי")');
+    if(!v||!v.trim())return;
+    const o=dayObj(el.dataset.key); o.items.push({t:v.trim(),done:false}); openDays.add(el.dataset.key); saveState(); renderPlanner();
+  }));
+  document.querySelectorAll(".pl-notes").forEach(el=>el.addEventListener("input",()=>{
+    dayObj(el.dataset.key).notes=el.value; saveState();
+  }));
+}
+
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves();
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner();
 })();
 </script>
 </body>
