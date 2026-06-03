@@ -165,6 +165,8 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .tick.on .tbox{background:var(--a1);border-color:var(--a1)}
 .tick.on .tbox::after{content:"✓";color:#10081a;font-weight:900;font-size:12px}
 .tick .ttext{flex:1;font-size:14px;color:#fff}
+.tick .mapln{flex:none;text-decoration:none;font-size:16px;line-height:1;opacity:.7;padding:3px 5px;border-radius:8px;transition:.2s}
+.tick .mapln:hover{opacity:1;background:rgba(255,255,255,.1);transform:scale(1.12)}
 .tick.on .ttext{color:var(--a1);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--a1) 55%,transparent)}
 .tdel{flex:none;background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer}
 .tdel:hover{color:var(--red)}
@@ -697,6 +699,89 @@ function delHotel(e){
   rerender(); renderBudget(); saveState();
 }
 
+// ===== Section 1: Google Maps links for must-see + restaurants =====
+const CITYEN={tok1:"Tokyo",fuji:"Kawaguchiko Japan",kyo:"Kyoto",osa:"Osaka",tok2:"Tokyo",dub:"Dubai"};
+const MAPQ={
+ // Tokyo (tok1) — see
+ "מקדש סנסו-ג'י (אסאקוסה)":"Senso-ji Temple Asakusa Tokyo",
+ "מקדש מייג'י":"Meiji Jingu Shrine Tokyo",
+ "Shibuya Sky":"Shibuya Sky Tokyo",
+ "צומת שיבויה":"Shibuya Crossing Tokyo",
+ "הרג'וקו · רחוב טאקשיטה":"Takeshita Street Harajuku Tokyo",
+ "שינג'וקו גיוֵן":"Shinjuku Gyoen National Garden Tokyo",
+ "אקיהברה":"Akihabara Tokyo",
+ // Tokyo (tok1) — eat
+ "Ichiran Ramen":"Ichiran Ramen Shibuya Tokyo",
+ "Uobei Sushi (שיבויה)":"Uobei Sushi Shibuya Tokyo",
+ "שוק צוקיג'י החיצוני":"Tsukiji Outer Market Tokyo",
+ "Omoide Yokocho (יאקיטורי)":"Omoide Yokocho Shinjuku Tokyo",
+ "Gonpachi":"Gonpachi Nishiazabu Tokyo",
+ // Fuji — see
+ "פגודת צ'ורייטו":"Chureito Pagoda Fujiyoshida",
+ "אגם קוואגוצ'יקו":"Lake Kawaguchiko",
+ "רכבל קאצ'י-קאצ'י":"Mt Fuji Panoramic Ropeway Kawaguchiko",
+ "Oishi Park":"Oishi Park Kawaguchiko",
+ "מקדש ארקורה סנגן":"Arakura Fuji Sengen Shrine",
+ // Fuji — eat
+ "Hoto Fudo (הוטו)":"Hoto Fudo Kawaguchiko",
+ "קפה עם נוף לאגם":"Lawson Kawaguchiko lake view cafe",
+ "קאיסקי בריוקאן":"Fuji Kawaguchiko Onsen Rakuyu",
+ // Kyoto — see
+ "פושימי אינארי":"Fushimi Inari Taisha Kyoto",
+ "חורש הבמבוק · ארשייאמה":"Arashiyama Bamboo Grove Kyoto",
+ "קינקאקו-ג'י (מקדש הזהב)":"Kinkaku-ji Golden Pavilion Kyoto",
+ "קיומיזו-דרה":"Kiyomizu-dera Temple Kyoto",
+ "רובע גיון":"Gion Kyoto",
+ "טופוקו-ג'י (שלכת)":"Tofuku-ji Temple Kyoto",
+ // Kyoto — eat
+ "שוק נישיקי":"Nishiki Market Kyoto",
+ "Omen (אודון)":"Omen Udon Ginkakuji Kyoto",
+ "Kikunoi (קאיסקי)":"Kikunoi Kyoto",
+ "% Arabica (ארשייאמה)":"% Arabica Arashiyama Kyoto",
+ "איזקאיה בפונטוצ'ו":"Pontocho Alley Kyoto",
+ // Osaka — see
+ "דוטונבורי":"Dotonbori Osaka",
+ "טירת אוסקה":"Osaka Castle",
+ "שוק קורומון":"Kuromon Ichiba Market Osaka",
+ "שינסקאי + טסוטנקאקו":"Tsutenkaku Shinsekai Osaka",
+ "Umeda Sky Building":"Umeda Sky Building Osaka",
+ "אקווריום קאיוקאן":"Osaka Aquarium Kaiyukan",
+ // Osaka — eat
+ "טקויאקי · Kukuru":"Takoyaki Kukuru Dotonbori Osaka",
+ "אוקונומיאקי · Mizuno":"Okonomiyaki Mizuno Dotonbori Osaka",
+ "קושיקאצו · Daruma":"Kushikatsu Daruma Shinsekai Osaka",
+ "בקר קובה / טפניאקי":"Kobe beef teppanyaki Osaka",
+ // Tokyo round 2 — see
+ "גן ריקוגיֵן (שלכת לילה)":"Rikugien Garden Tokyo",
+ "שדרת הגינקו · מייג'י גאיין":"Meiji Jingu Gaien Ginkgo Avenue Tokyo",
+ "הר טאקאו":"Mount Takao Tokyo",
+ "קניות בגינזה":"Ginza Tokyo",
+ "טוקיו טאוור":"Tokyo Tower",
+ "אודאיבה":"Odaiba Tokyo",
+ // Tokyo round 2 — eat
+ "אומאקאסה בגינזה":"Ginza sushi omakase Tokyo",
+ "Tsuta (ראמן מישלן)":"Tsuta Ramen Tokyo",
+ "Afuri (ראמן יוזו)":"Afuri Ramen Ebisu Tokyo",
+ "דפאצ'יקה · גינזה Six":"Ginza Six Tokyo",
+ // Dubai — see
+ "בורג' חליפה · At the Top":"Burj Khalifa Dubai",
+ "מזרקות דובאי":"The Dubai Fountain",
+ "ספארי מדברי":"Dubai Desert Conservation Reserve",
+ "דובאי הישנה · אל-פהדי":"Al Fahidi Historical Neighbourhood Dubai",
+ "Dubai Marina + JBR":"Dubai Marina",
+ "Palm Jumeirah":"Palm Jumeirah Dubai",
+ "שוק הזהב והתבלינים":"Gold Souk Deira Dubai",
+ // Dubai — eat
+ "Pierchic (סיפוד)":"Pierchic Dubai",
+ "Al Ustad Special Kabab":"Al Ustad Special Kabab Dubai",
+ "Ravi Restaurant":"Ravi Restaurant Satwa Dubai",
+ "Arabian Tea House":"Arabian Tea House Al Fahidi Dubai",
+ "SALT · JBR":"SALT JBR The Beach Dubai"
+};
+function mapHref(t,segId){
+  const q=MAPQ[t]||(t+" "+(CITYEN[segId]||""));
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q.trim());
+}
 function ticksHTML(s){
   const st=state.seg[s.id]||{};
   const block=(kind,emoji,title,addLabel)=>{
@@ -704,7 +789,7 @@ function ticksHTML(s){
     const add=st[kind+"Add"]||[]; const done=st[kind+"Done"]||{};
     const items=base.map(t=>({t,c:false})).concat(add.map(t=>({t,c:true})));
     const rows=items.map(it=>`<div class="tick ${done[it.t]?"on":""}" data-seg="${s.id}" data-kind="${kind}" data-t="${esc(it.t)}">
-      <span class="tbox"></span><span class="ttext">${esc(it.t)}</span>${it.c?`<button class="tdel" data-seg="${s.id}" data-kind="${kind}" data-t="${esc(it.t)}">🗑</button>`:""}</div>`).join("");
+      <span class="tbox"></span><span class="ttext">${esc(it.t)}</span><a class="mapln" href="${mapHref(it.t,s.id)}" target="_blank" rel="noopener" title="פתח במפות Google" aria-label="פתח במפות Google">📍</a>${it.c?`<button class="tdel" data-seg="${s.id}" data-kind="${kind}" data-t="${esc(it.t)}">🗑</button>`:""}</div>`).join("");
     return `<div class="lbl" style="margin-top:14px">${emoji} ${title}</div><div class="ticks">${rows}</div>
       <button class="add-mini" data-seg="${s.id}" data-kind="${kind}">＋ ${addLabel}</button>`;
   };
@@ -755,6 +840,7 @@ function rerender(){
 function attachListeners(){
   document.querySelectorAll(".tick").forEach(el=>el.addEventListener("click",e=>{
     if(e.target.classList.contains("tdel"))return;
+    if(e.target.closest(".mapln"))return;
     const id=el.dataset.seg,kind=el.dataset.kind,t=el.dataset.t;
     state.seg[id]=state.seg[id]||{}; const key=kind+"Done";
     state.seg[id][key]=state.seg[id][key]||{};
