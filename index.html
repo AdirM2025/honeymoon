@@ -1444,6 +1444,7 @@ function setupTabs(){
     screens.forEach(s=>s.classList.toggle("active",s.id==="screen-"+name));
     tabs.forEach(t=>t.classList.toggle("active",t.dataset.screen===name));
     document.querySelectorAll("#screen-"+name+" .seg").forEach(s=>s.classList.add("in"));
+    const lv=document.getElementById("leaves"); if(lv)lv.style.display=name==="home"?"":"none";
     window.scrollTo(0,0);
     try{localStorage.setItem("lasttab",name);}catch(e){}
   }
