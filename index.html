@@ -257,6 +257,29 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-add{width:100%;background:rgba(255,255,255,.05);border:1px dashed var(--line);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;padding:9px;cursor:pointer;transition:.2s}
 .pl-add:hover{border-color:color-mix(in srgb,var(--violet) 50%,transparent)}
 .pl-notes{width:100%;margin-top:9px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:13px;padding:9px 11px;min-height:54px;resize:vertical}
+.exp-summary{background:rgba(255,210,119,.06);border:1px solid rgba(255,210,119,.22);border-radius:12px;padding:13px 14px;margin-bottom:14px}
+.exp-total{font-family:var(--serif);font-size:20px;font-weight:900;color:#fff;margin-bottom:10px}
+.exp-total b{color:var(--gold)}
+.exp-city-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;direction:ltr}
+.exp-city-name{font-size:12px;color:var(--muted);width:86px;flex:none;text-align:right;direction:rtl}
+.exp-city-bar{flex:1;height:8px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.exp-city-bar div{height:100%;background:var(--gold);border-radius:99px;transition:.4s}
+.exp-city-num{font-size:12px;color:var(--gold);font-weight:700;width:62px;flex:none;text-align:left}
+.exp-cat-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;direction:rtl}
+.exp-cat-pill{font-size:12px;color:var(--muted);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:3px 10px}
+.exp-cat-pill b{color:var(--text)}
+.exp-form{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:12px}
+.exp-row{display:flex;gap:8px;margin-bottom:8px}
+.exp-row select,.exp-row input,.exp-row-note{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:9px;color:var(--text);font-family:var(--sans);font-size:13px;padding:9px 10px;direction:rtl}
+.exp-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.03);margin-bottom:7px}
+.exp-item-main{flex:1;min-width:0}
+.exp-item-amount{font-family:var(--serif);font-size:17px;font-weight:700;color:#fff;margin-left:7px}
+.exp-item-sub{font-size:12px;color:var(--muted)}
+.exp-item-note{display:block;font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.exp-item-ils{font-size:12.5px;color:var(--gold);font-weight:700;white-space:nowrap;flex:none}
+.exp-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.5;padding:3px}
+.exp-del:hover{opacity:1}
+.exp-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:14px 0}
 .brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
 .brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
 .brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
@@ -557,11 +580,16 @@ body{padding-bottom:74px}
 
     <div class="at-exp">✨ <b>חוויות שכדאי להזמין מראש</b> (דרך GetYourGuide / Klook / Viator): ספארי מדברי בדובאי · טקס תה והשכרת קימונו בקיוטו · מסעדות קאיסקי מובילות (חלקן 1–3 חודשים מראש). את אלה אפשר לעקוב ב<b>מנהל ההזמנות</b> שלמעלה.</div>
   </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(34,230,255,.08),rgba(20,16,42,.9))">
+    <h3>💴 הוצאות בפועל</h3>
+    <div class="hint">תעקבו אחרי מה שמוציאים בפועל — לפי עיר וקטגוריה, הכול מחושב בשקלים</div>
+    <div id="expenses"></div>
+  </section>
   </div>
   </section>
 
-  <section class="screen" id="screen-us">
-  <div class="wrap">
+  <section class="screen" id="screen-us">  <div class="wrap">
   <div class="screen-head">💕 הפינה שלנו</div>
 
   <section class="panel" style="background:linear-gradient(135deg,rgba(255,61,158,.1),rgba(255,210,119,.06),rgba(20,16,42,.92))">
@@ -767,8 +795,7 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{}};}
-let state=DEF();
+function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{},expenses:[]};}let state=DEF();
 const openForms=new Set();
 const openDays=new Set();
 
@@ -1157,7 +1184,7 @@ document.getElementById("reset").addEventListener("click",async()=>{
     const d={couple:"אדיר ❤ לירון",tagline:"מתחילים את שאר החיים שלנו ✨",lovemsg:"לירון,\n\nהכנתי את המסלול הזה בשבילנו — כל תחנה, כל לילה, כל חוויה.\nיפן עם השלכת האדומה, הר פוג'י עם האונסן, קיוטו בשקיעה.\nואז דובאי בשביל לנשום.\n\nזה ירח הדבש שאנחנו מגיעים לו ❤",lovestay:"אדיר"};
     const el=document.getElementById(id);if(el)el.textContent=d[id];
   });
-  openForms.clear(); openDays.clear(); render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderPlanner();
+  openForms.clear(); openDays.clear(); render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderPlanner(); renderExpenses();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
 });
 
@@ -1524,12 +1551,70 @@ function attachPlanner(){
   }));
 }
 
+/* ===== EXPENSE TRACKER ===== */
+const EXP_CATS=[
+  {k:"food",l:"🍜 אוכל"},{k:"transport",l:"🚆 תחבורה"},
+  {k:"attractions",l:"🎟️ אטרקציות"},{k:"shopping",l:"🛍️ קניות"},
+  {k:"hotel",l:"🏨 לינה"},{k:"other",l:"✦ אחר"}
+];
+const EXP_CUR=[{k:"JPY",s:"¥"},{k:"AED",s:"د.إ"},{k:"ILS",s:"₪"}];
+function getILS(amount,currency){return amount/(RATES[currency]||1);}
+function renderExpenses(){
+  const wrap=document.getElementById("expenses"); if(!wrap)return;
+  const list=state.expenses||[];
+  // Summary
+  let summaryHTML="";
+  if(list.length){
+    const totalILS=list.reduce((s,e)=>s+getILS(e.amount,e.currency),0);
+    const byCityILS={}; SEGS.forEach(s=>byCityILS[s.id]=0);
+    list.forEach(e=>{if(byCityILS[e.seg]!==undefined)byCityILS[e.seg]+=getILS(e.amount,e.currency);});
+    const maxCity=Math.max(...Object.values(byCityILS),1);
+    const cityRows=SEGS.map(s=>{const v=byCityILS[s.id]; return v?
+      `<div class="exp-city-row"><span class="exp-city-name">${esc(s.city)}</span><div class="exp-city-bar"><div style="width:${Math.round(v/maxCity*100)}%"></div></div><span class="exp-city-num">${Math.round(v).toLocaleString()}₪</span></div>`:""}).join("");
+    const byCat={}; EXP_CATS.forEach(c=>byCat[c.k]=0);
+    list.forEach(e=>{if(byCat[e.cat]!==undefined)byCat[e.cat]+=getILS(e.amount,e.currency);});
+    const catPills=EXP_CATS.map(c=>{const v=byCat[c.k]; return v?`<span class="exp-cat-pill">${c.l} <b>${Math.round(v).toLocaleString()}₪</b></span>`:""}).join("");
+    summaryHTML=`<div class="exp-summary"><div class="exp-total">סה"כ הוצאות: <b>${Math.round(totalILS).toLocaleString()} ₪</b></div>${cityRows?`<div>${cityRows}</div>`:""}${catPills?`<div class="exp-cat-wrap">${catPills}</div>`:""}</div>`;
+  }
+  // Form
+  const segOpts=SEGS.map(s=>`<option value="${s.id}">${esc(s.city)}</option>`).join("");
+  const catOpts=EXP_CATS.map(c=>`<option value="${c.k}">${c.l}</option>`).join("");
+  const curOpts=EXP_CUR.map(c=>`<option value="${c.k}">${c.s} ${c.k}</option>`).join("");
+  // List
+  const listHTML=list.length?[...list].reverse().map(e=>{
+    const seg=SEGS.find(s=>s.id===e.seg), cat=EXP_CATS.find(c=>c.k===e.cat), cur=EXP_CUR.find(c=>c.k===e.currency);
+    return `<div class="exp-item"><div class="exp-item-main"><span class="exp-item-amount">${cur?cur.s:""}${Number(e.amount).toLocaleString()}</span> <span class="exp-item-sub">${cat?cat.l:""} · ${seg?esc(seg.city):""}</span>${e.note?`<span class="exp-item-note">${esc(e.note)}</span>`:""}</div><div class="exp-item-ils">~${Math.round(getILS(e.amount,e.currency)).toLocaleString()}₪</div><button class="exp-del" data-id="${e.id}">🗑</button></div>`;
+  }).join(""):`<div class="exp-empty">עוד לא הוספתם הוצאות — יאללה, תתחילו לבזבז 💸</div>`;
+  wrap.innerHTML=`${summaryHTML}<div class="exp-form">
+    <div class="exp-row"><select id="exp-seg">${segOpts}</select><select id="exp-cat">${catOpts}</select></div>
+    <div class="exp-row"><input type="number" id="exp-amount" inputmode="decimal" placeholder="סכום" min="0" step="any" class="exp-row-note"><select id="exp-cur">${curOpts}</select></div>
+    <div class="exp-row"><input type="text" id="exp-note" placeholder="הערה קצרה (אופציונלי)" class="exp-row-note" style="flex:1"></div>
+    <button class="add-btn" id="exp-add">＋ הוסף הוצאה</button>
+  </div><div class="exp-list">${listHTML}</div>`;
+  attachExpenses();
+}
+function attachExpenses(){
+  const btn=document.getElementById("exp-add");
+  if(btn)btn.addEventListener("click",()=>{
+    const amt=parseFloat(document.getElementById("exp-amount").value);
+    if(!amt||amt<=0){document.getElementById("exp-amount").focus();return;}
+    if(!state.expenses)state.expenses=[];
+    state.expenses.push({id:Date.now(),seg:document.getElementById("exp-seg").value,cat:document.getElementById("exp-cat").value,amount:amt,currency:document.getElementById("exp-cur").value,note:(document.getElementById("exp-note").value||"").trim()});
+    saveState(); renderExpenses();
+  });
+  document.querySelectorAll(".exp-del").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    state.expenses=(state.expenses||[]).filter(x=>x.id!==+el.dataset.id);
+    saveState(); renderExpenses();
+  }));
+}
+
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner();
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses();
 })();
 </script>
 </body>
