@@ -280,6 +280,26 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .exp-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.5;padding:3px}
 .exp-del:hover{opacity:1}
 .exp-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:14px 0}
+.wx-mode{font-size:12.5px;padding:7px 12px;border-radius:9px;margin-bottom:13px;line-height:1.5}
+.wx-mode.avg{background:rgba(255,255,255,.05);color:var(--muted)}
+.wx-mode.live{background:rgba(63,232,255,.1);color:var(--cyan);border:1px solid rgba(63,232,255,.25)}
+.wx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wx-card{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:rgba(255,255,255,.04);position:relative;display:flex;flex-direction:column;gap:4px}
+.wx-cn{font-weight:800;font-size:13.5px;color:#fff;margin-bottom:3px}
+.wx-avg{display:flex;align-items:center;gap:8px}
+.wx-icon{font-size:26px;line-height:1}
+.wx-temp{font-size:14px;color:var(--text)}
+.wx-temp b{color:#fff;font-size:19px}
+.wx-rain{font-size:11.5px;color:var(--muted)}
+.wx-desc{font-size:12px;color:var(--text);opacity:.85;line-height:1.5}
+.wx-badge{display:inline-block;margin-top:5px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.06);border-radius:20px;padding:2px 8px;width:fit-content}
+.wx-badge.live{color:var(--cyan);background:rgba(63,232,255,.1)}
+.wx-days{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px}
+.wx-day{flex:none;text-align:center;min-width:34px}
+.wx-day-d{font-size:11px;color:var(--muted)}
+.wx-day-i{font-size:17px;line-height:1.2}
+.wx-day-t{font-size:13px;font-weight:700;color:#fff}
+.wx-day-lo{font-size:11px;color:var(--muted)}
 .brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
 .brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
 .brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
@@ -686,6 +706,12 @@ body{padding-bottom:74px}
       <li>eSIM לאינטרנט, ומעט מזומן — כספומטים ב-7-Eleven מקבלים כרטיסים זרים.</li>
       <li>לבדוק דרישות כניסה לאיחוד האמירויות לדרכון ישראלי קרוב למועד.</li>
     </ul>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(255,154,61,.08),rgba(20,16,42,.9))">
+    <h3>🌡️ מזג אוויר</h3>
+    <div class="hint">ממוצעים היסטוריים לנובמבר — יעבור לתחזית חיה אוטומטית ברגע שתהיו בטווח 16 הימים לפני הטיסה</div>
+    <div id="weather"></div>
   </section>
 
   <footer>
@@ -1609,12 +1635,85 @@ function attachExpenses(){
   }));
 }
 
+/* ===== WEATHER (static averages → live Open-Meteo within 16 days) ===== */
+const WX_CITIES=[
+  {seg:"tok1",name:"טוקיו",lat:35.6762,lon:139.6503,tz:"Asia/Tokyo",
+   ts:[2026,9,26],te:[2026,9,31],
+   avg:{hi:18,lo:10,icon:"🍂",rain:"~5 ימי גשם בחודש",desc:"נעים לטיולים, שלכת מתחילה"}},
+  {seg:"fuji",name:"פוג'י · קוואגוצ'יקו",lat:35.5025,lon:138.7598,tz:"Asia/Tokyo",
+   ts:[2026,10,1],te:[2026,10,2],
+   avg:{hi:12,lo:3,icon:"🏔️",rain:"מועט",desc:"קריר בלילות, שלכת בשיאה — קחו שכבות"}},
+  {seg:"kyo",name:"קיוטו",lat:35.0116,lon:135.7681,tz:"Asia/Tokyo",
+   ts:[2026,10,3],te:[2026,10,7],
+   avg:{hi:17,lo:8,icon:"🍁",rain:"~5 ימי גשם בחודש",desc:"שיא השלכת — ימים מושלמים לטיול"}},
+  {seg:"osa",name:"אוסקה",lat:34.6937,lon:135.5023,tz:"Asia/Tokyo",
+   ts:[2026,10,8],te:[2026,10,11],
+   avg:{hi:17,lo:9,icon:"🌤️",rain:"~4 ימי גשם בחודש",desc:"נעים ויחסית יבש"}},
+  {seg:"tok2",name:"טוקיו · סיבוב שני",lat:35.6762,lon:139.6503,tz:"Asia/Tokyo",
+   ts:[2026,10,12],te:[2026,10,16],
+   avg:{hi:14,lo:7,icon:"🍂",rain:"~4 ימי גשם בחודש",desc:"צונן יותר, שלכת בגנים"}},
+  {seg:"dub",name:"דובאי",lat:25.2048,lon:55.2708,tz:"Asia/Dubai",
+   ts:[2026,10,17],te:[2026,10,23],
+   avg:{hi:29,lo:19,icon:"☀️",rain:"כמעט ללא גשם",desc:"מושלם — חוף, בריכה ושמש"}}
+];
+function wmoEmoji(c){
+  if(c===0)return"☀️";if(c<=2)return"🌤️";if(c<=3)return"☁️";
+  if(c<=48)return"🌫️";if(c<=57)return"🌦️";if(c<=65)return"🌧️";
+  if(c<=77)return"❄️";if(c<=82)return"🌦️";return"⛈️";
+}
+function renderWeather(live){
+  const wrap=document.getElementById("weather");if(!wrap)return;
+  const today=new Date();
+  const tripStart=new Date(2026,9,26);
+  const daysLeft=Math.round((tripStart-today)/86400000);
+  const isLive=live&&daysLeft<=16;
+  const wkd=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+  const badge=isLive?
+    `<div class="wx-mode live">📡 תחזית חיה מ-Open-Meteo · מתעדכן אוטומטית</div>`:
+    `<div class="wx-mode avg">📊 ממוצעים היסטוריים לנובמבר · ${daysLeft>0?daysLeft+" ימים לטיסה":"הגיע הזמן!"}</div>`;
+  const cardsHTML=WX_CITIES.map(c=>{
+    const cd=isLive&&live[c.seg];
+    if(cd&&cd.length){
+      const chips=cd.map(d=>`<div class="wx-day"><div class="wx-day-d">${d.w}</div><div class="wx-day-i">${d.i}</div><div class="wx-day-t">${Math.round(d.hi)}°</div><div class="wx-day-lo">${Math.round(d.lo)}°</div></div>`).join("");
+      return `<div class="wx-card"><div class="wx-cn">${esc(c.name)}</div><div class="wx-days">${chips}</div><span class="wx-badge live">תחזית חיה</span></div>`;
+    }
+    return `<div class="wx-card"><div class="wx-cn">${esc(c.name)}</div>
+      <div class="wx-avg"><span class="wx-icon">${c.avg.icon}</span><div><span class="wx-temp"><b>${c.avg.hi}°</b> / ${c.avg.lo}°C</span><div class="wx-rain">${c.avg.rain}</div></div></div>
+      <div class="wx-desc">${c.avg.desc}</div><span class="wx-badge">ממוצע היסטורי</span></div>`;
+  }).join("");
+  wrap.innerHTML=badge+`<div class="wx-grid">${cardsHTML}</div>`;
+}
+async function loadWeather(){
+  const today=new Date();
+  const daysLeft=Math.round((new Date(2026,9,26)-today)/86400000);
+  renderWeather(null);
+  if(daysLeft>16)return;
+  try{
+    const wkd=["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+    const live={};
+    await Promise.all(WX_CITIES.map(async c=>{
+      try{
+        const url=`https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=${encodeURIComponent(c.tz)}&forecast_days=16`;
+        const r=await fetch(url);if(!r.ok)return;
+        const d=await r.json(); const days=[];
+        (d.daily.time||[]).forEach((ds,i)=>{
+          const dt=new Date(ds);
+          const s=new Date(c.ts[0],c.ts[1],c.ts[2]),e=new Date(c.te[0],c.te[1],c.te[2]);
+          if(dt>=s&&dt<=e)days.push({w:wkd[dt.getDay()],i:wmoEmoji(d.daily.weathercode[i]),hi:d.daily.temperature_2m_max[i],lo:d.daily.temperature_2m_min[i]});
+        });
+        live[c.seg]=days;
+      }catch(e){}
+    }));
+    renderWeather(live);
+  }catch(e){}
+}
+
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses();
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); loadWeather();
 })();
 </script>
 </body>
