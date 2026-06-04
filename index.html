@@ -300,6 +300,13 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .wx-day-i{font-size:17px;line-height:1.2}
 .wx-day-t{font-size:13px;font-weight:700;color:#fff}
 .wx-day-lo{font-size:11px;color:var(--muted)}
+.pk-progress{margin-bottom:14px}
+.pk-prog-txt{font-size:13px;color:var(--text);margin-bottom:5px}
+.pk-prog-txt b{color:#fff;font-size:15px}
+.pk-pct{color:var(--gold);font-weight:700;margin-right:4px}
+.pk-bar{height:7px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-bottom:2px}
+.pk-bar div{height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan));border-radius:99px;transition:.35s}
+.pk-cat{font-size:12px;font-weight:800;color:var(--muted);margin:14px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--line)}
 .brow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1);font-size:14px}
 .brow .bc{color:#fff;font-weight:600}.brow .bh{color:var(--muted);font-size:12.5px}
 .brow .bv{color:var(--gold);font-weight:800;white-space:nowrap}
@@ -537,6 +544,12 @@ body{padding-bottom:74px}
     <h3>צ'ק-ליסט הזמנות ✅</h3>
     <div class="hint">מה צריך לסגור לפני שטסים — לחיצה מסמנת כבוצע</div>
     <div class="check" id="check"></div>
+  </section>
+
+  <section class="panel" style="background:linear-gradient(180deg,rgba(160,107,255,.12),rgba(20,16,42,.9))">
+    <h3>🧳 מה לארוז</h3>
+    <div class="hint">לחצו על פריט כדי לסמן כארוז — מתאים בדיוק לטיול הזה</div>
+    <div id="packlist"></div>
   </section>
 
   <section class="panel" style="background:linear-gradient(180deg,rgba(63,232,255,.08),rgba(20,16,42,.9))">
@@ -821,7 +834,7 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{},expenses:[]};}let state=DEF();
+function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{},expenses:[],pack:{}};}let state=DEF();
 const openForms=new Set();
 const openDays=new Set();
 
@@ -1709,12 +1722,90 @@ async function loadWeather(){
   }catch(e){}
 }
 
+/* ===== PACKING LIST ===== */
+const PACK_ITEMS=[
+  {cat:"👗 לבוש",items:[
+    {k:"coat",l:"מעיל חורף/שכבות (לפוג'י — ירד עד 3°C בלילות)"},
+    {k:"baselayer",l:"שכבת ביניים תרמית (base layer) לפוג'י"},
+    {k:"hat",l:"כובע + כפפות לפוג'י"},
+    {k:"sweaters",l:"2–3 סוודרים / חולצות ארוכות ליפן"},
+    {k:"tshirts",l:"חולצות קצרות לדובאי (5–6 יחידות)"},
+    {k:"shoes",l:"נעלי הליכה נוחות — חובה (20K+ צעדים ביום)"},
+    {k:"flipflops",l:"כפכפים (ריוקאן + חוף דובאי)"},
+    {k:"swim",l:"בגד ים לדובאי"},
+    {k:"elegant",l:"תלבושת אלגנטית (קאיסקי / Pierchic דובאי)"},
+    {k:"umbrella",l:"מטריה מתקפלת קטנה (גשמים ביפן לפתע)"},
+    {k:"sunglasses",l:"משקפי שמש לדובאי"},
+    {k:"windbreaker",l:"מעיל רוח / גשם קל"},
+  ]},
+  {cat:"💻 טכנולוגיה",items:[
+    {k:"camera",l:"מצלמה + כרטיסי זיכרון מהירים"},
+    {k:"esim",l:"eSIM — להגדיר לפני הטיסה"},
+    {k:"powerbank",l:"פאוורבנק (טעינה בתחבורה ביפן מוגבלת)"},
+    {k:"adapter",l:"מתאם חשמל לדובאי (Type G — בריטי) ✱ יפן = Type A כמו ישראל"},
+    {k:"charger",l:"מטען USB-C אוניברסלי (100–240V)"},
+    {k:"headphones",l:"אוזניות ביטול רעש (טיסה ~11 שעות לטוקיו)"},
+  ]},
+  {cat:"🏥 בריאות",items:[
+    {k:"meds-stomach",l:"תרופות בטן / שלשול (שינוי תזונה דרסטי)"},
+    {k:"painkillers",l:"משככי כאבים"},
+    {k:"sunscreen",l:"קרם הגנה SPF גבוה לדובאי"},
+    {k:"blister",l:"פלסטרים לכפות רגליים (ימי הליכה ארוכים)"},
+    {k:"sanitizer",l:"ג'ל ידיים / מגבונים"},
+    {k:"masks",l:"מסכות פנים (תרבות יפנית — מקובל ומכובד)"},
+    {k:"eyedrops",l:"טיפות עיניים (טיסות ארוכות מייבשות)"},
+  ]},
+  {cat:"📄 מסמכים וכסף",items:[
+    {k:"passport",l:"דרכון — בדוק תוקף (מינימום 6 חודשים)"},
+    {k:"passport-copy",l:"צילום דרכון שמור בענן + עותק פיזי"},
+    {k:"insurance",l:"ביטוח נסיעות"},
+    {k:"cash-yen",l:"מזומן ין (¥) — יפן עדיין מזומנית מאוד"},
+    {k:"credit-card",l:"כרטיס אשראי בינ\"ל ללא עמלת מט\"ח"},
+    {k:"tickets",l:"כרטיסי טיסה + הזמנות שמורים אופליין"},
+  ]},
+  {cat:"✨ שדרוגים מומלצים לטיול הזה",items:[
+    {k:"cubes",l:"Packing cubes — ארגון מזוודה ל-4 שבועות"},
+    {k:"daypack",l:"תיק גב קטן לטיולים יומיים"},
+    {k:"towel",l:"מגבת מיקרופייבר (ריוקאן / חוף / ספא)"},
+    {k:"suica",l:"Suica ב-Apple Wallet — להגדיר לפני הטיסה!"},
+    {k:"bic-coupon",l:"קופון Bic Camera (מהפייסבוק שלהם) — לפני קנייה ביפן"},
+    {k:"cosme",l:"תוכנית לקניות קוסמטיקה יפנית לירון (Hada Labo, DHC, Shiseido)"},
+    {k:"snacks",l:"נשנושים ישראלים מהבית — 4 שבועות, לפעמים מתגעגעים"},
+  ]},
+];
+const PK_TOTAL=PACK_ITEMS.reduce((s,c)=>s+c.items.length,0);
+function renderPackList(){
+  const wrap=document.getElementById("packlist"); if(!wrap)return;
+  const pack=state.pack||{};
+  const done=Object.values(pack).filter(Boolean).length;
+  const pct=Math.round(done/PK_TOTAL*100);
+  wrap.innerHTML=`<div class="pk-progress">
+    <div class="pk-prog-txt"><span class="pk-pct">${pct}%</span> ארוז — <b>${done}</b> / ${PK_TOTAL} פריטים</div>
+    <div class="pk-bar"><div style="width:${pct}%"></div></div>
+  </div>`+PACK_ITEMS.map(cat=>`<div class="pk-cat">${cat.cat}</div>`+
+    cat.items.map(it=>`<div class="tick ${pack[it.k]?"on":""}" data-pk="${esc(it.k)}">
+      <span class="tbox"></span><span class="ttext">${esc(it.l)}</span></div>`).join("")
+  ).join("");
+  wrap.querySelectorAll(".tick[data-pk]").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.pk;
+    if(!state.pack)state.pack={};
+    state.pack[k]=!state.pack[k];
+    el.classList.toggle("on",!!state.pack[k]);
+    const d=Object.values(state.pack).filter(Boolean).length;
+    const p=Math.round(d/PK_TOTAL*100);
+    const pt=wrap.querySelector(".pk-prog-txt"), bar=wrap.querySelector(".pk-bar div");
+    if(pt)pt.innerHTML=`<span class="pk-pct">${p}%</span> ארוז — <b>${d}</b> / ${PK_TOTAL} פריטים`;
+    if(bar)bar.style.width=p+"%";
+    saveState();
+  }));
+}
+
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); loadWeather();
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather();
 })();
 </script>
 </body>
