@@ -428,6 +428,12 @@ body{padding-bottom:74px}
 .letter.open .letter-seal{border-bottom:1px dashed rgba(255,210,119,.25)}
 .letter-body{display:none;padding:0 18px 18px;font-family:var(--serif);font-size:16px;line-height:1.85;color:var(--sand);white-space:pre-wrap;outline:none}
 .letter.open .letter-body{display:block;animation:rise .6s}
+.letter.editing .letter-body{display:block;animation:rise .4s}
+.letter-body:empty:before{content:"✍️ כתבו כאן את המכתב...";color:var(--muted);font-style:italic}
+.letter-actions{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
+.lbtn{font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:10px;border:1px solid rgba(255,210,119,.35);background:rgba(255,210,119,.08);color:var(--sand);cursor:pointer;transition:.2s}
+.lbtn:hover{background:rgba(255,210,119,.16)}
+.lbtn-go{background:linear-gradient(135deg,#ff6b7e,#b3123a);border:none;color:#fff}
 .letter-lockmsg{font-size:11px;color:var(--muted);flex:none}
 
 /* journal */
@@ -1290,22 +1296,58 @@ const LETTERS_DEF=[
  {id:"l3",trigger:"לפתוח על החוף בקאו לק",body:"לחצו כאן וכתבו את המכתב...",opened:false},
  {id:"l4",trigger:"לפתוח בטיסה הביתה",body:"לחצו כאן וכתבו את המכתב...",opened:false}
 ];
+const LP_PLACEHOLDER="לחצו כאן וכתבו את המכתב...";
+let lettersEditing={};
+function lHasContent(l){const b=(l.body||"").trim();return !!b && b!==LP_PLACEHOLDER;}
 function renderLetters(){
   if(!state.letterList)state.letterList=LETTERS_DEF.map(l=>({...l}));
-  document.getElementById("letters").innerHTML=state.letterList.map((l,i)=>`
-    <div class="letter ${l.opened?"open":""}" data-i="${i}">
+  document.getElementById("letters").innerHTML=state.letterList.map((l,i)=>{
+    const has=lHasContent(l);
+    const editing=!!lettersEditing[i];
+    const sealed=!l.opened && has && !editing;
+    const draft=!l.opened && !has;
+    const wax=l.opened?"💛":(sealed?"❤":"✍️");
+    let badge;
+    if(l.opened) badge='<span class="letter-lockmsg">💌 נפתח</span>';
+    else if(sealed) badge='<span class="letter-lockmsg">🔒 נעול</span>';
+    else badge='<span class="letter-lockmsg">✍️ טיוטה</span>';
+    let btns;
+    if(l.opened){
+      btns='<button class="lbtn" data-act="lock" data-i="'+i+'">🔒 נעל שוב</button>';
+    } else if(sealed){
+      btns='<button class="lbtn lbtn-go" data-act="open" data-i="'+i+'">💌 לפתוח</button><button class="lbtn" data-act="edit" data-i="'+i+'">✍️ ערוך</button>';
+    } else {
+      btns='<button class="lbtn lbtn-go" data-act="seal" data-i="'+i+'">🔒 שמור ונעל</button>';
+    }
+    const bodyDisplay=(!l.body||l.body===LP_PLACEHOLDER)?"":esc(l.body);
+    return `
+    <div class="letter ${l.opened?"open":""} ${(editing||draft)?"editing":""}" data-i="${i}">
       <div class="letter-seal" data-i="${i}">
-        <div class="letter-wax">${l.opened?"💛":"❤"}</div>
+        <div class="letter-wax">${wax}</div>
         <div class="letter-trigger" contenteditable="true" data-i="${i}" data-f="trigger">${esc(l.trigger)}</div>
-        ${l.opened?"":'<span class="letter-lockmsg">🔒 נעול</span>'}
+        ${badge}
       </div>
-      <div class="letter-body" contenteditable="true" data-i="${i}" data-f="body">${esc(l.body)}</div>
-    </div>`).join("");
+      <div class="letter-body" contenteditable="true" data-i="${i}" data-f="body">${bodyDisplay}</div>
+      <div class="letter-actions">${btns}</div>
+    </div>`;
+  }).join("");
   const box=document.getElementById("letters");
-  box.querySelectorAll(".letter-seal").forEach(el=>el.addEventListener("click",e=>{
-    if(e.target.classList.contains("letter-trigger"))return;
-    const i=+el.dataset.i;
-    if(!state.letterList[i].opened){ if(!confirm("לפתוח את המכתב? אי אפשר לסגור אותו שוב 💌"))return; state.letterList[i].opened=true; renderLetters(); saveState(); }
+  box.querySelectorAll(".lbtn").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    const i=+el.dataset.i, act=el.dataset.act;
+    if(act==="open"){
+      if(!lHasContent(state.letterList[i])){alert("אין עדיין תוכן במכתב — כתבו אותו קודם ✍️");return;}
+      if(!confirm("לפתוח את המכתב עכשיו? 💌"))return;
+      state.letterList[i].opened=true; delete lettersEditing[i];
+    } else if(act==="lock"){
+      state.letterList[i].opened=false; delete lettersEditing[i];
+    } else if(act==="edit"){
+      lettersEditing[i]=true;
+    } else if(act==="seal"){
+      if(!lHasContent(state.letterList[i])){alert("כתבו תוכן במכתב לפני הנעילה ✍️");return;}
+      delete lettersEditing[i];
+    }
+    renderLetters(); saveState();
   }));
   box.querySelectorAll("[contenteditable]").forEach(el=>el.addEventListener("blur",()=>{
     state.letterList[+el.dataset.i][el.dataset.f]=el.textContent.trim(); saveState();
