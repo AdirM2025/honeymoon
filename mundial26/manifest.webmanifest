@@ -1,0 +1,17 @@
+{
+  "name": "מונדיאל 2026 · לוח מודיעין",
+  "short_name": "מונדיאל 26",
+  "description": "תחזיות, גרפים ואסטרטגיה למונדיאל 2026 — לעלות בטבלת הניחושים.",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#081230",
+  "theme_color": "#081230",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
