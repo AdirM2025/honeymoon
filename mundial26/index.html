@@ -104,6 +104,13 @@ h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0}
 .why{font-size:11px;color:var(--muted);text-align:center;margin-top:3px}
 .reason{font-size:12.5px;color:#bcccf0;line-height:1.6;padding:2px 4px 11px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(59,123,255,.05),transparent)}
 .reason::before{content:"💡 ";opacity:.8}
+.fix.done{opacity:.95}
+.actual{font-family:var(--serif);font-size:20px;padding:3px 11px;border-radius:9px;min-width:58px;text-align:center;background:#0a1838;border:1px solid var(--gold);color:var(--gold)}
+.predmini{font-size:10.5px;color:var(--muted);margin-top:4px}
+.hit{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:20px;margin-inline-end:6px}
+.hit.ex{background:rgba(18,196,109,.18);color:#4ce39a}
+.hit.ok{background:rgba(255,198,61,.18);color:var(--gold)}
+.hit.no{background:rgba(255,61,87,.18);color:#ff8094}
 .fmeta{text-align:center}
 
 /* ===== charts ===== */
@@ -309,6 +316,7 @@ const fl=n=>FL[n]||"⚽";
 
 /* played — only results explicitly in the summary doc */
 const RESULTS=[
+ {h:"הולנד",a:"שוודיה",hs:5,as:1,t:"מחזור 2 · מפולת"},
  {h:"גרמניה",a:"קוראסאו",hs:7,as:1,t:"בית · מפולת"},
  {h:"קנדה",a:"קטאר",hs:6,as:0,t:"בית B · מפולת"},
  {h:"שוודיה",a:"תוניסיה",hs:5,as:1,t:"בית · מפולת"},
@@ -319,9 +327,9 @@ const RESULTS=[
 /* remaining fixtures with predictions */
 const DAYS=[
  {d:"שבת 20/6",r:"סיבוב 2",m:[
-  ["גרמניה","חוף השנהב",2,1,"mid","גרמניה ריסקה 7-1 את קוראסאו; חוף השנהב ניצחה מאוחר 1-0. שתיהן על 3 נק׳ — יתרון גרמני אך היריבה מאורגנת."],
-  ["אקוודור","קוראסאו",2,0,"high","אקוודור שלטה מול חוף השנהב והפסידה בדקה 90; קוראסאו (בכורה) ספגה 7. אקוודור חייבת — ותנצח."],
-  ["הולנד","שוודיה",2,1,"mid","הולנד בוססה 2-2 בידי יפן; שוודיה בכושר אחרי 5-1. צמוד — אך לאיכות ההולנדית יתרון."],
+  ["גרמניה","חוף השנהב",2,1,"mid","גרמניה ריסקה 7-1 את קוראסאו; חוף השנהב ניצחה מאוחר 1-0. שתיהן על 3 נק׳ — יתרון גרמני אך היריבה מאורגנת.",2,1],
+  ["אקוודור","קוראסאו",2,0,"high","אקוודור שלטה מול חוף השנהב והפסידה בדקה 90; קוראסאו (בכורה) ספגה 7. אקוודור חייבת — ותנצח.",0,0],
+  ["הולנד","שוודיה",2,1,"mid","הולנד בוססה 2-2 בידי יפן; שוודיה בכושר אחרי 5-1. צמוד — אך לאיכות ההולנדית יתרון.",5,1],
   ["יפן","תוניסיה",2,0,"high","יפן הרשימה 2-2 מול הולנד; תוניסיה ספגה 5. יפן עדיפה בבירור."]]},
  {d:"ראשון 21/6",r:"סיבוב 2",m:[
   ["בלגיה","איראן",1,0,"mid","בלגיה אכזבה 1-1 מול מצרים; איראן 2-2 מול ניו זילנד. יתרון איכות צר — ניצחון מינימלי."],
@@ -348,8 +356,8 @@ const DAYS=[
  {d:"חמישי 25/6",r:"סיבוב 3 · D·E·F",m:[
   ["ארה״ב","טורקיה",2,1,"mid","ארה״ב המארחת כבר העפילה; טורקיה חייבת לנצח. קהל ביתי מכריע."],
   ["אוסטרליה","פרגוואי",1,1,"mid","פרגוואי עם 3 נק׳, אוסטרליה חייבת — סיבוב 3 לחוץ, תיקו אפשרי."],
-  ["גרמניה","אקוודור",2,0,"mid","גרמניה בראש; אקוודור צריכה נקודות אך נגלסמן הזהיר מ׳כוכבים׳. ניצחון גרמני."],
-  ["חוף השנהב","קוראסאו",2,1,"mid","חוף השנהב חייבת ניצחון להעפלה; קוראסאו ספגה 7. החוף תשלוט."],
+  ["גרמניה","אקוודור",2,0,"low","גרמניה כבר העפילה (6 נק׳) ועשויה לסובב הרכב; אקוודור חייבת ניצחון לחיים. סיכון להפתעה — מקום מצוין להימור אמיץ (תיקו/אקוודור)."],
+  ["חוף השנהב","קוראסאו",2,1,"mid","חוף השנהב (3 נק׳) חייבת תוצאה; קוראסאו עצרה את אקוודור 0-0 ומגינה היטב — ניצחון צר צפוי."],
   ["שוודיה","יפן",1,1,"mid","שתיהן נאבקות על צמרת הבית — משחק מכריע, תיקו זהיר."],
   ["הולנד","תוניסיה",3,0,"high","הולנד חייבת ניצחון; תוניסיה כבר ספגה 5. ניצחון רחב צפוי."]]},
  {d:"שישי 26/6",r:"סיבוב 3 · G·H·I",m:[
@@ -369,7 +377,7 @@ const DAYS=[
 ];
 
 const HIST=[["1-0",182],["2-1",152],["2-0",111],["1-1",92],["0-0",78],["3-1",68],["3-0",57],["3-2",43],["2-2",35],["4-1",31]];
-const PULSE=[["31","משחקים שוחקו",null,"var(--blue)"],["95","שערים","var(--green)","var(--green)"],["3.06","ממוצע למשחק","var(--gold)","var(--gold)"],["~16%","מסתיימים בתיקו",null,"var(--red)"]];
+const PULSE=[["34","משחקים שוחקו",null,"var(--blue)"],["104","שערים","var(--green)","var(--green)"],["3.06","ממוצע למשחק","var(--gold)","var(--gold)"],["~16%","מסתיימים בתיקו",null,"var(--red)"]];
 
 /* ===== helpers ===== */
 const cfLbl={high:"ביטחון גבוה",mid:"ביטחון בינוני",low:"ביטחון נמוך"};
@@ -382,16 +390,20 @@ document.getElementById("pulse").innerHTML=PULSE.map(p=>`
 /* ===== render: predictions ===== */
 document.getElementById("predlist").innerHTML=DAYS.map(day=>`
   <div class="day"><span class="d-lbl">${day.d}</span><span class="d-line"></span><span class="d-rnd">${day.r}</span></div>
-  ${day.m.map(m=>{const[h,a,hs,as,cf,rs]=m;return`
-    <div class="fix">
+  ${day.m.map(m=>{const[h,a,hs,as,cf,rs,aH,aA]=m;
+    const played=aH!=null;
+    let badge="";
+    if(played){const exact=(hs===aH&&as===aA);const win=Math.sign(hs-as)===Math.sign(aH-aA);
+      badge=exact?'<span class="hit ex">✓ פגיעה מדויקת</span>':win?'<span class="hit ok">◐ כיוון נכון</span>':'<span class="hit no">✗ פספוס</span>';}
+    return`
+    <div class="fix ${played?'done':''}">
       <div class="team"><span class="fl">${fl(h)}</span>${h}</div>
       <div class="fmeta">
-        <div class="pred">${hs}–${as}</div>
-        <span class="cf ${cf}">${cfLbl[cf]}</span>
+        ${played?`<div class="actual">${aH}–${aA}</div><div class="predmini">ניחשת ${hs}–${as}</div>`:`<div class="pred">${hs}–${as}</div><span class="cf ${cf}">${cfLbl[cf]}</span>`}
       </div>
       <div class="team away"><span class="fl">${fl(a)}</span>${a}</div>
     </div>
-    <div class="reason">${rs}</div>`;}).join("")}
+    <div class="reason">${badge}${rs}</div>`;}).join("")}
 `).join("");
 
 /* ===== render: results ===== */
@@ -440,7 +452,7 @@ vbars(document.getElementById("c-pace"),[
 ]);
 
 hbars(document.getElementById("c-blow"),[
- ["🇩🇪 גרמניה 7-1 קוראסאו",6],["🇨🇦 קנדה 6-0 קטאר",6],["🇸🇪 שוודיה 5-1 תוניסיה",4]
+ ["🇩🇪 גרמניה 7-1 קוראסאו",6],["🇨🇦 קנדה 6-0 קטאר",6],["🇸🇪 שוודיה 5-1 תוניסיה",4],["🇳🇱 הולנד 5-1 שוודיה",4]
 ],(d,i)=>TRI[i%3]);
 
 /* ===== nav ===== */
