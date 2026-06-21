@@ -246,6 +246,21 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-item.done .pl-box{background:var(--violet);border-color:var(--violet)}
 .pl-item.done .pl-box::after{content:"✓";color:#10081a;font-weight:900;font-size:11px}
 .pl-t{flex:1;font-size:13.5px;color:#fff}
+.pl-time{flex:none;font-size:11.5px;font-weight:800;color:var(--gold,#ffd277);background:rgba(255,210,119,.14);border:1px solid rgba(255,210,119,.3);border-radius:7px;padding:2px 7px;font-variant-numeric:tabular-nums}
+.pl-map{flex:none;text-decoration:none;font-size:14px;opacity:.7;padding:2px 4px;cursor:pointer}
+.pl-map:hover{opacity:1}
+.pl-addform{margin:8px 0 11px;padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:8px}
+.pl-acwrap{position:relative}
+.pl-acinput{width:100%;box-sizing:border-box;font-family:inherit;font-size:13.5px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none}
+.pl-acinput:focus{border-color:var(--violet)}
+.pl-ac{display:flex;flex-direction:column;gap:3px;margin-top:5px}
+.pl-ac-item{text-align:right;font-family:inherit;font-size:12.5px;color:#e9e0ff;background:rgba(176,124,255,.1);border:1px solid color-mix(in srgb,var(--violet) 28%,transparent);border-radius:8px;padding:7px 10px;cursor:pointer}
+.pl-ac-item:hover{background:rgba(176,124,255,.2)}
+.pl-timein{font-family:inherit;font-size:13.5px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:9px;padding:8px 11px;outline:none;width:140px}
+.pl-addbtns{display:flex;gap:8px}
+.pl-addok,.pl-addcancel{font-family:inherit;font-size:13px;font-weight:700;padding:8px 16px;border-radius:9px;cursor:pointer;border:1px solid var(--line)}
+.pl-addok{background:var(--violet);border:none;color:#fff}
+.pl-addcancel{background:rgba(255,255,255,.05);color:var(--muted)}
 .pl-item.done .pl-t{text-decoration:line-through;color:var(--muted)}
 .pl-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
 .pl-del:hover{opacity:1}
@@ -527,18 +542,21 @@ body{padding-bottom:74px}
   <div class="progress-inline"><span>מלונות שנסגרו</span><div class="pbar"><i id="barfill"></i></div><b id="barnum">0 / 6</b></div>
   <div class="tl" id="tl"></div>
 
-  <section class="panel" style="background:linear-gradient(180deg,rgba(176,124,255,.1),rgba(20,16,42,.9))">
-    <h3>🗓️ מתכנן יום-ביום</h3>
-    <div class="hint">לחצו על יום כדי לפתוח · הוסיפו משבצות מהירות מהמקומות, או כתבו משלכם · הכול נשמר אוטומטית</div>
-    <div id="planner" class="planner"></div>
+
+  </div>
   </section>
 
+  <section class="screen" id="screen-day">
+  <div class="wrap">
+  <div class="screen-head">🗓️ תכנון יום-ביום</div>
+  <div class="hint">לחצו על יום כדי לפתוח · הוסיפו מקום עם השלמה אוטומטית או משבצת מהירה · שעה אופציונלית · 📍 פותח בגוגל מפות · הכול נשמר אוטומטית</div>
+  <div id="planner" class="planner"></div>
   </div>
   </section>
 
   <section class="screen" id="screen-plan">
   <div class="wrap">
-  <div class="screen-head">💰 תכנון ותקציב</div>
+  <div class="screen-head">💰 תקציב הטיול</div>
 
   <section class="panel">
     <h3>תקציב הטיול 💴</h3>
@@ -749,7 +767,8 @@ body{padding-bottom:74px}
   <nav class="tabbar" id="tabbar">
     <button class="tab active" data-screen="home"><span class="ti">🏠</span><span class="tl2">בית</span></button>
     <button class="tab" data-screen="route"><span class="ti">🗺️</span><span class="tl2">מסלול</span></button>
-    <button class="tab" data-screen="plan"><span class="ti">💰</span><span class="tl2">תכנון</span></button>
+    <button class="tab" data-screen="day"><span class="ti">🗓️</span><span class="tl2">תכנון</span></button>
+    <button class="tab" data-screen="plan"><span class="ti">💰</span><span class="tl2">תקציב</span></button>
     <button class="tab" data-screen="us"><span class="ti">💕</span><span class="tl2">שלנו</span></button>
     <button class="tab" data-screen="guide"><span class="ti">🧭</span><span class="tl2">מדריך</span></button>
   </nav>
@@ -1581,13 +1600,47 @@ function tripDays(){
   return out;
 }
 function dayObj(k){ if(!state.days[k])state.days[k]={items:[],notes:""}; if(!state.days[k].items)state.days[k].items=[]; return state.days[k]; }
+function segCoord(seg){const c=(typeof WX_CITIES!=="undefined")&&WX_CITIES.find(x=>x.seg===seg);return c?[c.lat,c.lon]:[35.68,139.65];}
+function sortDayItems(o){
+  o.items.sort((a,b)=>{
+    if(a.time&&b.time)return a.time.localeCompare(b.time);
+    if(a.time&&!b.time)return -1;
+    if(!a.time&&b.time)return 1;
+    return 0;
+  });
+}
+function plMapHref(it,seg){
+  if(it.lat!=null&&it.lon!=null)return "https://www.google.com/maps/search/?api=1&query="+it.lat+","+it.lon;
+  return mapHref(it.t,seg);
+}
+let plPending={};
+let plAcTimer=null;
+function photonSearch(key,q,seg){
+  clearTimeout(plAcTimer);
+  const box=document.getElementById("ac-"+key);
+  if(!box)return;
+  if(!q||q.trim().length<2){box.innerHTML="";return;}
+  plAcTimer=setTimeout(()=>{
+    const co=segCoord(seg);
+    fetch("https://photon.komoot.io/api/?q="+encodeURIComponent(q)+"&lat="+co[0]+"&lon="+co[1]+"&limit=5&lang=en")
+      .then(r=>r.json()).then(d=>{
+        const feats=(d&&d.features)||[];
+        if(!feats.length){box.innerHTML="";return;}
+        box.innerHTML=feats.map(f=>{
+          const p=f.properties||{}; const c=(f.geometry&&f.geometry.coordinates)||[];
+          const label=[p.name,p.city||p.county||p.state,p.country].filter(Boolean).join(", ");
+          return '<button class="pl-ac-item" data-key="'+key+'" data-lat="'+c[1]+'" data-lon="'+c[0]+'" data-nm="'+esc(p.name||label)+'">'+esc(label)+'</button>';
+        }).join("");
+      }).catch(()=>{box.innerHTML="";});
+  },280);
+}
 function renderPlanner(){
   const wrap=document.getElementById("planner"); if(!wrap)return;
   wrap.innerHTML=tripDays().map(day=>{
     const dd=state.days[day.key]||{}; const items=dd.items||[];
     const open=openDays.has(day.key);
     const sugg=((EXTRAS[day.seg]&&EXTRAS[day.seg].see)||[]).slice(0,6);
-    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span><span class="pl-t">${esc(it.t)}</span><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
+    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span>${it.time?`<span class="pl-time">${esc(it.time)}</span>`:""}<span class="pl-t">${esc(it.t)}</span><a class="pl-map" href="${plMapHref(it,day.seg)}" target="_blank" rel="noopener">📍</a><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
     const suggHTML=sugg.length?`<div class="pl-sugg-lbl">הוספה מהירה:</div><div class="pl-sugg">${sugg.map(t=>`<button class="pl-chip" data-key="${day.key}" data-t="${esc(t)}">＋ ${esc(t)}</button>`).join("")}</div>`:"";
     return `<div class="pl-day ${open?"open":""}">
       <div class="pl-head" data-key="${day.key}">
@@ -1597,7 +1650,18 @@ function renderPlanner(){
       <div class="pl-body">
         <div class="pl-items">${itemsHTML}</div>
         ${suggHTML}
-        <button class="pl-add" data-key="${day.key}">＋ הוסף משבצת</button>
+        <button class="pl-add" data-key="${day.key}">＋ הוסף מקום</button>
+        <div class="pl-addform" id="addform-${day.key}" hidden>
+          <div class="pl-acwrap">
+            <input class="pl-acinput" type="text" placeholder="שם מקום (באנגלית להשלמה אוטומטית)" data-key="${day.key}" data-seg="${day.seg}">
+            <div class="pl-ac" id="ac-${day.key}"></div>
+          </div>
+          <input class="pl-timein" type="time" data-key="${day.key}" aria-label="שעה (אופציונלי)">
+          <div class="pl-addbtns">
+            <button class="pl-addok" data-key="${day.key}">הוסף</button>
+            <button class="pl-addcancel" data-key="${day.key}">ביטול</button>
+          </div>
+        </div>
         <textarea class="pl-notes" data-key="${day.key}" placeholder="הערות ליום — מסעדה, שעות, רעיונות...">${esc(dd.notes||"")}</textarea>
       </div>
     </div>`;
@@ -1611,7 +1675,7 @@ function attachPlanner(){
     else{openDays.add(k);card.classList.add("open");}
   }));
   document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
-    if(e.target.closest(".pl-del"))return;
+    if(e.target.closest(".pl-del")||e.target.closest(".pl-map"))return;
     const o=dayObj(el.dataset.key), i=+el.dataset.idx;
     o.items[i].done=!o.items[i].done; el.classList.toggle("done",o.items[i].done); saveState();
   }));
@@ -1620,12 +1684,40 @@ function attachPlanner(){
     const o=dayObj(el.dataset.key); o.items.splice(+el.dataset.idx,1); saveState(); renderPlanner();
   }));
   document.querySelectorAll(".pl-chip").forEach(el=>el.addEventListener("click",()=>{
-    const o=dayObj(el.dataset.key); o.items.push({t:el.dataset.t,done:false}); openDays.add(el.dataset.key); saveState(); renderPlanner();
+    const o=dayObj(el.dataset.key); o.items.push({t:el.dataset.t,done:false}); sortDayItems(o); openDays.add(el.dataset.key); saveState(); renderPlanner();
   }));
   document.querySelectorAll(".pl-add").forEach(el=>el.addEventListener("click",()=>{
-    const v=prompt('מה מתוכנן? (אפשר להתחיל בשעה, למשל "09:00 פושימי אינארי")');
-    if(!v||!v.trim())return;
-    const o=dayObj(el.dataset.key); o.items.push({t:v.trim(),done:false}); openDays.add(el.dataset.key); saveState(); renderPlanner();
+    const k=el.dataset.key; const form=document.getElementById("addform-"+k);
+    if(!form)return;
+    const showing=!form.hasAttribute("hidden");
+    if(showing){form.setAttribute("hidden","");}
+    else{form.removeAttribute("hidden"); const inp=form.querySelector(".pl-acinput"); if(inp)inp.focus();}
+  }));
+  document.querySelectorAll(".pl-acinput").forEach(el=>el.addEventListener("input",()=>{
+    delete plPending[el.dataset.key];
+    photonSearch(el.dataset.key,el.value,el.dataset.seg);
+  }));
+  document.querySelectorAll(".pl-ac-item").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.key; const form=document.getElementById("addform-"+k);
+    const inp=form&&form.querySelector(".pl-acinput");
+    if(inp)inp.value=el.dataset.nm;
+    plPending[k]={lat:parseFloat(el.dataset.lat),lon:parseFloat(el.dataset.lon)};
+    const box=document.getElementById("ac-"+k); if(box)box.innerHTML="";
+  }));
+  document.querySelectorAll(".pl-addok").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.key; const form=document.getElementById("addform-"+k);
+    const inp=form.querySelector(".pl-acinput"); const tin=form.querySelector(".pl-timein");
+    const name=(inp&&inp.value||"").trim(); if(!name)return;
+    const o=dayObj(k); const it={t:name,done:false};
+    if(tin&&tin.value)it.time=tin.value;
+    if(plPending[k]){it.lat=plPending[k].lat; it.lon=plPending[k].lon;}
+    o.items.push(it); sortDayItems(o); delete plPending[k];
+    openDays.add(k); saveState(); renderPlanner();
+  }));
+  document.querySelectorAll(".pl-addcancel").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.key; delete plPending[k];
+    const form=document.getElementById("addform-"+k); if(form)form.setAttribute("hidden","");
+    const box=document.getElementById("ac-"+k); if(box)box.innerHTML="";
   }));
   document.querySelectorAll(".pl-notes").forEach(el=>el.addEventListener("input",()=>{
     dayObj(el.dataset.key).notes=el.value; saveState();
