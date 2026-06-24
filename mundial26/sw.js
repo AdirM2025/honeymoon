@@ -1,4 +1,4 @@
-const CACHE = 'mundial26-v8';
+const CACHE = 'mundial26-v9';
 const ASSETS = [
   './',
   './index.html',
