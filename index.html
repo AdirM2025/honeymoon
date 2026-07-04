@@ -391,6 +391,8 @@ body{padding-bottom:74px}
 .tab .tl2{font-size:10.5px;font-weight:700;transition:.2s}
 .tab.active{color:var(--gold)}
 .tab.active .ti{opacity:1;filter:none;transform:translateY(-2px)}
+.foodtab{opacity:.6;transition:.15s}
+.foodtab.on{opacity:1;background:linear-gradient(135deg,var(--magenta),var(--purple))!important;border-color:transparent!important}
 
 /* currency converter */
 .cc{display:grid;gap:10px}
@@ -776,6 +778,10 @@ body{padding-bottom:74px}
   <div class="wrap">
   <div class="screen-head">🍜 מסעדות</div>
   <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
+  <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+    <button class="foodtab on" data-v="meal" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי ארוחה</button>
+    <button class="foodtab" data-v="area" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי אזור</button>
+  </div>
   <div id="eatList"></div>
   </div>
   </section>
@@ -1962,9 +1968,12 @@ function renderPackList(){
 
 /* ===== AREA RECOMMENDATIONS (see/eat/shop) ===== */
 function recoMap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((q||"")+" Tokyo");}
+function recoRow(x,badge){
+  return `<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)"><a href="${recoMap(x.q||x.n)}" target="_blank" rel="noopener" style="text-decoration:none;font-size:17px;line-height:1.2">📍</a><div style="flex:1"><div style="font-weight:800;color:#fff;font-size:14.5px">${esc(x.n)}${x.p?` <span style="color:var(--gold);font-weight:700;font-size:11.5px">· ${esc(x.p)}</span>`:""}${badge?` <span style="background:rgba(160,107,255,.22);color:#c9b4ff;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin-inline-start:4px">${esc(badge)}</span>`:""}</div><div style="color:var(--muted);font-size:12.5px;margin-top:2px">${esc(x.d)}</div></div></div>`;
+}
 function renderRecos(listId,data){
   const w=document.getElementById(listId); if(!w)return;
-  w.innerHTML=data.map(g=>`<section class="panel"><h3>${esc(g.a)}</h3>${g.it.map(x=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)"><a href="${recoMap(x.q||x.n)}" target="_blank" rel="noopener" style="text-decoration:none;font-size:17px;line-height:1.2">📍</a><div style="flex:1"><div style="font-weight:800;color:#fff;font-size:14.5px">${esc(x.n)}${x.p?` <span style="color:var(--gold);font-weight:700;font-size:11.5px">· ${esc(x.p)}</span>`:""}</div><div style="color:var(--muted);font-size:12.5px;margin-top:2px">${esc(x.d)}</div></div></div>`).join("")}</section>`).join("");
+  w.innerHTML=data.map(g=>`<section class="panel"><h3>${esc(g.a)}</h3>${g.it.map(x=>recoRow(x,"")).join("")}</section>`).join("");
 }
 const SEE=[
  {a:"גינזה",it:[
@@ -1972,79 +1981,70 @@ const SEE=[
   {n:"גן חמה-ריקיו",d:"גן אדו עם בית תה על המים",p:"¥300",q:"Hamarikyu Gardens"},
   {n:"Art Aquarium Ginza",d:"דגי זהב ואמנות אור",p:"¥2,500",q:"Art Aquarium Museum Ginza"},
   {n:"קבוקי (Kabukiza)",d:"תיאטרון מסורתי · כרטיס מערכה בודדת",p:"¥1,000+",q:"Kabukiza Theatre"},
-  {n:"מקדש צוקיג'י הונגנג'י",d:"מקדש בודהיסטי מרשים",p:"חינם",q:"Tsukiji Hongwanji"}]},
+  {n:"שוק צוקיג'י החיצוני",d:"שוק אוכל · בוקר",p:"חינם",q:"Tsukiji Outer Market"},
+  {n:"מקדש צוקיג'י הונגנג'י",d:"מקדש בודהיסטי מרשים",p:"חינם",q:"Tsukiji Hongwanji"},
+  {n:"גן הגג של Ginza Six",d:"נוף חינמי מהקומה העליונה",p:"חינם",q:"Ginza Six rooftop garden"}]},
  {a:"שיבויה",it:[
   {n:"צומת החצייה (Scramble) + האצ'יקו",d:"האייקון של טוקיו",p:"חינם",q:"Shibuya Scramble Crossing"},
-  {n:"Shibuya Sky",d:"תצפית גג 230מ' לשקיעה · ⚠️ להזמין מראש",p:"¥2,500",q:"Shibuya Sky"},
+  {n:"Shibuya Sky",d:"תצפית גג 230מ' לשקיעה · ⚠️ להזמין",p:"¥2,500",q:"Shibuya Sky"},
   {n:"Miyashita Park",d:"פארק גג + חנויות",p:"חינם",q:"Miyashita Park"},
+  {n:"Center-Gai",d:"לב הרחוב הצעיר של שיבויה",p:"חינם",q:"Shibuya Center Gai"},
   {n:"Nonbei Yokocho",d:"סמטת איזקיות זעירה",p:"—",q:"Nonbei Yokocho"}]},
  {a:"הרג'וקו / אומוטסנדו",it:[
   {n:"מקדש מייג'י + פארק יויוגי",d:"יער שינטו שליו · עדיף בבוקר",p:"חינם",q:"Meiji Jingu"},
   {n:"רחוב טקשיטה",d:"אופנת נוער וקרפים",p:"חינם",q:"Takeshita Street"},
-  {n:"Cat Street",d:"וינטג' ובתי קפה",p:"חינם",q:"Cat Street Harajuku"}]},
+  {n:"Cat Street",d:"וינטג' ובתי קפה",p:"חינם",q:"Cat Street Harajuku"},
+  {n:"מוזיאון נזו (Nezu)",d:"אמנות + גן זן יפהפה",p:"¥1,400",q:"Nezu Museum"},
+  {n:"מוזיאון אוקיו-אה של אוטה",d:"הדפסי עץ יפניים",p:"¥1,000",q:"Ota Memorial Museum of Art"}]},
  {a:"אסאקוסה",it:[
   {n:"מקדש סנסו-ג'י + קמינרימון",d:"המקדש הוותיק בטוקיו · מוקדם בבוקר",p:"חינם",q:"Senso-ji"},
   {n:"רחוב נקמיסה",d:"דוכני אוכל ומזכרות",p:"חינם",q:"Nakamise Street"},
   {n:"Tokyo Skytree",d:"המגדל הגבוה ביפן (634מ')",p:"¥2,100+",q:"Tokyo Skytree"},
-  {n:"השכרת קימונו",d:"סיור בלבוש מסורתי · תמונות מהממות",p:"¥3-5k",q:"kimono rental Asakusa"}]},
+  {n:"פארק סומידה",d:"טיילת נהר · נוף לסקייטרי",p:"חינם",q:"Sumida Park"},
+  {n:"השכרת קימונו",d:"סיור בלבוש מסורתי",p:"¥3-5k",q:"kimono rental Asakusa"},
+  {n:"ריקשה (jinrikisha)",d:"סיבוב עם מדריך מקומי",p:"¥¥",q:"Asakusa rickshaw"}]},
  {a:"אואנו / אקיהברה",it:[
   {n:"פארק אואנו + אגם שינובאזו",d:"פארק ומוזיאונים",p:"חינם",q:"Ueno Park"},
-  {n:"גן חיות אואנו",d:"פנדות",p:"¥600",q:"Ueno Zoo"},
+  {n:"גן חיות אואנו",d:"פנדות · הוותיק ביפן",p:"¥600",q:"Ueno Zoo"},
+  {n:"המוזיאון הלאומי של טוקיו",d:"אמנות והיסטוריה · הגדול ביפן",p:"¥1,000",q:"Tokyo National Museum"},
   {n:"אקיהברה Electric Town",d:"אנימה, גיימינג, אלקטרוניקה",p:"חינם",q:"Akihabara Electric Town"},
+  {n:"מקדש קנדה מיוג'ין",d:"מקדש הטק והאנימה",p:"חינם",q:"Kanda Myojin"},
   {n:"שוק אמיוקו",d:"שוק רחוב שוקק",p:"חינם",q:"Ameyoko Market"}]},
  {a:"שינג'וקו",it:[
   {n:"גן Shinjuku Gyoen",d:"גן ענק · שלכת",p:"¥500",q:"Shinjuku Gyoen"},
   {n:"תצפית בניין העירייה",d:"202מ', חינם · מיפוי-אור בערב",p:"חינם",q:"Tokyo Metropolitan Government Building Observation"},
-  {n:"Omoide Yokocho / Golden Gai",d:"סמטאות איזקיות וברים זעירים",p:"—",q:"Omoide Yokocho"},
+  {n:"Omoide Yokocho / Golden Gai",d:"סמטאות איזקיות וברים",p:"—",q:"Omoide Yokocho"},
+  {n:"ראש הגודזילה (Kabukicho)",d:"מציץ מעל בניין טוהו",p:"חינם",q:"Godzilla Head Shinjuku"},
   {n:"קבוקיצ'ו",d:"רובע חיי הלילה",p:"—",q:"Kabukicho"}]},
  {a:"אודאיבה / טויוסו",it:[
   {n:"teamLab Planets",d:"אמנות דיגיטלית, הליכה במים · ⚠️ להזמין",p:"¥3,800",q:"teamLab Planets Toyosu"},
+  {n:"teamLab Borderless (אזאבודאי)",d:"אמנות דיגיטלית סוחפת · ⚠️ להזמין",p:"¥3,800",q:"teamLab Borderless Azabudai"},
   {n:"פסל גנדאם (DiverCity)",d:"טרנספורמציה בערב",p:"חינם",q:"Unicorn Gundam Statue"},
   {n:"Miraikan",d:"מוזיאון מדע ועתיד",p:"¥630",q:"Miraikan"},
+  {n:"Joypolis",d:"פארק סגה מקורה (VR)",p:"~¥4,500",q:"Tokyo Joypolis"},
   {n:"גשר הקשת + פסל החירות",d:"נוף ותצפית לילה",p:"חינם",q:"Odaiba Statue of Liberty"}]},
- {a:"ניקו (טיול יום)",it:[
-  {n:"מקדש טושוגו",d:"3 הקופים · UNESCO",p:"¥1,600",q:"Nikko Toshogu"},
-  {n:"גשר שינקיו",d:"גשר אדום מפורסם",p:"—",q:"Shinkyo Bridge"},
-  {n:"מפלי קגון + אגם צ'וזנג'י",d:"טבע ושלכת",p:"—",q:"Kegon Falls"}]},
- {a:"האקונה",it:[
-  {n:"אוקודאני",d:"עמק געשי + ביצים שחורות",p:"—",q:"Owakudani"},
-  {n:"שייט פיראטים באגם אאשי",d:"שיט נופי",p:"Free Pass",q:"Lake Ashi pirate ship"},
-  {n:"מקדש האקונה — טורי צף",d:"שער טורי על המים",p:"חינם",q:"Hakone Shrine torii"},
-  {n:"המוזיאון הפתוח",d:"פסלים בפארק",p:"¥3,200",q:"Hakone Open-Air Museum"}]}
-];
-const EAT=[
- {a:"גינזה",it:[
-  {n:"Oreno Yakiniku",d:"ווגיו A5 ביחס ערך · להזמין",p:"¥¥¥",q:"Oreno Yakiniku Ginza"},
-  {n:"Manten Sushi (מרונוצ'י)",d:"אומקאסה משתלם ★★★★★ · להזמין",p:"¥6-10k",q:"Manten Sushi Marunouchi"},
-  {n:"Nemuro Hanamaru",d:"סושי מסוע איכותי ונוח",p:"¥",q:"Nemuro Hanamaru Ginza"},
-  {n:"Ginza Kagari",d:"ראמן עוף קרמי ★★★★★",p:"¥",q:"Ginza Kagari"},
-  {n:"איזקיות יורקוצ'ו",d:"פנסים אדומים מתחת למסילה",p:"¥¥",q:"Yurakucho izakaya"},
-  {n:"Ginza Lion",d:"בית הבירה הוותיק (1899)",p:"¥¥",q:"Ginza Lion Beer Hall"}]},
- {a:"שיבויה",it:[
-  {n:"Ichiran / Ippudo",d:"ראמן טונקוצו",p:"¥",q:"Ichiran Shibuya"},
-  {n:"Uoshin",d:"איזקיה דגים ★★★★★ · מנות נדיבות",p:"¥¥¥",q:"Uoshin Shibuya"},
-  {n:"Uobei",d:"סושי מסוע מסך מגע",p:"¥110/צלחת",q:"Uobei Shibuya"},
-  {n:"Gyukatsu Motomura",d:"שניצל בקר מטוגן",p:"¥¥",q:"Gyukatsu Motomura Shibuya"}]},
- {a:"הרג'וקו / אומוטסנדו",it:[
-  {n:"Harajuku Gyozarou",d:"גיוזה ★★★★★ · תור זז מהר",p:"¥1,000",q:"Harajuku Gyozarou"},
-  {n:"Afuri",d:"ראמן יוזו קליל",p:"¥¥",q:"Afuri Harajuku"},
-  {n:"Maisen",d:"טונקצו מפורסם",p:"¥¥",q:"Maisen Aoyama"},
-  {n:"% Arabica / Blue Bottle",d:"ספיישלטי קפה",p:"¥",q:"Arabica Omotesando"},
-  {n:"Marion Crepes",d:"קרפים קלאסיים",p:"¥",q:"Marion Crepes Harajuku"}]},
- {a:"אסאקוסה",it:[
-  {n:"Sometaro",d:"אוקונומיאקי · מכינים בעצמכם",p:"¥¥",q:"Sometaro Asakusa"},
-  {n:"Hoppy Street",d:"איזקיות עממיות",p:"¥¥",q:"Hoppy Street Asakusa"}]},
- {a:"אואנו / אקיהברה",it:[
-  {n:"Ushihachi",d:"ווגיו משתלם (צהריים)",p:"¥2,000",q:"Ushihachi Ueno"},
-  {n:"מייד-קפה (Maidreamin)",d:"חוויית אקיהברה",p:"¥¥",q:"Maidreamin Akihabara"},
-  {n:"שוק אמיוקו",d:"טאקויאקי, יקיטורי",p:"¥",q:"Ameyoko food"}]},
- {a:"שינג'וקו",it:[
-  {n:"Omoide Yokocho",d:"יקיטורי רטרו ★★★★★",p:"¥¥",q:"Omoide Yokocho"},
-  {n:"Ramen Nagi",d:"ראמן סרדינים ★★★★★ · 24/7",p:"¥",q:"Ramen Nagi Golden Gai"},
-  {n:"Udon Shin",d:"אודון טרי ★★★★★ · תור שווה",p:"¥¥",q:"Udon Shin Shinjuku"},
-  {n:"Gyukaku",d:"יקיניקו כמה שאוכל",p:"¥¥¥",q:"Gyukaku Shinjuku"}]},
- {a:"אודאיבה",it:[
-  {n:"Aqua City / DiverCity",d:"קומות אוכל עם נוף",p:"¥¥",q:"Aqua City Odaiba"}]}
+ {a:"שכונות ומיוחדים",it:[
+  {n:"נקאמגורו (Nakameguro)",d:"תעלה, בוטיקים ובתי קפה",p:"חינם",q:"Nakameguro"},
+  {n:"שימוקיטזאווה",d:"בוהמייני · וינטג' ותקליטים",p:"חינם",q:"Shimokitazawa"},
+  {n:"יאנאקה (Yanaka)",d:"טוקיו ישנה · סמטאות וחתולים",p:"חינם",q:"Yanaka Ginza"},
+  {n:"מקדש גוטוקוג'י",d:"מקדש חתולי המזל (maneki-neko)",p:"חינם",q:"Gotokuji Temple"},
+  {n:"מגדל טוקיו",d:"אייקון אדום · יפה בלילה",p:"¥1,200+",q:"Tokyo Tower"},
+  {n:"גני הארמון הקיסרי",d:"גני אדו היסטוריים",p:"חינם",q:"Imperial Palace East Gardens"},
+  {n:"סומו (Ryogoku)",d:"טורניר/אימון בוקר",p:"¥3,000+",q:"Ryogoku Kokugikan sumo"},
+  {n:"גו-קארט ברחוב",d:"נסיעה בתחפושות · צריך רישיון בינ\"ל",p:"¥8-10k",q:"street go kart Tokyo"}]},
+ {a:"פארקים ומוזיאונים גדולים",it:[
+  {n:"Tokyo DisneySea",d:"פארק ייחודי בעולם · יום שלם",p:"¥7,900+",q:"Tokyo DisneySea"},
+  {n:"Tokyo Disneyland",d:"קלאסיקת דיסני",p:"¥7,900+",q:"Tokyo Disneyland"},
+  {n:"Warner Bros — הארי פוטר",d:"סטודיו-טור · להזמין שבועות מראש",p:"¥6,300",q:"Warner Bros Studio Tour Tokyo Harry Potter"},
+  {n:"מוזיאון ג'יבלי",d:"קסום · קשה להשיג, חודש מראש",p:"¥1,000",q:"Ghibli Museum Mitaka"},
+  {n:"Sanrio Puroland",d:"הלו קיטי · מקורה, טוב לגשם",p:"¥3,900+",q:"Sanrio Puroland"}]},
+ {a:"טיולי יום",it:[
+  {n:"ניקו (Nikko)",d:"מקדשים וטבע (UNESCO) · שלכת",p:"~¥2,700",q:"Nikko Toshogu"},
+  {n:"האקונה (Hakone)",d:"אונסן, שייט ונוף פוג'י",p:"Free Pass ¥6,100",q:"Hakone"},
+  {n:"קוואגוצ'יקו / הר פוג'י",d:"אגמים ונוף ההר · יום בהיר",p:"~¥2,000",q:"Lake Kawaguchiko"},
+  {n:"קמאקורה",d:"הבודהה הגדול + חוף ומקדשים",p:"~¥1,000",q:"Kamakura Great Buddha"},
+  {n:"יוקוהמה",d:"צ'יינהטאון, נמל וגלגל ענק",p:"~¥500",q:"Yokohama Minato Mirai"},
+  {n:"אנושימה (Enoshima)",d:"אי, מערות ונוף פוג'י",p:"~¥600",q:"Enoshima"}]}
 ];
 const SHOP=[
  {a:"גינזה",it:[
@@ -2053,32 +2053,133 @@ const SHOP=[
   {n:"Muji Ginza",d:"ענק · עם מאפייה ומלון",p:"",q:"Muji Ginza"},
   {n:"Itoya",d:"12 קומות כלי כתיבה ומזכרות",p:"",q:"Itoya Ginza"},
   {n:"Ginza Six",d:"קניון יוקרה + גן גג + Tsutaya",p:"",q:"Ginza Six"},
-  {n:"Loft",d:"גאדג'טים ומתנות",p:"",q:"Ginza Loft"},
+  {n:"Loft גינזה",d:"גאדג'טים, מתנות, כלי כתיבה",p:"",q:"Ginza Loft"},
   {n:"Matsuya / Mitsukoshi",d:"כלבו + דפצ'יקה (מרתף אוכל)",p:"",q:"Matsuya Ginza"},
-  {n:"Dover Street Market",d:"אופנה אוונגרדית",p:"",q:"Dover Street Market Ginza"}]},
+  {n:"Dover Street Market",d:"אופנה אוונגרדית · Comme des Garcons",p:"",q:"Dover Street Market Ginza"},
+  {n:"Hakuhinkan Toy Park",d:"חנות צעצועים ענקית",p:"",q:"Hakuhinkan Toy Park"},
+  {n:"Uniqlo/GU + Apple Ginza",d:"אלקטרוניקה ואופנה",p:"",q:"Apple Ginza"}]},
  {a:"שיבויה",it:[
   {n:"Mega Don Quijote שיבויה",d:"דונקי ענק",p:"",q:"Mega Don Quijote Shibuya"},
   {n:"Shibuya 109",d:"אופנת נוער",p:"",q:"Shibuya 109"},
-  {n:"Shibuya Parco",d:"חנות נינטנדו/פוקימון",p:"",q:"Shibuya Parco Nintendo"},
-  {n:"Tokyu Hands / Loft",d:"גאדג'טים ומתנות",p:"",q:"Tokyu Hands Shibuya"}]},
+  {n:"Shibuya Parco",d:"נינטנדו, פוקימון, Jump Shop",p:"",q:"Shibuya Parco Nintendo"},
+  {n:"Shibuya Scramble Square",d:"קניון + Shibuya Sky",p:"",q:"Shibuya Scramble Square"},
+  {n:"Tokyu Hands / Loft",d:"גאדג'טים ומתנות",p:"",q:"Tokyu Hands Shibuya"},
+  {n:"Mandarake שיבויה",d:"אנימה, מאנגה, אספנות",p:"",q:"Mandarake Shibuya"},
+  {n:"Tower Records שיבויה",d:"מוזיקה · 9 קומות",p:"",q:"Tower Records Shibuya"}]},
  {a:"הרג'וקו / אומוטסנדו",it:[
   {n:"רחוב טקשיטה",d:"אופנת רחוב וזול",p:"",q:"Takeshita Street"},
   {n:"Laforet Harajuku",d:"אופנה אלטרנטיבית",p:"",q:"Laforet Harajuku"},
   {n:"Omotesando Hills",d:"מותגי יוקרה",p:"",q:"Omotesando Hills"},
-  {n:"Kiddy Land",d:"צעצועים ודמויות",p:"",q:"Kiddy Land Harajuku"}]},
+  {n:"Kiddy Land",d:"צעצועים ודמויות",p:"",q:"Kiddy Land Harajuku"},
+  {n:"WEGO / Ragtag / Chicago",d:"וינטג' ויד שנייה",p:"",q:"Ragtag Harajuku"},
+  {n:"Tokyu Plaza Omotesando",d:"אופנה + % Arabica על הגג",p:"",q:"Tokyu Plaza Omotesando"},
+  {n:"Daiso Harajuku",d:"הכל ב-¥100",p:"",q:"Daiso Harajuku"}]},
  {a:"אסאקוסה",it:[
   {n:"רחוב נקמיסה",d:"מזכרות מסורתיות",p:"",q:"Nakamise Street"},
-  {n:"קפבשי (Kappabashi)",d:"כלי מטבח וסכינים",p:"",q:"Kappabashi Kitchen Town"}]},
+  {n:"קפבשי (Kappabashi)",d:"כלי מטבח וסכינים",p:"",q:"Kappabashi Kitchen Town"},
+  {n:"Don Quijote אסאקוסה",d:"דונקי",p:"",q:"Don Quijote Asakusa"},
+  {n:"Marugoto Nippon",d:"מוצרים מכל יפן",p:"",q:"Marugoto Nippon Asakusa"},
+  {n:"Mokuhankan",d:"סדנת והדפסי עץ",p:"",q:"Mokuhankan Asakusa"}]},
  {a:"אואנו / אקיהברה",it:[
   {n:"Yodobashi Akiba",d:"9 קומות אלקטרוניקה",p:"",q:"Yodobashi Akiba"},
-  {n:"Mandarake / Super Potato",d:"אנימה וגיימינג רטרו",p:"",q:"Super Potato Akihabara"},
+  {n:"Super Potato",d:"גיימינג רטרו",p:"",q:"Super Potato Akihabara"},
+  {n:"Mandarake Complex",d:"אנימה, מאנגה, פיגרות",p:"",q:"Mandarake Complex Akihabara"},
+  {n:"Radio Kaikan",d:"אספנות וגאדג'טים",p:"",q:"Akihabara Radio Kaikan"},
+  {n:"Animate",d:"מרצ' אנימה",p:"",q:"Animate Akihabara"},
   {n:"שוק אמיוקו",d:"הכל בזול",p:"",q:"Ameyoko"}]},
  {a:"שינג'וקו",it:[
-  {n:"Isetan",d:"כלבו יוקרה + דפצ'יקה",p:"",q:"Isetan Shinjuku"},
-  {n:"Yodobashi / Bic Camera",d:"אלקטרוניקה",p:"",q:"Yodobashi Shinjuku"},
-  {n:"Don Quijote שינג'וקו",d:"דונקי",p:"",q:"Don Quijote Shinjuku"}]}
+  {n:"Isetan",d:"כלבו יוקרה + דפצ'יקה מדהימה",p:"",q:"Isetan Shinjuku"},
+  {n:"Yodobashi / Bic Camera",d:"אלקטרוניקה ענקית",p:"",q:"Yodobashi Shinjuku"},
+  {n:"Don Quijote שינג'וקו",d:"דונקי",p:"",q:"Don Quijote Shinjuku"},
+  {n:"Lumine / NEWoMan",d:"אופנה מעל התחנה",p:"",q:"NEWoMan Shinjuku"},
+  {n:"Kinokuniya",d:"חנות ספרים ותיקה",p:"",q:"Kinokuniya Shinjuku"},
+  {n:"Disk Union",d:"תקליטים ומוזיקה",p:"",q:"Disk Union Shinjuku"}]},
+ {a:"איקבוקורו",it:[
+  {n:"Sunshine City",d:"קניון ענק + אקווריום",p:"",q:"Sunshine City Ikebukuro"},
+  {n:"Animate פלגשיפ",d:"החנות הכי גדולה לאנימה",p:"",q:"Animate Ikebukuro"},
+  {n:"Pokemon Center Mega",d:"החנות הגדולה של פוקימון",p:"",q:"Pokemon Center Mega Tokyo"},
+  {n:"Nintendo Tokyo (Parco)",d:"החנות הרשמית של נינטנדו",p:"",q:"Nintendo Tokyo Parco"}]}
 ];
-function initRecos(){renderRecos("seeList",SEE);renderRecos("eatList",EAT);renderRecos("shopList",SHOP);}
+const FAREA_ORDER=["גינזה","שיבויה","הרג'וקו / אומוטסנדו","אסאקוסה","אואנו / אקיהברה","שינג'וקו","אודאיבה / טויוסו","צוקיג'י / טויוסו","שימוקיטזאווה","רשת / כללי"];
+const MEAL_ORDER=["ארוחת בוקר","צהריים","ערב","קפה","רחוב ומתוקים"];
+const FOODITEMS=[
+ {n:"Eggs 'n Things",area:"גינזה",meal:"ארוחת בוקר",p:"¥¥",q:"Eggs n Things Ginza",d:"פנקייק וערמת שמנת"},
+ {n:"Centre The Bakery",area:"גינזה",meal:"ארוחת בוקר",p:"¥¥",q:"Centre The Bakery Ginza",d:"טוסט יפני מושלם"},
+ {n:"Flipper's",area:"שיבויה",meal:"ארוחת בוקר",p:"¥¥",q:"Flippers Shibuya",d:"סופלה-פנקייק אוורירי"},
+ {n:"A Happy Pancake",area:"הרג'וקו / אומוטסנדו",meal:"ארוחת בוקר",p:"¥¥",q:"A Happy Pancake Omotesando",d:"פנקייק ענן"},
+ {n:"Bills",area:"אודאיבה / טויוסו",meal:"ארוחת בוקר",p:"¥¥",q:"Bills Odaiba",d:"ריקוטה-פנקייק מפורסם, נוף"},
+ {n:"Sarabeth's",area:"שינג'וקו",meal:"ארוחת בוקר",p:"¥¥",q:"Sarabeths Lumine Shinjuku",d:"ברנצ' ניו-יורקי"},
+ {n:"דוכני צוקיג'י",area:"צוקיג'י / טויוסו",meal:"ארוחת בוקר",p:"¥¥",q:"Tsukiji Outer Market",d:"קאיסן-דון וסושי בוקר"},
+ {n:"Sushi Dai",area:"צוקיג'י / טויוסו",meal:"ארוחת בוקר",p:"¥¥¥¥",q:"Sushi Dai Toyosu",d:"אומקאסה שוק · תור מ-5:00"},
+ {n:"קונביני (7-Eleven/Lawson)",area:"רשת / כללי",meal:"ארוחת בוקר",p:"¥",q:"7-Eleven Tokyo",d:"אוניגירי וסנדוויץ' ביצה אגדי"},
+ {n:"Ichiran",area:"שיבויה",meal:"צהריים",p:"¥",q:"Ichiran Shibuya",d:"טונקוצו בתא אישי"},
+ {n:"Ippudo",area:"גינזה",meal:"צהריים",p:"¥",q:"Ippudo Ginza",d:"טונקוצו קלאסי, אנגלית"},
+ {n:"Ginza Kagari",area:"גינזה",meal:"צהריים",p:"¥",q:"Ginza Kagari",d:"ראמן עוף קרמי ★★★★★"},
+ {n:"Afuri",area:"הרג'וקו / אומוטסנדו",meal:"צהריים",p:"¥¥",q:"Afuri Harajuku",d:"ראמן יוזו קליל"},
+ {n:"Mensho",area:"שיבויה",meal:"צהריים",p:"¥¥",q:"Mensho Shibuya",d:"ראמן ווגיו חדשני"},
+ {n:"Ramen Nagi",area:"שינג'וקו",meal:"צהריים",p:"¥",q:"Ramen Nagi Golden Gai",d:"ראמן סרדינים ★★★★★ · 24/7"},
+ {n:"Udon Shin",area:"שינג'וקו",meal:"צהריים",p:"¥¥",q:"Udon Shin Shinjuku",d:"אודון טרי ★★★★★ · תור שווה"},
+ {n:"Uobei",area:"שיבויה",meal:"צהריים",p:"¥110/צלחת",q:"Uobei Shibuya",d:"סושי מסוע מסך מגע"},
+ {n:"Nemuro Hanamaru",area:"גינזה",meal:"צהריים",p:"¥",q:"Nemuro Hanamaru Ginza",d:"סושי מסוע איכותי ונוח"},
+ {n:"Harajuku Gyozarou",area:"הרג'וקו / אומוטסנדו",meal:"צהריים",p:"¥1,000",q:"Harajuku Gyozarou",d:"גיוזה ★★★★★"},
+ {n:"Gyukatsu Motomura",area:"שיבויה",meal:"צהריים",p:"¥¥",q:"Gyukatsu Motomura Shibuya",d:"שניצל בקר מטוגן"},
+ {n:"Maisen",area:"הרג'וקו / אומוטסנדו",meal:"צהריים",p:"¥¥",q:"Maisen Aoyama",d:"טונקצו מפורסם"},
+ {n:"Tsunahachi",area:"שינג'וקו",meal:"צהריים",p:"¥¥",q:"Tsunahachi Shinjuku",d:"טמפורה ותיקה מולך בדלפק"},
+ {n:"Sometaro",area:"אסאקוסה",meal:"צהריים",p:"¥¥",q:"Sometaro Asakusa",d:"אוקונומיאקי מכינים בעצמכם"},
+ {n:"Oreno Yakiniku",area:"גינזה",meal:"ערב",p:"¥¥¥",q:"Oreno Yakiniku Ginza",d:"ווגיו A5 ביחס ערך · להזמין"},
+ {n:"Manten Sushi",area:"גינזה",meal:"ערב",p:"¥¥¥",q:"Manten Sushi Marunouchi",d:"אומקאסה משתלם ★★★★★ · להזמין"},
+ {n:"Ginza Kyubei",area:"גינזה",meal:"ערב",p:"¥¥¥¥",q:"Ginza Kyubei",d:"אומקאסה יוקרתי"},
+ {n:"USHIHACHI Kiwami",area:"שיבויה",meal:"ערב",p:"¥¥¥¥",q:"Ushihachi Kiwami Shibuya",d:"ווגיו A5 עם נוף לצומת"},
+ {n:"Ushihachi",area:"שיבויה",meal:"ערב",p:"¥¥",q:"Ushihachi Shibuya",d:"ווגיו משתלם · מלך היקיניקו"},
+ {n:"Gyukaku",area:"שינג'וקו",meal:"ערב",p:"¥¥¥",q:"Gyukaku Shinjuku",d:"יקיניקו כמה שאוכל"},
+ {n:"Rokkasen",area:"שינג'וקו",meal:"ערב",p:"¥¥¥",q:"Rokkasen Shinjuku",d:"מאטסוזקה/קובה · גם שאבו-שאבו"},
+ {n:"Yakiniku Kintan",area:"הרג'וקו / אומוטסנדו",meal:"ערב",p:"¥¥",q:"Yakiniku Kintan Harajuku",d:"קובה/ווגיו"},
+ {n:"Uoshin",area:"שיבויה",meal:"ערב",p:"¥¥¥",q:"Uoshin Shibuya",d:"איזקיה דגים ★★★★★ · מנות נדיבות"},
+ {n:"Omoide Yokocho",area:"שינג'וקו",meal:"ערב",p:"¥¥",q:"Omoide Yokocho",d:"סמטת יקיטורי רטרו ★★★★★"},
+ {n:"Golden Gai",area:"שינג'וקו",meal:"ערב",p:"¥¥",q:"Golden Gai",d:"~200 ברים זעירים"},
+ {n:"Nonbei Yokocho",area:"שיבויה",meal:"ערב",p:"¥¥",q:"Nonbei Yokocho",d:"סמטת השיכורים האותנטית"},
+ {n:"Niku Yokocho",area:"שיבויה",meal:"ערב",p:"¥¥",q:"Niku Yokocho Shibuya",d:"סמטת הבשר · זחילת ברים"},
+ {n:"Hoppy Street",area:"אסאקוסה",meal:"ערב",p:"¥¥",q:"Hoppy Street Asakusa",d:"איזקיות עממיות"},
+ {n:"איזקיות יורקוצ'ו",area:"גינזה",meal:"ערב",p:"¥¥",q:"Yurakucho izakaya",d:"פנסים אדומים מתחת למסילה"},
+ {n:"Ginza Lion",area:"גינזה",meal:"ערב",p:"¥¥",q:"Ginza Lion Beer Hall",d:"בית הבירה הוותיק (1899)"},
+ {n:"% Arabica",area:"הרג'וקו / אומוטסנדו",meal:"קפה",p:"¥",q:"Arabica Omotesando",d:"מינימליסטי ★★★★★"},
+ {n:"Blue Bottle",area:"הרג'וקו / אומוטסנדו",meal:"קפה",p:"¥",q:"Blue Bottle Aoyama",d:"ספיישלטי, Wi-Fi"},
+ {n:"Koffee Mameya",area:"הרג'וקו / אומוטסנדו",meal:"קפה",p:"¥",q:"Koffee Mameya",d:"ספיישלטי מוקפד"},
+ {n:"About Life Coffee",area:"שיבויה",meal:"קפה",p:"¥",q:"About Life Coffee Shibuya",d:"סטנד מהיר צמוד לתחנה"},
+ {n:"Fuglen Tokyo",area:"הרג'וקו / אומוטסנדו",meal:"קפה",p:"¥",q:"Fuglen Tokyo",d:"וינטג' נורווגי · בערב קוקטיילים"},
+ {n:"Sakurai Tea",area:"הרג'וקו / אומוטסנדו",meal:"קפה",p:"¥¥",q:"Sakurai Japanese Tea Experience",d:"חוויית מאצ'ה יוקרתית ★★★★★"},
+ {n:"Cafe Paulista",area:"גינזה",meal:"קפה",p:"¥",q:"Cafe Paulista Ginza",d:"קיסאטן היסטורי מ-1911"},
+ {n:"HigashiYa Ginza",area:"גינזה",meal:"קפה",p:"¥¥",q:"Higashiya Ginza",d:"סלון תה יפני ווגאשי"},
+ {n:"Ginza West",area:"גינזה",meal:"קפה",p:"¥¥",q:"Ginza West",d:"חדר תה אירופי ותיק"},
+ {n:"Bear Pond Espresso",area:"שימוקיטזאווה",meal:"קפה",p:"¥",q:"Bear Pond Espresso",d:"קאלט · מזומן בלבד"},
+ {n:"Age.3",area:"גינזה",meal:"רחוב ומתוקים",p:"¥",q:"Age.3 Ginza",d:"סנדוויץ' מטוגן טרנדי"},
+ {n:"Marion Crepes",area:"הרג'וקו / אומוטסנדו",meal:"רחוב ומתוקים",p:"¥",q:"Marion Crepes Harajuku",d:"קרפים · קלאסיקה של טקשיטה"},
+ {n:"Totti Candy Factory",area:"הרג'וקו / אומוטסנדו",meal:"רחוב ומתוקים",p:"¥",q:"Totti Candy Factory Harajuku",d:"סוכר-צמר ענק לאינסטגרם"},
+ {n:"I'm donut?",area:"הרג'וקו / אומוטסנדו",meal:"רחוב ומתוקים",p:"¥",q:"Im donut Harajuku",d:"דונאטס רכים ופופולריים"},
+ {n:"Higuma Doughnuts",area:"הרג'וקו / אומוטסנדו",meal:"רחוב ומתוקים",p:"¥",q:"Higuma Doughnuts Omotesando",d:"דונאטס · ליד % Arabica"},
+ {n:"Asakusa Kagetsudo",area:"אסאקוסה",meal:"רחוב ומתוקים",p:"¥",q:"Asakusa Kagetsudo",d:"מלון-פאן ענק"},
+ {n:"דוכני נקמיסה",area:"אסאקוסה",meal:"רחוב ומתוקים",p:"¥",q:"Nakamise Street",d:"נינגיו-יאקי, סנבֵּיי טרי"},
+ {n:"שוק אמיוקו",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥",q:"Ameyoko Market",d:"טאקויאקי, יקיטורי, אווירת שוק"},
+ {n:"מייד-קפה (Maidreamin)",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥¥",q:"Maidreamin Akihabara",d:"חוויית אקיהברה"}
+];
+function foodRow(x,badge){return recoRow(x,badge);}
+let foodView="meal";
+function renderFood(){
+  const w=document.getElementById("eatList"); if(!w)return;
+  const gk=foodView==="meal"?"meal":"area";
+  const bk=foodView==="meal"?"area":"meal";
+  const order=foodView==="meal"?MEAL_ORDER:FAREA_ORDER;
+  const groups={};
+  FOODITEMS.forEach(x=>{(groups[x[gk]]=groups[x[gk]]||[]).push(x);});
+  const keys=order.filter(o=>groups[o]).concat(Object.keys(groups).filter(k=>order.indexOf(k)<0));
+  w.innerHTML=keys.map(g=>`<section class="panel"><h3>${esc(g)}</h3>${groups[g].map(x=>recoRow(x,x[bk])).join("")}</section>`).join("");
+}
+function setFoodView(v){foodView=v;document.querySelectorAll(".foodtab").forEach(b=>b.classList.toggle("on",b.dataset.v===v));renderFood();}
+function initRecos(){
+  renderRecos("seeList",SEE);renderRecos("shopList",SHOP);renderFood();
+  document.querySelectorAll(".foodtab").forEach(b=>b.addEventListener("click",()=>setFoodView(b.dataset.v)));
+}
+
 
 function seedDefaults(){
   const k="26.10";
