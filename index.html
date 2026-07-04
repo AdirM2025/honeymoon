@@ -2181,28 +2181,49 @@ function initRecos(){
 }
 
 
+const SEED_DAYS={
+"26.10":{items:[
+  {t:"N'EX מנריטה → תחנת טוקיו",done:false,lat:35.6812,lon:139.7671},
+  {t:"צ'ק-אין · Daiwa Roynet Kyobashi",done:false,lat:35.6771,lon:139.7699},
+  {t:"Age.3 · סנדוויץ' מטוגן",done:false,lat:35.6742,lon:139.7676},
+  {t:"Itoya · כלי כתיבה",done:false,lat:35.6720,lon:139.7674},
+  {t:"HigashiYa · סלון תה",done:false,lat:35.6733,lon:139.7681},
+  {t:"דפצ'יקה · Matsuya",done:false,lat:35.6721,lon:139.7668},
+  {t:"צומת גינזה 4-chome + Wako",done:false,lat:35.6716,lon:139.7668},
+  {t:"Ginza Six + גן גג",done:false,lat:35.6695,lon:139.7636},
+  {t:"גן חמה-ריקיו (אופציונלי)",done:false,lat:35.6598,lon:139.7634},
+  {t:"ארוחת ערב · יורקוצ'ו",done:false,lat:35.6751,lon:139.7630}
+],notes:"נחיתה 11:30 בנריטה · יום קליל להתאוששות מג'ט-לג · הכל במרחק הליכה מהמלון, מסלול צפון→דרום בגינזה, חזרה דרך יורקוצ'ו. Suica באייפון · N'EX חד-כיווני. אומקאסה יוקרתי — נשמור לערב אחר."},
+"27.10":{items:[
+  {t:"ארוחת בוקר · מלון/קונביני או ברנצ' באומוטסנדו",done:false,lat:35.6771,lon:139.7699},
+  {t:"רכבת → תחנת הרג'וקו",done:false,lat:35.6702,lon:139.7027},
+  {t:"מקדש מייג'י (Meiji Jingu) · בוקר, שקט",done:false,lat:35.6764,lon:139.6993},
+  {t:"פארק יויוגי",done:false,lat:35.6720,lon:139.6949},
+  {t:"רחוב טקשיטה · אופנה וקרפים",done:false,lat:35.6716,lon:139.7065},
+  {t:"צהריים · Harajuku Gyozarou / Afuri / Gyukatsu Motomura",done:false,lat:35.6702,lon:139.7053},
+  {t:"Cat Street · וינטג' ובתי קפה",done:false,lat:35.6685,lon:139.7055},
+  {t:"אומוטסנדו + קפה (% Arabica / Fuglen)",done:false,lat:35.6657,lon:139.7126},
+  {t:"מוזיאון נזו (Nezu) · גן זן (אופציונלי)",done:false,lat:35.6656,lon:139.7168},
+  {t:"צומת החצייה של שיבויה + האצ'יקו",done:false,lat:35.6595,lon:139.7005},
+  {t:"Center-Gai + Miyashita Park",done:false,lat:35.6620,lon:139.7016},
+  {t:"Shibuya Parco · נינטנדו/פוקימון",done:false,lat:35.6631,lon:139.6982},
+  {t:"Shibuya Sky · תצפית שקיעה 🚩 להזמין מראש",done:false,lat:35.6580,lon:139.7016},
+  {t:"ארוחת ערב · Han no Daidokoro Bettei · יקיניקו חדר פרטי 🚩 להזמין מראש",done:false,lat:35.6572,lon:139.6969}
+],notes:"יום הליכה צפון→דרום: מייג'י והרג'וקו בבוקר, שיבויה בערב. נעליים נוחות. שקיעה ~16:50 — לכוון להיות בשיבויה ~16:00. Shibuya Sky נסגר ברוח/גשם → גיבוי: תצפית פנימית / Scramble Square קומה 45. חלופת ערב walk-in: Nonbei Yokocho / Uoshin."}
+};
 function seedDefaults(){
-  const k="26.10";
-  if(state._seeded&&state._seeded[k])return false;
-  const cur=state.days[k];
-  if(!cur||!cur.items||!cur.items.length){
-    state.days[k]={items:[
-      {t:"N'EX מנריטה → תחנת טוקיו",done:false,lat:35.6812,lon:139.7671},
-      {t:"צ'ק-אין · Daiwa Roynet Kyobashi",done:false,lat:35.6771,lon:139.7699},
-      {t:"Age.3 · סנדוויץ' מטוגן",done:false,lat:35.6742,lon:139.7676},
-      {t:"Itoya · כלי כתיבה",done:false,lat:35.6720,lon:139.7674},
-      {t:"HigashiYa · סלון תה",done:false,lat:35.6733,lon:139.7681},
-      {t:"דפצ'יקה · Matsuya",done:false,lat:35.6721,lon:139.7668},
-      {t:"צומת גינזה 4-chome + Wako",done:false,lat:35.6716,lon:139.7668},
-      {t:"Ginza Six + גן גג",done:false,lat:35.6695,lon:139.7636},
-      {t:"גן חמה-ריקיו (אופציונלי)",done:false,lat:35.6598,lon:139.7634},
-      {t:"ארוחת ערב · יורקוצ'ו",done:false,lat:35.6751,lon:139.7630}
-    ],notes:"נחיתה 11:30 בנריטה · יום קליל להתאוששות מג'ט-לג · הכל במרחק הליכה מהמלון, מסלול צפון→דרום בגינזה, חזרה דרך יורקוצ'ו. Suica באייפון · N'EX חד-כיווני. אומקאסה יוקרתי — נשמור לערב אחר."};
-  }
+  let changed=false;
   if(!state._seeded)state._seeded={};
-  state._seeded[k]=true;
-  return true;
+  for(const k in SEED_DAYS){
+    if(state._seeded[k])continue;
+    const cur=state.days[k];
+    if(!cur||!cur.items||!cur.items.length){state.days[k]=JSON.parse(JSON.stringify(SEED_DAYS[k]));}
+    state._seeded[k]=true;
+    changed=true;
+  }
+  return changed;
 }
+
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
