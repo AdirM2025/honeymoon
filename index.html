@@ -764,6 +764,30 @@ body{padding-bottom:74px}
   </section>
   </main>
 
+  <section class="screen" id="screen-see">
+  <div class="wrap">
+  <div class="screen-head">🎌 אטרקציות</div>
+  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · 📍 פותח בגוגל מפות</div>
+  <div id="seeList"></div>
+  </div>
+  </section>
+
+  <section class="screen" id="screen-eat">
+  <div class="wrap">
+  <div class="screen-head">🍜 מסעדות</div>
+  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
+  <div id="eatList"></div>
+  </div>
+  </section>
+
+  <section class="screen" id="screen-shop">
+  <div class="wrap">
+  <div class="screen-head">🛍️ קניות</div>
+  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · 📍 פותח בגוגל מפות</div>
+  <div id="shopList"></div>
+  </div>
+  </section>
+
   <nav class="tabbar" id="tabbar">
     <button class="tab active" data-screen="home"><span class="ti">🏠</span><span class="tl2">בית</span></button>
     <button class="tab" data-screen="route"><span class="ti">🗺️</span><span class="tl2">מסלול</span></button>
@@ -771,6 +795,9 @@ body{padding-bottom:74px}
     <button class="tab" data-screen="plan"><span class="ti">💰</span><span class="tl2">תקציב</span></button>
     <button class="tab" data-screen="us"><span class="ti">💕</span><span class="tl2">שלנו</span></button>
     <button class="tab" data-screen="guide"><span class="ti">🧭</span><span class="tl2">מדריך</span></button>
+    <button class="tab" data-screen="see"><span class="ti">🎌</span><span class="tl2">אתרים</span></button>
+    <button class="tab" data-screen="eat"><span class="ti">🍜</span><span class="tl2">אוכל</span></button>
+    <button class="tab" data-screen="shop"><span class="ti">🛍️</span><span class="tl2">קניות</span></button>
   </nav>
 <div class="saved" id="saved">נשמר ✓</div>
 <div class="install-bar" id="installBar"><span>📲 התקינו כאפליקציה למסך הבית</span><button id="installBtn">התקן</button><button class="x" id="installX">✕</button></div>
@@ -1933,6 +1960,126 @@ function renderPackList(){
   }));
 }
 
+/* ===== AREA RECOMMENDATIONS (see/eat/shop) ===== */
+function recoMap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((q||"")+" Tokyo");}
+function renderRecos(listId,data){
+  const w=document.getElementById(listId); if(!w)return;
+  w.innerHTML=data.map(g=>`<section class="panel"><h3>${esc(g.a)}</h3>${g.it.map(x=>`<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)"><a href="${recoMap(x.q||x.n)}" target="_blank" rel="noopener" style="text-decoration:none;font-size:17px;line-height:1.2">📍</a><div style="flex:1"><div style="font-weight:800;color:#fff;font-size:14.5px">${esc(x.n)}${x.p?` <span style="color:var(--gold);font-weight:700;font-size:11.5px">· ${esc(x.p)}</span>`:""}</div><div style="color:var(--muted);font-size:12.5px;margin-top:2px">${esc(x.d)}</div></div></div>`).join("")}</section>`).join("");
+}
+const SEE=[
+ {a:"גינזה",it:[
+  {n:"צומת גינזה 4-chome + שעון Wako",d:"האייקון של גינזה",p:"חינם",q:"Ginza Wako Clock"},
+  {n:"גן חמה-ריקיו",d:"גן אדו עם בית תה על המים",p:"¥300",q:"Hamarikyu Gardens"},
+  {n:"Art Aquarium Ginza",d:"דגי זהב ואמנות אור",p:"¥2,500",q:"Art Aquarium Museum Ginza"},
+  {n:"קבוקי (Kabukiza)",d:"תיאטרון מסורתי · כרטיס מערכה בודדת",p:"¥1,000+",q:"Kabukiza Theatre"},
+  {n:"מקדש צוקיג'י הונגנג'י",d:"מקדש בודהיסטי מרשים",p:"חינם",q:"Tsukiji Hongwanji"}]},
+ {a:"שיבויה",it:[
+  {n:"צומת החצייה (Scramble) + האצ'יקו",d:"האייקון של טוקיו",p:"חינם",q:"Shibuya Scramble Crossing"},
+  {n:"Shibuya Sky",d:"תצפית גג 230מ' לשקיעה · ⚠️ להזמין מראש",p:"¥2,500",q:"Shibuya Sky"},
+  {n:"Miyashita Park",d:"פארק גג + חנויות",p:"חינם",q:"Miyashita Park"},
+  {n:"Nonbei Yokocho",d:"סמטת איזקיות זעירה",p:"—",q:"Nonbei Yokocho"}]},
+ {a:"הרג'וקו / אומוטסנדו",it:[
+  {n:"מקדש מייג'י + פארק יויוגי",d:"יער שינטו שליו · עדיף בבוקר",p:"חינם",q:"Meiji Jingu"},
+  {n:"רחוב טקשיטה",d:"אופנת נוער וקרפים",p:"חינם",q:"Takeshita Street"},
+  {n:"Cat Street",d:"וינטג' ובתי קפה",p:"חינם",q:"Cat Street Harajuku"}]},
+ {a:"אסאקוסה",it:[
+  {n:"מקדש סנסו-ג'י + קמינרימון",d:"המקדש הוותיק בטוקיו · מוקדם בבוקר",p:"חינם",q:"Senso-ji"},
+  {n:"רחוב נקמיסה",d:"דוכני אוכל ומזכרות",p:"חינם",q:"Nakamise Street"},
+  {n:"Tokyo Skytree",d:"המגדל הגבוה ביפן (634מ')",p:"¥2,100+",q:"Tokyo Skytree"},
+  {n:"השכרת קימונו",d:"סיור בלבוש מסורתי · תמונות מהממות",p:"¥3-5k",q:"kimono rental Asakusa"}]},
+ {a:"אואנו / אקיהברה",it:[
+  {n:"פארק אואנו + אגם שינובאזו",d:"פארק ומוזיאונים",p:"חינם",q:"Ueno Park"},
+  {n:"גן חיות אואנו",d:"פנדות",p:"¥600",q:"Ueno Zoo"},
+  {n:"אקיהברה Electric Town",d:"אנימה, גיימינג, אלקטרוניקה",p:"חינם",q:"Akihabara Electric Town"},
+  {n:"שוק אמיוקו",d:"שוק רחוב שוקק",p:"חינם",q:"Ameyoko Market"}]},
+ {a:"שינג'וקו",it:[
+  {n:"גן Shinjuku Gyoen",d:"גן ענק · שלכת",p:"¥500",q:"Shinjuku Gyoen"},
+  {n:"תצפית בניין העירייה",d:"202מ', חינם · מיפוי-אור בערב",p:"חינם",q:"Tokyo Metropolitan Government Building Observation"},
+  {n:"Omoide Yokocho / Golden Gai",d:"סמטאות איזקיות וברים זעירים",p:"—",q:"Omoide Yokocho"},
+  {n:"קבוקיצ'ו",d:"רובע חיי הלילה",p:"—",q:"Kabukicho"}]},
+ {a:"אודאיבה / טויוסו",it:[
+  {n:"teamLab Planets",d:"אמנות דיגיטלית, הליכה במים · ⚠️ להזמין",p:"¥3,800",q:"teamLab Planets Toyosu"},
+  {n:"פסל גנדאם (DiverCity)",d:"טרנספורמציה בערב",p:"חינם",q:"Unicorn Gundam Statue"},
+  {n:"Miraikan",d:"מוזיאון מדע ועתיד",p:"¥630",q:"Miraikan"},
+  {n:"גשר הקשת + פסל החירות",d:"נוף ותצפית לילה",p:"חינם",q:"Odaiba Statue of Liberty"}]},
+ {a:"ניקו (טיול יום)",it:[
+  {n:"מקדש טושוגו",d:"3 הקופים · UNESCO",p:"¥1,600",q:"Nikko Toshogu"},
+  {n:"גשר שינקיו",d:"גשר אדום מפורסם",p:"—",q:"Shinkyo Bridge"},
+  {n:"מפלי קגון + אגם צ'וזנג'י",d:"טבע ושלכת",p:"—",q:"Kegon Falls"}]},
+ {a:"האקונה",it:[
+  {n:"אוקודאני",d:"עמק געשי + ביצים שחורות",p:"—",q:"Owakudani"},
+  {n:"שייט פיראטים באגם אאשי",d:"שיט נופי",p:"Free Pass",q:"Lake Ashi pirate ship"},
+  {n:"מקדש האקונה — טורי צף",d:"שער טורי על המים",p:"חינם",q:"Hakone Shrine torii"},
+  {n:"המוזיאון הפתוח",d:"פסלים בפארק",p:"¥3,200",q:"Hakone Open-Air Museum"}]}
+];
+const EAT=[
+ {a:"גינזה",it:[
+  {n:"Oreno Yakiniku",d:"ווגיו A5 ביחס ערך · להזמין",p:"¥¥¥",q:"Oreno Yakiniku Ginza"},
+  {n:"Manten Sushi (מרונוצ'י)",d:"אומקאסה משתלם ★★★★★ · להזמין",p:"¥6-10k",q:"Manten Sushi Marunouchi"},
+  {n:"Nemuro Hanamaru",d:"סושי מסוע איכותי ונוח",p:"¥",q:"Nemuro Hanamaru Ginza"},
+  {n:"Ginza Kagari",d:"ראמן עוף קרמי ★★★★★",p:"¥",q:"Ginza Kagari"},
+  {n:"איזקיות יורקוצ'ו",d:"פנסים אדומים מתחת למסילה",p:"¥¥",q:"Yurakucho izakaya"},
+  {n:"Ginza Lion",d:"בית הבירה הוותיק (1899)",p:"¥¥",q:"Ginza Lion Beer Hall"}]},
+ {a:"שיבויה",it:[
+  {n:"Ichiran / Ippudo",d:"ראמן טונקוצו",p:"¥",q:"Ichiran Shibuya"},
+  {n:"Uoshin",d:"איזקיה דגים ★★★★★ · מנות נדיבות",p:"¥¥¥",q:"Uoshin Shibuya"},
+  {n:"Uobei",d:"סושי מסוע מסך מגע",p:"¥110/צלחת",q:"Uobei Shibuya"},
+  {n:"Gyukatsu Motomura",d:"שניצל בקר מטוגן",p:"¥¥",q:"Gyukatsu Motomura Shibuya"}]},
+ {a:"הרג'וקו / אומוטסנדו",it:[
+  {n:"Harajuku Gyozarou",d:"גיוזה ★★★★★ · תור זז מהר",p:"¥1,000",q:"Harajuku Gyozarou"},
+  {n:"Afuri",d:"ראמן יוזו קליל",p:"¥¥",q:"Afuri Harajuku"},
+  {n:"Maisen",d:"טונקצו מפורסם",p:"¥¥",q:"Maisen Aoyama"},
+  {n:"% Arabica / Blue Bottle",d:"ספיישלטי קפה",p:"¥",q:"Arabica Omotesando"},
+  {n:"Marion Crepes",d:"קרפים קלאסיים",p:"¥",q:"Marion Crepes Harajuku"}]},
+ {a:"אסאקוסה",it:[
+  {n:"Sometaro",d:"אוקונומיאקי · מכינים בעצמכם",p:"¥¥",q:"Sometaro Asakusa"},
+  {n:"Hoppy Street",d:"איזקיות עממיות",p:"¥¥",q:"Hoppy Street Asakusa"}]},
+ {a:"אואנו / אקיהברה",it:[
+  {n:"Ushihachi",d:"ווגיו משתלם (צהריים)",p:"¥2,000",q:"Ushihachi Ueno"},
+  {n:"מייד-קפה (Maidreamin)",d:"חוויית אקיהברה",p:"¥¥",q:"Maidreamin Akihabara"},
+  {n:"שוק אמיוקו",d:"טאקויאקי, יקיטורי",p:"¥",q:"Ameyoko food"}]},
+ {a:"שינג'וקו",it:[
+  {n:"Omoide Yokocho",d:"יקיטורי רטרו ★★★★★",p:"¥¥",q:"Omoide Yokocho"},
+  {n:"Ramen Nagi",d:"ראמן סרדינים ★★★★★ · 24/7",p:"¥",q:"Ramen Nagi Golden Gai"},
+  {n:"Udon Shin",d:"אודון טרי ★★★★★ · תור שווה",p:"¥¥",q:"Udon Shin Shinjuku"},
+  {n:"Gyukaku",d:"יקיניקו כמה שאוכל",p:"¥¥¥",q:"Gyukaku Shinjuku"}]},
+ {a:"אודאיבה",it:[
+  {n:"Aqua City / DiverCity",d:"קומות אוכל עם נוף",p:"¥¥",q:"Aqua City Odaiba"}]}
+];
+const SHOP=[
+ {a:"גינזה",it:[
+  {n:"Don Quijote Ginza",d:"דונקי · מזכרות, קוסמטיקה, גאדג'טים · 7:00-2:00",p:"",q:"Don Quijote Ginza"},
+  {n:"Uniqlo Ginza",d:"פלגשיפ, 12 קומות",p:"",q:"Uniqlo Ginza"},
+  {n:"Muji Ginza",d:"ענק · עם מאפייה ומלון",p:"",q:"Muji Ginza"},
+  {n:"Itoya",d:"12 קומות כלי כתיבה ומזכרות",p:"",q:"Itoya Ginza"},
+  {n:"Ginza Six",d:"קניון יוקרה + גן גג + Tsutaya",p:"",q:"Ginza Six"},
+  {n:"Loft",d:"גאדג'טים ומתנות",p:"",q:"Ginza Loft"},
+  {n:"Matsuya / Mitsukoshi",d:"כלבו + דפצ'יקה (מרתף אוכל)",p:"",q:"Matsuya Ginza"},
+  {n:"Dover Street Market",d:"אופנה אוונגרדית",p:"",q:"Dover Street Market Ginza"}]},
+ {a:"שיבויה",it:[
+  {n:"Mega Don Quijote שיבויה",d:"דונקי ענק",p:"",q:"Mega Don Quijote Shibuya"},
+  {n:"Shibuya 109",d:"אופנת נוער",p:"",q:"Shibuya 109"},
+  {n:"Shibuya Parco",d:"חנות נינטנדו/פוקימון",p:"",q:"Shibuya Parco Nintendo"},
+  {n:"Tokyu Hands / Loft",d:"גאדג'טים ומתנות",p:"",q:"Tokyu Hands Shibuya"}]},
+ {a:"הרג'וקו / אומוטסנדו",it:[
+  {n:"רחוב טקשיטה",d:"אופנת רחוב וזול",p:"",q:"Takeshita Street"},
+  {n:"Laforet Harajuku",d:"אופנה אלטרנטיבית",p:"",q:"Laforet Harajuku"},
+  {n:"Omotesando Hills",d:"מותגי יוקרה",p:"",q:"Omotesando Hills"},
+  {n:"Kiddy Land",d:"צעצועים ודמויות",p:"",q:"Kiddy Land Harajuku"}]},
+ {a:"אסאקוסה",it:[
+  {n:"רחוב נקמיסה",d:"מזכרות מסורתיות",p:"",q:"Nakamise Street"},
+  {n:"קפבשי (Kappabashi)",d:"כלי מטבח וסכינים",p:"",q:"Kappabashi Kitchen Town"}]},
+ {a:"אואנו / אקיהברה",it:[
+  {n:"Yodobashi Akiba",d:"9 קומות אלקטרוניקה",p:"",q:"Yodobashi Akiba"},
+  {n:"Mandarake / Super Potato",d:"אנימה וגיימינג רטרו",p:"",q:"Super Potato Akihabara"},
+  {n:"שוק אמיוקו",d:"הכל בזול",p:"",q:"Ameyoko"}]},
+ {a:"שינג'וקו",it:[
+  {n:"Isetan",d:"כלבו יוקרה + דפצ'יקה",p:"",q:"Isetan Shinjuku"},
+  {n:"Yodobashi / Bic Camera",d:"אלקטרוניקה",p:"",q:"Yodobashi Shinjuku"},
+  {n:"Don Quijote שינג'וקו",d:"דונקי",p:"",q:"Don Quijote Shinjuku"}]}
+];
+function initRecos(){renderRecos("seeList",SEE);renderRecos("eatList",EAT);renderRecos("shopList",SHOP);}
+
 function seedDefaults(){
   const k="26.10";
   if(state._seeded&&state._seeded[k])return false;
@@ -1961,7 +2108,7 @@ function seedDefaults(){
   if(seedDefaults())saveState(false);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather();
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather(); initRecos();
 })();
 </script>
 </body>
