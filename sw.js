@@ -1,4 +1,4 @@
-const CACHE = "honeymoon-v7";
+const CACHE = "honeymoon-v8";
 const ASSETS = [
   "./",
   "./index.html",
@@ -45,5 +45,3 @@ self.addEventListener("fetch", e => {
   );
 });
 
-/* redeploy trigger */
-/* redeploy */
