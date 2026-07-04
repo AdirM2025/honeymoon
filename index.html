@@ -263,6 +263,8 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-addcancel{background:rgba(255,255,255,.05);color:var(--muted)}
 .pl-item.done .pl-t{text-decoration:line-through;color:var(--muted)}
 .pl-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
+.pl-edit{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
+.pl-edit:hover{opacity:1}
 .pl-del:hover{opacity:1}
 .pl-empty{font-size:12.5px;color:var(--muted);padding:4px 2px;font-style:italic}
 .pl-sugg-lbl{font-size:11.5px;color:var(--muted);margin-bottom:6px}
@@ -1673,7 +1675,7 @@ function renderPlanner(){
     const dd=state.days[day.key]||{}; const items=dd.items||[];
     const open=openDays.has(day.key);
     const sugg=((EXTRAS[day.seg]&&EXTRAS[day.seg].see)||[]).slice(0,6);
-    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span>${it.time?`<span class="pl-time">${esc(it.time)}</span>`:""}<span class="pl-t">${esc(it.t)}</span><a class="pl-map" href="${plMapHref(it,day.seg)}" target="_blank" rel="noopener">📍</a><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
+    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span>${it.time?`<span class="pl-time">${esc(it.time)}</span>`:""}<span class="pl-t">${esc(it.t)}</span><button class="pl-edit" data-key="${day.key}" data-idx="${idx}">✏️</button><a class="pl-map" href="${plMapHref(it,day.seg)}" target="_blank" rel="noopener">📍</a><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
     const suggHTML=sugg.length?`<div class="pl-sugg-lbl">הוספה מהירה:</div><div class="pl-sugg">${sugg.map(t=>`<button class="pl-chip" data-key="${day.key}" data-t="${esc(t)}">＋ ${esc(t)}</button>`).join("")}</div>`:"";
     return `<div class="pl-day ${open?"open":""}">
       <div class="pl-head" data-key="${day.key}">
@@ -1708,13 +1710,22 @@ function attachPlanner(){
     else{openDays.add(k);card.classList.add("open");}
   }));
   document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
-    if(e.target.closest(".pl-del")||e.target.closest(".pl-map"))return;
+    if(e.target.closest(".pl-del")||e.target.closest(".pl-map")||e.target.closest(".pl-edit")||e.target.closest("[contenteditable=true]"))return;
     const o=dayObj(el.dataset.key), i=+el.dataset.idx;
     o.items[i].done=!o.items[i].done; el.classList.toggle("done",o.items[i].done); saveState();
   }));
   document.querySelectorAll(".pl-del").forEach(el=>el.addEventListener("click",e=>{
     e.stopPropagation();
     const o=dayObj(el.dataset.key); o.items.splice(+el.dataset.idx,1); saveState(); renderPlanner();
+  }));
+  document.querySelectorAll(".pl-edit").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    const item=el.closest(".pl-item"); const span=item&&item.querySelector(".pl-t"); if(!span)return;
+    span.setAttribute("contenteditable","true"); span.focus();
+    const rng=document.createRange(); rng.selectNodeContents(span); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(rng);
+    const save=()=>{ span.removeAttribute("contenteditable"); const o=dayObj(el.dataset.key), i=+el.dataset.idx; const v=span.textContent.trim(); if(v){o.items[i].t=v;} else {span.textContent=o.items[i].t;} saveState(); };
+    span.addEventListener("blur",save,{once:true});
+    span.addEventListener("keydown",ev=>{ if(ev.key==="Enter"){ev.preventDefault(); span.blur();} });
   }));
   document.querySelectorAll(".pl-chip").forEach(el=>el.addEventListener("click",()=>{
     const o=dayObj(el.dataset.key); o.items.push({t:el.dataset.t,done:false}); sortDayItems(o); openDays.add(el.dataset.key); saveState(); renderPlanner();
