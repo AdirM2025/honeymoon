@@ -46,3 +46,4 @@ self.addEventListener("fetch", e => {
 });
 
 /* redeploy trigger */
+/* redeploy */
