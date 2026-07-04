@@ -1933,9 +1933,32 @@ function renderPackList(){
   }));
 }
 
+function seedDefaults(){
+  const k="26.10";
+  if(state._seeded&&state._seeded[k])return false;
+  const cur=state.days[k];
+  if(!cur||!cur.items||!cur.items.length){
+    state.days[k]={items:[
+      {t:"N'EX מנריטה → תחנת טוקיו",done:false,lat:35.6812,lon:139.7671},
+      {t:"צ'ק-אין · Daiwa Roynet Kyobashi",done:false,lat:35.6771,lon:139.7699},
+      {t:"Age.3 · סנדוויץ' מטוגן",done:false,lat:35.6742,lon:139.7676},
+      {t:"Itoya · כלי כתיבה",done:false,lat:35.6720,lon:139.7674},
+      {t:"HigashiYa · סלון תה",done:false,lat:35.6733,lon:139.7681},
+      {t:"דפצ'יקה · Matsuya",done:false,lat:35.6721,lon:139.7668},
+      {t:"צומת גינזה 4-chome + Wako",done:false,lat:35.6716,lon:139.7668},
+      {t:"Ginza Six + גן גג",done:false,lat:35.6695,lon:139.7636},
+      {t:"גן חמה-ריקיו (אופציונלי)",done:false,lat:35.6598,lon:139.7634},
+      {t:"ארוחת ערב · יורקוצ'ו",done:false,lat:35.6751,lon:139.7630}
+    ],notes:"נחיתה 11:30 בנריטה · יום קליל להתאוששות מג'ט-לג · הכל במרחק הליכה מהמלון, מסלול צפון→דרום בגינזה, חזרה דרך יורקוצ'ו. Suica באייפון · N'EX חד-כיווני. אומקאסה יוקרתי — נשמור לערב אחר."};
+  }
+  if(!state._seeded)state._seeded={};
+  state._seeded[k]=true;
+  return true;
+}
 (async function(){
   const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
+  if(seedDefaults())saveState(false);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
   setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather();
