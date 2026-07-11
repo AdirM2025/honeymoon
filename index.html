@@ -1644,7 +1644,15 @@ function sortDayItems(o){
     return 0;
   });
 }
+function plCleanName(t){
+  if(!t)return"";
+  const parts=String(t).split(/[·|]|→|\+/).map(function(x){return x.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"").trim();}).filter(Boolean);
+  const latin=parts.find(function(x){return /[A-Za-z]/.test(x);});
+  return (latin||parts[0]||"").trim();
+}
 function plMapHref(it,seg){
+  const nm=plCleanName(it.t);
+  if(nm&&nm.length>=2)return mapHref(nm,seg);
   if(it.lat!=null&&it.lon!=null)return "https://www.google.com/maps/search/?api=1&query="+it.lat+","+it.lon;
   return mapHref(it.t,seg);
 }
