@@ -2055,7 +2055,10 @@ const SEE=[
   {n:"קוואגוצ'יקו / הר פוג'י",d:"אגמים ונוף ההר · יום בהיר",p:"~¥2,000",q:"Lake Kawaguchiko"},
   {n:"קמאקורה",d:"הבודהה הגדול + חוף ומקדשים",p:"~¥1,000",q:"Kamakura Great Buddha"},
   {n:"יוקוהמה",d:"צ'יינהטאון, נמל וגלגל ענק",p:"~¥500",q:"Yokohama Minato Mirai"},
-  {n:"אנושימה (Enoshima)",d:"אי, מערות ונוף פוג'י",p:"~¥600",q:"Enoshima"}]}
+  {n:"אנושימה (Enoshima)",d:"אי, מערות ונוף פוג'י",p:"~¥600",q:"Enoshima"}]},
+ {a:"מומלצים חדשים (מהסטוריז)",it:[
+  {n:"שוק טויוסו (Toyosu Market)",d:"שוק הדגים הסיטונאי החדש · מכירת טונה ומאכלי ים בוקר",p:"חינם",q:"Toyosu Market"},
+  {n:"Alice Head Spa",d:"ספא קרקפת יפני מפנק · הזמינו מראש ובחרו מטפל",p:"¥¥",q:"Alice Head Spa"}]}
 ];
 const SHOP=[
  {a:"גינזה",it:[
@@ -2109,7 +2112,11 @@ const SHOP=[
   {n:"Sunshine City",d:"קניון ענק + אקווריום",p:"",q:"Sunshine City Ikebukuro"},
   {n:"Animate פלגשיפ",d:"החנות הכי גדולה לאנימה",p:"",q:"Animate Ikebukuro"},
   {n:"Pokemon Center Mega",d:"החנות הגדולה של פוקימון",p:"",q:"Pokemon Center Mega Tokyo"},
-  {n:"Nintendo Tokyo (Parco)",d:"החנות הרשמית של נינטנדו",p:"",q:"Nintendo Tokyo Parco"}]}
+  {n:"Nintendo Tokyo (Parco)",d:"החנות הרשמית של נינטנדו",p:"",q:"Nintendo Tokyo Parco"}]},
+ {a:"מומלצים חדשים (מהסטוריז)",it:[
+  {n:"@cosme Tokyo",d:"ענקית הקוסמטיקה — כל המותגים המובילים (כולל Moroccanoil)",p:"",q:"cosme store Harajuku"},
+  {n:"Levi\'s · רקמה אישית",d:"ג\'ינס עם שירות רקמה/טלאים בהזמנה — מזכרת יפנית",p:"",q:"Levis Store Harajuku"},
+  {n:"Tokyu Food Show (שיבויה)",d:"דפאצ\'יקה ענקית בתחנת שיבויה — אוכל ומתוקים",p:"",q:"Tokyu Food Show Shibuya"}]}
 ];
 const FAREA_ORDER=["גינזה","שיבויה","הרג'וקו / אומוטסנדו","אסאקוסה","אואנו / אקיהברה","שינג'וקו","אודאיבה / טויוסו","צוקיג'י / טויוסו","שימוקיטזאווה","רשת / כללי"];
 const MEAL_ORDER=["ארוחת בוקר","צהריים","ערב","קפה","רחוב ומתוקים"];
@@ -2171,7 +2178,33 @@ const FOODITEMS=[
  {n:"Asakusa Kagetsudo",area:"אסאקוסה",meal:"רחוב ומתוקים",p:"¥",q:"Asakusa Kagetsudo",d:"מלון-פאן ענק"},
  {n:"דוכני נקמיסה",area:"אסאקוסה",meal:"רחוב ומתוקים",p:"¥",q:"Nakamise Street",d:"נינגיו-יאקי, סנבֵּיי טרי"},
  {n:"שוק אמיוקו",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥",q:"Ameyoko Market",d:"טאקויאקי, יקיטורי, אווירת שוק"},
- {n:"מייד-קפה (Maidreamin)",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥¥",q:"Maidreamin Akihabara",d:"חוויית אקיהברה"}
+ {n:"מייד-קפה (Maidreamin)",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥¥",q:"Maidreamin Akihabara",d:"חוויית אקיהברה"},
+ {n:"SAVOY 麻布十番",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥",q:"SAVOY Azabujuban",d:"פיצה נפוליטנית מהמובילות בטוקיו (מרגריטה)"},
+ {n:"Pizza Studio Tamaki (PST)",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥",q:"Pizza Studio Tamaki Roppongi",d:"פיצה נפוליטנה מהטובות בעיר · להזמין מראש"},
+ {n:"Nobu Tokyo",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥¥¥",q:"Nobu Tokyo",d:"יפני-פרואני יוקרתי · טמפורה מושלמת"},
+ {n:"Azuki to Kōri",area:"רופונגי / אזאבו",meal:"רחוב ומתוקים",p:"¥¥",q:"Azuki to Kori",d:"קאקיגורי (ברד) יוקרתי · להזמין מראש"},
+ {n:"Yakiniku Washino",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥¥¥",q:"Yakiniku Washino",d:"יאקיניקו יוקרתי · חוויית בשר מהטובות"},
+ {n:"Kaiten Sushi Ginza Onodera",area:"גינזה",meal:"ערב",p:"¥¥¥",q:"Kaiten Sushi Ginza Onodera",d:"קייטן סושי יוקרתי · Honten בגינזה (+ סניפים באומוטסנדו/שיבויה)"},
+ {n:"Ginza Sushi Nakamoto",area:"גינזה",meal:"ערב",p:"¥¥¥",q:"Ginza Sushi Nakamoto",d:"סושי אדומאה עדין ומדויק"},
+ {n:"Ginza Kagari · אוטמאצ\'י",area:"גינזה",meal:"צהריים",p:"¥",q:"Ginza Kagari Otemachi",d:"ראמן עוף קרמי · סניף אוטמאצ\'י כמעט בלי תור"},
+ {n:"De Frites Staan",area:"הרג\'וקו / אומוטסנדו",meal:"רחוב ומתוקים",p:"¥",q:"De Frites Staan Harajuku",d:"צ\'יפס בלגי · איולי לימון / סטייק ברוטב קארי ★★★★"},
+ {n:"Brisk Stand",area:"הרג\'וקו / אומוטסנדו",meal:"ערב",p:"¥¥",q:"Brisk Stand Omotesando",d:"המבורגר ווגיו צלוי-כפול · קריספי ועסיסי"},
+ {n:"Amam Dacotan",area:"הרג\'וקו / אומוטסנדו",meal:"ארוחת בוקר",p:"¥¥",q:"Amam Dacotan Omotesando",d:"מאפייה מהאהובות בטוקיו · בואו סמוך לפתיחה"},
+ {n:"Sushi Ginza Onodera Musuko",area:"שיבויה",meal:"ערב",p:"¥¥¥",q:"Sushi Ginza Onodera Musuko Shibuya",d:"סושי איכותי של Onodera · סניף שיבויה"},
+ {n:"Uogashi Nihon-Ichi (דוגנזאקה)",area:"שיבויה",meal:"צהריים",p:"¥",q:"Uogashi Nihon-Ichi Dogenzaka",d:"סושי דלפק בעמידה · זול וטעים"},
+ {n:"Shusai Soba Shodai",area:"שיבויה",meal:"ערב",p:"¥",q:"Shusai Soba Shodai Shibuya",d:"סובה משובחת · ~₪67 לזוג, בלי הזמנה"},
+ {n:"Sushi Tokyo Ten",area:"שינג\'וקו",meal:"צהריים",p:"¥¥",q:"Sushi Tokyo Ten",d:"אומקסה משתלם · צהריים ~¥4,400 · רשת (שינג\'וקו/שיבויה/רופונגי), להזמין"},
+ {n:"Cois Espresso Club",area:"שינג\'וקו",meal:"קפה",p:"¥¥",q:"Cois Espresso Club Shinjuku",d:"אספרסו קרם-ברולה ובאסק צ\'יזקייק · ליד גן שינג\'וקו · מזומן בלבד"},
+ {n:"Yoshida Sushi (義田鮨)",area:"שינג\'וקו",meal:"ערב",p:"¥¥¥",q:"Yoshida Sushi Shinjuku",d:"אומקסה · דגים מעולים"},
+ {n:"Sushi Edomaru",area:"אסאקוסה",meal:"ערב",p:"¥¥",q:"Sushi Edomaru Asakusa",d:"סושי · סלמון עם יוזו — שווה פעמיים"},
+ {n:"Jack in the Donuts",area:"אואנו / אקיהברה",meal:"רחוב ומתוקים",p:"¥",q:"Jack in the Donuts Akihabara",d:"דונאטס טריים · Yodobashi Akiba"},
+ {n:"Tomi (סופט שומשום שחור)",area:"צוקיג\'י / טויוסו",meal:"רחוב ומתוקים",p:"¥",q:"Tomi Tsukiji soft cream",d:"סופט קרם שומשום שחור · בשוק צוקיג\'י החיצוני"},
+ {n:"Iyoshi Cola (伊良コーラ)",area:"שימוקיטזאווה",meal:"קפה",p:"¥",q:"Iyoshi Cola Shimokitazawa",d:"קולה יפנית מלאכת-יד · שימוקיטזאווה/הרג\'וקו"},
+ {n:"Maguro Mart",area:"ריוגוקו / קינשיצ\'ו",meal:"ערב",p:"¥¥",q:"Maguro Mart",d:"איזקאיה טונה מטורפת · להזמין מראש, מזומן בלבד (~₪260 לזוג)"},
+ {n:"Kanazawa Maimon Sushi",area:"רשת / כללי",meal:"ערב",p:"¥¥",q:"Kanazawa Maimon Sushi",d:"קייטן סושי איכותי מקנזאווה · ~₪100 לזוג"},
+ {n:"Sushi Kenshin",area:"רשת / כללי",meal:"ערב",p:"¥¥¥",q:"Sushi Kenshin",d:"אומקסה · אפשר להכין ללא פירות ים לפי בקשה מראש"},
+ {n:"Manneken (וופל בלגי)",area:"רשת / כללי",meal:"רחוב ומתוקים",p:"¥",q:"Manneken Belgian Waffle",d:"וופל בלגי מיני · דוכנים בתחנות רכבת"},
+ {n:"Cremia (סופט קרם)",area:"רשת / כללי",meal:"רחוב ומתוקים",p:"¥",q:"Cremia soft cream",d:"גלידת סופט פרימיום בגביע עוגייה"}
 ];
 function foodRow(x,badge){return recoRow(x,badge);}
 let foodView="meal";
