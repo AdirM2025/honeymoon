@@ -479,9 +479,44 @@ body{padding-bottom:74px}
 .cnc-answer{border-radius:14px;border:1px solid rgba(63,232,255,.3);background:rgba(63,232,255,.06);padding:16px 18px;font-size:14.5px;line-height:1.7;color:#eaf8ff;min-height:40px}
 .cnc-answer.empty{color:var(--muted);border-style:dashed;text-align:center}
 .cnc-answer b{color:var(--cyan)}
+/* ===== login overlay ===== */
+#loginOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(160deg,#3a1f2b 0%,#5a2d33 45%,#7a3f34 100%);direction:rtl}
+#loginOverlay .login-card{width:100%;max-width:360px;background:rgba(255,255,255,.97);border-radius:22px;
+  padding:34px 26px 30px;box-shadow:0 24px 60px rgba(0,0,0,.35);text-align:center;font-family:inherit}
+#loginOverlay .login-emoji{font-size:44px;line-height:1;margin-bottom:6px}
+#loginOverlay .login-title{margin:0 0 6px;font-size:26px;font-weight:800;color:#5a2d33;letter-spacing:.5px}
+#loginOverlay .login-sub{margin:0 0 22px;font-size:14px;color:#8a6d66;line-height:1.5}
+#loginOverlay .login-input{width:100%;box-sizing:border-box;padding:13px 15px;margin-bottom:12px;border:1.5px solid #e3d5cf;
+  border-radius:12px;font-size:16px;font-family:inherit;background:#fbf7f5;color:#3a2b28;outline:none;transition:border-color .15s}
+#loginOverlay .login-input:focus{border-color:#b8615a}
+#loginOverlay .login-err{display:none;color:#c0392b;font-size:13.5px;margin:2px 0 12px;font-weight:600}
+#loginOverlay .login-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:17px;font-weight:700;color:#fff;
+  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#b8615a,#8a3f3a);box-shadow:0 8px 20px rgba(138,63,58,.35);
+  transition:transform .1s,opacity .15s}
+#loginOverlay .login-btn:active{transform:scale(.98)}
+#loginOverlay .login-btn:disabled{opacity:.6;cursor:default}
+#logoutBtn{position:fixed;bottom:10px;left:10px;z-index:900;font-family:inherit;font-size:11px;color:#fff;opacity:.35;
+  background:rgba(0,0,0,.25);border:none;border-radius:10px;padding:5px 10px;cursor:pointer}
+#logoutBtn:hover{opacity:.8}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-emoji">🍁</div>
+    <h1 class="login-title">ירח דבש</h1>
+    <p class="login-sub">התחברו כדי לראות ולעדכן את התוכנית המשותפת</p>
+    <input id="loginEmail" class="login-input" type="email" inputmode="email" autocomplete="username" placeholder="אימייל">
+    <input id="loginPass" class="login-input" type="password" autocomplete="current-password" placeholder="סיסמה">
+    <div id="loginErr" class="login-err"></div>
+    <button id="loginBtn" class="login-btn">כניסה</button>
+  </div>
+</div>
+<button id="logoutBtn" style="display:none">התנתק</button>
 <div class="bg"></div><div class="pattern"></div><div id="leaves"></div>
 
 <main id="app">
@@ -918,8 +953,55 @@ const store={
 async function loadState(){try{const r=await store.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
 let svT=null;
 async function saveState(flash=true){
-  try{await store.set(KEY,JSON.stringify(state));}catch(e){}
+  const blob=JSON.stringify(state);
+  try{await store.set(KEY,blob);}catch(e){}
+  try{fsPush(blob);}catch(e){}
   if(flash){const s=document.getElementById("saved");s.classList.add("show");clearTimeout(svT);svT=setTimeout(()=>s.classList.remove("show"),1100);}
+}
+
+/* ===== Firebase sync (Firestore + Auth) ===== */
+const firebaseConfig={
+  apiKey:"AIzaSyDs0y7uyOsiVX8YX9xCWIgkBEK68Kxs1w0",
+  authDomain:"spendsmart-79a6a.firebaseapp.com",
+  projectId:"spendsmart-79a6a",
+  storageBucket:"spendsmart-79a6a.firebasestorage.app",
+  messagingSenderId:"1061760536516",
+  appId:"1:1061760536516:web:3d3737391b1aee1511de91"
+};
+let fdb=null,fauth=null,currentUser=null,fsUnsub=null,booted=false,pendingRemote=null;
+try{
+  firebase.initializeApp(firebaseConfig);
+  fauth=firebase.auth();
+  fdb=firebase.firestore();
+  try{fauth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);}catch(e){}
+  try{fdb.enablePersistence({synchronizeTabs:true});}catch(e){}
+}catch(e){console.warn("Firebase init failed",e);}
+function fsRef(){return fdb.collection("trips").doc("honeymoon");}
+async function fsPush(blob){
+  if(!fdb||!currentUser)return;
+  try{await fsRef().set({blob:blob,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),by:(currentUser.email||"")});}catch(e){}
+}
+function renderAll(){
+  ["render","renderCheck","renderFlights","renderBookings","renderLetters","renderJournal","renderConcierge","renderPlanner","renderExpenses","renderPackList","renderBudget","updateProgress"]
+    .forEach(fn=>{try{window[fn]&&window[fn]();}catch(e){}});
+}
+function applyRemote(blob){
+  if(blob==null)return;
+  if(blob===JSON.stringify(state))return; // no change / our own echo
+  const ae=document.activeElement;
+  if(ae&&(ae.tagName==="INPUT"||ae.tagName==="TEXTAREA"||ae.isContentEditable)){pendingRemote=blob;return;}
+  try{
+    const incoming=JSON.parse(blob);
+    state=Object.assign(DEF(),incoming);
+    try{localStorage.setItem(KEY,blob);}catch(e){}
+    renderAll();
+  }catch(e){}
+}
+document.addEventListener("focusout",()=>{if(pendingRemote!=null){const b=pendingRemote;pendingRemote=null;setTimeout(()=>applyRemote(b),60);}});
+function startSync(){
+  if(!fdb)return;
+  if(fsUnsub)fsUnsub();
+  fsUnsub=fsRef().onSnapshot(snap=>{if(snap.exists){const d=snap.data()||{};applyRemote(d.blob);}},err=>{console.warn("snapshot error",err);});
 }
 function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function fmt(n){return n.toLocaleString("en-US")+" ₪";}
@@ -2306,13 +2388,59 @@ function seedDefaults(){
   return changed;
 }
 
-(async function(){
-  const saved=await loadState();
+async function bootApp(){
+  if(booted)return; booted=true;
+  let saved=null,hadCloud=false;
+  if(fdb){
+    try{const snap=await fsRef().get();if(snap.exists&&snap.data()&&snap.data().blob){saved=JSON.parse(snap.data().blob);hadCloud=true;}}catch(e){}
+  }
+  if(!saved){saved=await loadState();}
   if(saved)state=Object.assign(DEF(),saved);
-  if(seedDefaults())saveState(false);
+  const seeded=seedDefaults();
+  if(!hadCloud){try{await fsPush(JSON.stringify(state));}catch(e){}}
+  else if(seeded){saveState(false);}
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
   setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather(); initRecos();
+  const lo=document.getElementById("logoutBtn"); if(lo)lo.style.display="block";
+  startSync();
+}
+
+/* ===== Auth gate ===== */
+function showLogin(show){const ov=document.getElementById("loginOverlay");if(ov)ov.style.display=show?"flex":"none";}
+function loginErr(msg){const e=document.getElementById("loginErr");if(e){e.textContent=msg||"";e.style.display=msg?"block":"none";}}
+async function doLogin(){
+  const em=((document.getElementById("loginEmail")||{}).value||"").trim();
+  const pw=(document.getElementById("loginPass")||{}).value||"";
+  const btn=document.getElementById("loginBtn");
+  if(!em||!pw){loginErr("נא למלא אימייל וסיסמה");return;}
+  loginErr(""); if(btn){btn.disabled=true;btn.textContent="מתחבר…";}
+  try{await fauth.signInWithEmailAndPassword(em,pw);}
+  catch(e){
+    const c=(e&&e.code)||""; let m="אירעה שגיאה, נסו שוב";
+    if(c.indexOf("wrong-password")>=0||c.indexOf("invalid-credential")>=0)m="אימייל או סיסמה שגויים";
+    else if(c.indexOf("user-not-found")>=0)m="המשתמש לא נמצא";
+    else if(c.indexOf("invalid-email")>=0)m="כתובת אימייל לא תקינה";
+    else if(c.indexOf("too-many-requests")>=0)m="יותר מדי ניסיונות, נסו מאוחר יותר";
+    else if(c.indexOf("network")>=0)m="אין חיבור לרשת";
+    loginErr(m);
+  }finally{if(btn){btn.disabled=false;btn.textContent="כניסה";}}
+}
+async function doLogout(){try{if(fsUnsub){fsUnsub();fsUnsub=null;}await fauth.signOut();}catch(e){}location.reload();}
+
+(function(){
+  const bindLogin=()=>{
+    const b=document.getElementById("loginBtn"); if(b)b.addEventListener("click",doLogin);
+    const p=document.getElementById("loginPass"); if(p)p.addEventListener("keydown",ev=>{if(ev.key==="Enter")doLogin();});
+    const lo=document.getElementById("logoutBtn"); if(lo)lo.addEventListener("click",doLogout);
+  };
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLogin);else bindLogin();
+  if(fauth){
+    fauth.onAuthStateChanged(user=>{currentUser=user||null;if(user){showLogin(false);bootApp();}else{showLogin(true);}});
+  }else{
+    // Firebase unavailable → local-only fallback so the app still works
+    showLogin(false); bootApp();
+  }
 })();
 </script>
 </body>
