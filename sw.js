@@ -1,4 +1,4 @@
-const CACHE = "honeymoon-v9";
+const CACHE = "honeymoon-v10";
 const ASSETS = [
   "./",
   "./index.html",
