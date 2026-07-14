@@ -191,6 +191,18 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .panel{margin-top:38px;border:1px solid var(--line);border-radius:22px;padding:24px 22px;background:linear-gradient(180deg,rgba(255,210,119,.08),rgba(20,16,42,.9))}
 .panel h3{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:6px;color:#fff}
 .panel .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.rc-city{border:1px solid var(--line);border-radius:16px;margin-top:14px;overflow:hidden;background:rgba(255,255,255,.03)}
+.rc-city-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;gap:10px}
+.rc-city-name{font-family:var(--serif);font-size:21px;font-weight:900;color:#fff}
+.rc-city-meta{display:flex;align-items:center;gap:10px;flex:none}
+.rc-city-count{font-size:11.5px;font-weight:700;color:var(--gold);background:rgba(255,210,119,.12);border:1px solid rgba(255,210,119,.3);border-radius:20px;padding:2px 10px;white-space:nowrap}
+.rc-chev{color:var(--muted);transition:transform .25s;font-size:13px}
+.rc-city.open .rc-chev{transform:rotate(180deg)}
+.rc-city-body{display:none;padding:0 16px 14px}
+.rc-city.open .rc-city-body{display:block}
+.rc-area{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.rc-area:first-child{border-top:none;margin-top:4px}
+.rc-area-h{font-family:var(--serif);font-size:16px;font-weight:800;color:var(--violet);margin-bottom:2px}
 .tr-box{border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:12px;background:rgba(255,255,255,.03)}
 .tr-box-h{font-weight:800;font-size:15px;margin-bottom:7px;color:#fff}
 .tr-box p{font-size:13.5px;color:var(--text);opacity:.92;line-height:1.7}
@@ -818,11 +830,7 @@ body{padding-bottom:74px}
   <section class="screen" id="screen-eat">
   <div class="wrap">
   <div class="screen-head">🍜 מסעדות</div>
-  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
-  <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
-    <button class="foodtab on" data-v="meal" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי ארוחה</button>
-    <button class="foodtab" data-v="area" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי אזור</button>
-  </div>
+  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי עיר ← אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
   <div id="eatList"></div>
   </div>
   </section>
@@ -2338,9 +2346,207 @@ function renderFood(){
   w.innerHTML=keys.map(g=>`<section class="panel"><h3>${esc(g)}</h3>${groups[g].map(x=>recoRow(x,x[bk])).join("")}</section>`).join("");
 }
 function setFoodView(v){foodView=v;document.querySelectorAll(".foodtab").forEach(b=>b.classList.toggle("on",b.dataset.v===v));renderFood();}
+/* ===== city-grouped recommendations (accordion) ===== */
+const openCities=new Set();
+function renderCityAccordion(listId,cities){
+  const w=document.getElementById(listId); if(!w)return;
+  w.innerHTML=cities.map(cg=>{
+    const key=listId+"|"+cg.city;
+    const open=openCities.has(key);
+    const count=(cg.areas||[]).reduce((s,a)=>s+((a.it||[]).length),0);
+    const areasHTML=(cg.areas||[]).map(g=>`<div class="rc-area"><h4 class="rc-area-h">${esc(g.a)}</h4>${(g.it||[]).map(x=>recoRow(x,x.meal||"")).join("")}</div>`).join("");
+    return `<div class="rc-city ${open?"open":""}"><div class="rc-city-head" data-key="${esc(key)}"><div class="rc-city-name">${esc(cg.city)}</div><div class="rc-city-meta"><span class="rc-city-count">${count} 📍</span><span class="rc-chev">▾</span></div></div><div class="rc-city-body">${areasHTML}</div></div>`;
+  }).join("");
+  w.querySelectorAll(".rc-city-head").forEach(el=>el.addEventListener("click",()=>{
+    const k=el.dataset.key,card=el.closest(".rc-city");
+    if(openCities.has(k)){openCities.delete(k);card.classList.remove("open");}
+    else{openCities.add(k);card.classList.add("open");}
+  }));
+}
+function groupFoodByArea(items){
+  const g={},order=[];
+  items.forEach(x=>{ if(!g[x.area]){g[x.area]=[];order.push(x.area);} g[x.area].push(x); });
+  return order.map(a=>({a,it:g[a]}));
+}
+
+/* Tokyo gap-fills (previously only inside the מסלול blocks) */
+const SEE_TOKYO_EXTRA=[
+ {a:"שלכת ונקודות עונתיות",it:[
+  {n:"גן ריקוגיֵן",d:"גן אדו קלאסי · תאורת שלכת לילה מרהיבה (נוב')",p:"¥300",q:"Rikugien Garden Tokyo"},
+  {n:"שדרת הגינקו · מייג'י גאיין",d:"מנהרת עצי גינקו זהובים · סוף נובמבר",p:"חינם",q:"Meiji Jingu Gaien Ginkgo Avenue"},
+  {n:"הר טאקאו (Mt Takao)",d:"טיול יום קליל · שלכת ונוף פוג'י",p:"~¥1,000",q:"Mount Takao"}]}
+];
+const FOOD_TOKYO_EXTRA=[
+ {n:"Gonpachi Nishi-Azabu",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥¥",q:"Gonpachi Nishi-Azabu",d:"האיזקאיה שהשראה ל-Kill Bill"},
+ {n:"Tsuta (蔦)",area:"רשת / כללי",meal:"צהריים",p:"¥¥",q:"Tsuta Ramen Tokyo",d:"ראמן מכוכב מישלן · שויו עם שמן כמהין"},
+ {n:"דפאצ'יקה · Ginza Six",area:"גינזה",meal:"רחוב ומתוקים",p:"¥¥",q:"Ginza Six depachika",d:"מרתף מזון יוקרתי · מתוקים וטעימות"}
+];
+
+/* Non-Tokyo cities — attractions */
+const SEE_MORE=[
+ {city:"פוג'י (קוואגוצ'יקו)",areas:[
+  {a:"קוואגוצ'יקו",it:[
+   {n:"פגודת צ'ורייטו (Arakura Sengen)",d:"הנוף האייקוני של פוג'י מאחורי הפגודה · ~400 מדרגות",p:"חינם",q:"Chureito Pagoda"},
+   {n:"אגם קוואגוצ'יקו",d:"השתקפות פוג'י במים · טיילת ואופניים",p:"חינם",q:"Lake Kawaguchiko"},
+   {n:"רכבל Mt Kachi Kachi",d:"תצפית פוג'י מעל האגם",p:"¥900",q:"Mount Fuji Panoramic Ropeway"},
+   {n:"Oishi Park",d:"פארק על האגם · נוף פוג'י ופרחים עונתיים",p:"חינם",q:"Oishi Park Kawaguchiko"},
+   {n:"מקדש ארקורה פוג'י סנגן",d:"שער טורי עם פוג'י ברקע",p:"חינם",q:"Arakura Fuji Sengen Shrine"},
+   {n:"אושינו האקאי",d:"בריכות מי-מעיין צלולות · כפר מסורתי",p:"חינם",q:"Oshino Hakkai"}]},
+  {a:"פוג'יושידה",it:[
+   {n:"רחוב Honcho",d:"נוף פוג'י בקצה רחוב רטרו · תמונה מפורסמת",p:"חינם",q:"Honcho Street Fujiyoshida"},
+   {n:"Fuji-Q Highland",d:"פארק שעשועים עם רכבות הרים ונוף פוג'י",p:"מתקן ¥¥",q:"Fuji-Q Highland"}]},
+  {a:"האקונה (אופציונלי)",it:[
+   {n:"Hakone Open-Air Museum",d:"מוזיאון פיסול תחת כיפת השמיים",p:"¥2,000",q:"Hakone Open Air Museum"},
+   {n:"שייט אגם אשי + Torii of Peace",d:"ספינת שודדים ושער אדום במים",p:"¥¥",q:"Lake Ashi Hakone torii"},
+   {n:"Owakudani",d:"עמק געשי · ביצים שחורות ('חיים ארוכים')",p:"רכבל ¥¥",q:"Owakudani"},
+   {n:"מקדש האקונה",d:"מקדש ביער עם שער במים",p:"חינם",q:"Hakone Shrine"}]}
+ ]},
+ {city:"קיוטו",areas:[
+  {a:"גיון / היגשיאמה",it:[
+   {n:"קיומיזו-דרה",d:"מקדש עץ על מדרון · נוף לעיר · שלכת",p:"¥400",q:"Kiyomizu-dera"},
+   {n:"רובע גיון",d:"סמטאות גיישות ובתי תה מסורתיים",p:"חינם",q:"Gion Kyoto"},
+   {n:"סנֵן-זקה ונינֵן-זקה",d:"סמטאות מרוצפות · חנויות ומאצ'ה",p:"חינם",q:"Sannenzaka Ninenzaka"},
+   {n:"מקדש יאסקה + פארק מארויאמה",d:"מקדש מרכזי · פנסים בערב",p:"חינם",q:"Yasaka Shrine"},
+   {n:"Kodai-ji",d:"מקדש זן · תאורת לילה עונתית",p:"¥600",q:"Kodai-ji Temple"}]},
+  {a:"ארשייאמה",it:[
+   {n:"חורש הבמבוק",d:"שביל במבוק אייקוני · מוקדם בבוקר",p:"חינם",q:"Arashiyama Bamboo Grove"},
+   {n:"גשר טוגצוקיו",d:"גשר עם נוף הרים ונהר",p:"חינם",q:"Togetsukyo Bridge"},
+   {n:"מקדש טנריו-ג'י",d:"גן זן מהיפים ביפן (UNESCO)",p:"¥500",q:"Tenryu-ji"},
+   {n:"פארק הקופים איוואטאיאמה",d:"קופים חופשיים ונוף פנורמי לקיוטו",p:"¥600",q:"Iwatayama Monkey Park"}]},
+  {a:"מרכז ונישיקי",it:[
+   {n:"שוק נישיקי",d:"'מטבח קיוטו' · אוכל רחוב וטעימות",p:"חינם",q:"Nishiki Market"},
+   {n:"טירת ניג'ו",d:"ארמון שוגון · רצפות זמיר (UNESCO)",p:"¥1,300",q:"Nijo Castle"}]},
+  {a:"צפון (זהב/כסף)",it:[
+   {n:"קינקאקו-ג'י (הזהב)",d:"ביתן זהב על אגם · אייקון קיוטו",p:"¥500",q:"Kinkaku-ji"},
+   {n:"גינקאקו-ג'י (הכסף)",d:"מקדש זן וגן חול",p:"¥500",q:"Ginkaku-ji"},
+   {n:"שביל הפילוסוף",d:"טיילת תעלה · שלכת/סאקורה",p:"חינם",q:"Philosophers Path Kyoto"},
+   {n:"ריואן-ג'י",d:"גן הזן המפורסם (רוק גארדן)",p:"¥600",q:"Ryoan-ji"}]},
+  {a:"דרום (פושימי)",it:[
+   {n:"פושימי אינארי טאישה",d:"אלפי שערי טורי כתומים · הרים",p:"חינם",q:"Fushimi Inari Taisha"},
+   {n:"טופוקו-ג'י",d:"אחת השלכות היפות בקיוטו",p:"¥600",q:"Tofuku-ji"},
+   {n:"רובע הסאקה של פושימי",d:"מבשלות סאקה · טעימות",p:"¥¥",q:"Fushimi sake district Kyoto"}]}
+ ]},
+ {city:"אוסקה",areas:[
+  {a:"מינאמי (נמבה/דוטונבורי)",it:[
+   {n:"דוטונבורי",d:"שלט Glico, ניאונים ותעלה · לב אוסקה",p:"חינם",q:"Dotonbori"},
+   {n:"שינסאיבאשי",d:"שדרת קניות מקורה ענקית",p:"חינם",q:"Shinsaibashi"},
+   {n:"Hozenji Yokocho",d:"סמטת אבן אווירתית עם מקדש",p:"חינם",q:"Hozenji Yokocho"},
+   {n:"אמריקה-מורה",d:"רובע נוער · אופנה ותרבות רחוב",p:"חינם",q:"Amerikamura Osaka"}]},
+  {a:"קיטה (אומדה)",it:[
+   {n:"Umeda Sky Building",d:"תצפית 'גן צף' · שקיעה מעל אוסקה",p:"¥1,500",q:"Umeda Sky Building"},
+   {n:"HEP Five (גלגל ענק אדום)",d:"גלגל ענק על הגג במרכז אומדה",p:"¥600",q:"HEP Five Ferris Wheel"}]},
+  {a:"טירה ומרכז",it:[
+   {n:"טירת אוסקה + פארק",d:"טירה היסטורית וגנים נרחבים",p:"¥600",q:"Osaka Castle"},
+   {n:"שוק קורומון",d:"'מטבח אוסקה' · פירות ים ואוכל רחוב",p:"חינם",q:"Kuromon Ichiba Market"}]},
+  {a:"שינסקאי ומפרץ",it:[
+   {n:"שינסקאי + Tsutenkaku",d:"רובע רטרו · מגדל אייקוני וקושיקאצו",p:"מגדל ¥900",q:"Shinsekai Tsutenkaku"},
+   {n:"אקווריום קאיוקאן",d:"מהאקווריומים הגדולים בעולם · כריש לוויתני",p:"¥2,700",q:"Osaka Aquarium Kaiyukan"},
+   {n:"Universal Studios Japan",d:"פארק · Super Nintendo World · יום שלם",p:"¥8,600+",q:"Universal Studios Japan"}]}
+ ]},
+ {city:"קאו לק (תאילנד)",areas:[
+  {a:"חופים",it:[
+   {n:"חוף קאו לק (Nang Thong)",d:"החוף המרכזי · שקיעות ומסעדות",p:"חינם",q:"Nang Thong Beach Khao Lak"},
+   {n:"Bang Sak Beach",d:"חוף שקט וארוך צפונה",p:"חינם",q:"Bang Sak Beach"},
+   {n:"כף פאקרנג (Pakarang)",d:"נקודת שקיעה · ריף וסירות",p:"חינם",q:"Pakarang Cape Khao Lak"}]},
+  {a:"טבע וטיולים",it:[
+   {n:"איי הסימילן",d:"שנורקל/צלילה במים צלולים · פתוח מנובמבר",p:"טיול יום ¥¥¥",q:"Similan Islands"},
+   {n:"Khao Sok National Park",d:"אגם צ'או לאן · ג'ונגל וקאנו · לינה צפה",p:"¥¥¥",q:"Khao Sok National Park"},
+   {n:"מפל טון צ'ונג פא",d:"מפל מדורג · בריכות רחצה",p:"~฿100",q:"Ton Chong Fa Waterfall"},
+   {n:"שמורת קאו לק-לאם רו",d:"תצפית, מפלים ומסלולים",p:"~฿200",q:"Khao Lak Lam Ru National Park"},
+   {n:"מפל למפי (Lampi)",d:"מפל יפה בשמורה · פחות תיירים",p:"~฿200",q:"Lampi Waterfall"}]},
+  {a:"חוויות",it:[
+   {n:"מקלט פילים אתי",d:"האכלה ורחצה · ללא רכיבה (בחרו אתי)",p:"¥¥¥",q:"Khao Lak elephant sanctuary ethical"},
+   {n:"מוזיאון הצונאמי + סירה 813",d:"אנדרטת סירת המשמר · היסטוריה 2004",p:"חינם",q:"Tsunami Memorial Boat 813 Khao Lak"},
+   {n:"מרכז שימור צבי ים",d:"צבי ים והצלה · ליד בנג ניאנג",p:"תרומה",q:"sea turtle conservation Bang Niang"}]}
+ ]}
+];
+
+/* Non-Tokyo cities — restaurants */
+const FOOD_MORE=[
+ {city:"פוג'י (קוואגוצ'יקו)",areas:[
+  {a:"קוואגוצ'יקו",it:[
+   {n:"Hoto Fudo",meal:"צהריים",p:"¥",q:"Hoto Fudo Kawaguchiko",d:"הוטו · אטריות שטוחות ברוטב מיסו וירקות"},
+   {n:"Sanrokuen",meal:"ערב",p:"¥¥¥",q:"Sanrokuen Kawaguchiko",d:"צלייה על אירורי (אח מסורתי) · שיפודים"},
+   {n:"קפה עם נוף לאגם",meal:"קפה",p:"¥¥",q:"Kawaguchiko lake view cafe",d:"קפה מול פוג'י והאגם"},
+   {n:"Fujiyama Cookie",meal:"רחוב ומתוקים",p:"¥",q:"Fujiyama Cookie Kawaguchiko",d:"עוגיות בצורת פוג'י · מזכרת טעימה"},
+   {n:"קאיסקי בריוקאן",meal:"ערב",p:"¥¥¥¥",q:"ryokan kaiseki Kawaguchiko",d:"ארוחת קאיסקי עונתית בריוקאן"}]}
+ ]},
+ {city:"קיוטו",areas:[
+  {a:"מרכז ונישיקי",it:[
+   {n:"שוק נישיקי (טעימות)",meal:"רחוב ומתוקים",p:"¥",q:"Nishiki Market Kyoto",d:"טופו, סושי, ממתקים ומאצ'ה"},
+   {n:"Nishiki Warai",meal:"צהריים",p:"¥¥",q:"Nishiki Warai Kyoto",d:"אוקונומיאקי/טפאניאקי מקומי"},
+   {n:"Ippodo Tea (Kaboku)",meal:"קפה",p:"¥¥",q:"Ippodo Tea Kyoto",d:"בית תה ותיק · מאצ'ה משובחת"}]},
+  {a:"גיון / פונטוצ'ו",it:[
+   {n:"Kikunoi",meal:"ערב",p:"¥¥¥¥",q:"Kikunoi Kyoto",d:"קאיסקי מכוכבי מישלן · חוויה"},
+   {n:"איזקאיה בפונטוצ'ו",meal:"ערב",p:"¥¥¥",q:"Pontocho alley Kyoto",d:"סמטה על הנהר · מסעדות ואיזקיות"},
+   {n:"Gion Kappa",meal:"ערב",p:"¥¥",q:"Gion Kappa izakaya",d:"איזקאיה מקומית אותנטית"}]},
+  {a:"ארשייאמה",it:[
+   {n:"% Arabica ארשייאמה",meal:"קפה",p:"¥",q:"Arabica Arashiyama",d:"קפה עם נוף לנהר · תור"},
+   {n:"Yudofu Sagano",meal:"צהריים",p:"¥¥¥",q:"Yudofu Sagano Arashiyama",d:"טופו רותח מסורתי · ארוחה צמחונית"},
+   {n:"Omen (אודון)",meal:"צהריים",p:"¥¥",q:"Omen Arashiyama",d:"אודון קיוטו קלאסי"}]}
+ ]},
+ {city:"אוסקה",areas:[
+  {a:"דוטונבורי / נמבה",it:[
+   {n:"טקויאקי · Kukuru / Wanaka",meal:"רחוב ומתוקים",p:"¥",q:"Takoyaki Kukuru Dotonbori",d:"כדורי תמנון · מאכל הדגל של אוסקה"},
+   {n:"אוקונומיאקי · Mizuno",meal:"ערב",p:"¥¥",q:"Mizuno Okonomiyaki Dotonbori",d:"אוקונומיאקי אגדי · תור שווה"},
+   {n:"Kani Doraku",meal:"ערב",p:"¥¥¥",q:"Kani Doraku Dotonbori",d:"מסעדת סרטנים · שלט הסרטן הנע"},
+   {n:"551 Horai",meal:"רחוב ומתוקים",p:"¥",q:"551 Horai Namba",d:"ניקומן (כיסני בשר) מהאהובים"}]},
+  {a:"שינסקאי",it:[
+   {n:"קושיקאצו · Daruma",meal:"ערב",p:"¥¥",q:"Kushikatsu Daruma Shinsekai",d:"שיפודים מטוגנים · אל תטבלו פעמיים!"}]},
+  {a:"קורומון / כללי",it:[
+   {n:"שוק קורומון (טעימות)",meal:"רחוב ומתוקים",p:"¥¥",q:"Kuromon Market Osaka",d:"פירות ים על האש, בקר ופירות"},
+   {n:"בקר קובה / טפאניאקי",meal:"ערב",p:"¥¥¥¥",q:"Kobe beef teppanyaki Osaka",d:"סטייק ווגיו על הפלטה"},
+   {n:"Kinryu Ramen",meal:"צהריים",p:"¥",q:"Kinryu Ramen Dotonbori",d:"ראמן טונקוצו לילי · הדרקון הירוק"}]}
+ ]},
+ {city:"קאו לק (תאילנד)",areas:[
+  {a:"מרכז / בנג ניאנג",it:[
+   {n:"שוק לילה בנג ניאנג",meal:"רחוב ומתוקים",p:"฿",q:"Bang Niang Night Market",d:"אוכל רחוב תאילנדי (ג', ד', שבת)"},
+   {n:"Jai Restaurant",meal:"ערב",p:"฿฿",q:"Jai Restaurant Khao Lak",d:"תאילנדי אהוב · מחירים הוגנים"},
+   {n:"Pinocchio",meal:"ערב",p:"฿฿",q:"Pinocchio Restaurant Khao Lak",d:"איטלקי · פיצה ופסטה"},
+   {n:"Kruawara / Nong Nue",meal:"ערב",p:"฿",q:"Kruawara Khao Lak Thai food",d:"תאילנדי אותנטי מקומי"}]},
+  {a:"חוף",it:[
+   {n:"מסעדת פירות ים על החוף",meal:"ערב",p:"฿฿",q:"seafood restaurant Khao Lak beach",d:"דגים ופירות ים טריים מול הים"},
+   {n:"קפה עם נוף לים",meal:"קפה",p:"฿",q:"beach cafe Khao Lak",d:"קפה/שייק מול השקיעה"}]}
+ ]}
+];
+
+/* Non-Tokyo cities — shopping */
+const SHOP_MORE=[
+ {city:"קיוטו",areas:[
+  {a:"מרכז",it:[
+   {n:"ארקייד נישיקי/טרמאצ'י/שינקיוגוקו",d:"שדרות קניות מקורות · הכל במקום אחד",p:"",q:"Teramachi Shinkyogoku shopping arcade"},
+   {n:"Ippodo / Malebranche",d:"מאצ'ה ומתוקי מאצ'ה למזכרת",p:"",q:"Malebranche Kyoto matcha"},
+   {n:"Kyoto Handicraft Center",d:"מלאכת יד · קימונו, קרמיקה, תכשיטים",p:"",q:"Kyoto Handicraft Center"}]},
+  {a:"תחנת קיוטו / גיון",it:[
+   {n:"Kyoto Station (Isetan/Porta)",d:"כלבו וקניון תת-קרקעי בתחנה",p:"",q:"Kyoto Station Isetan"},
+   {n:"חנויות קימונו/יוקאטה בגיון",d:"השכרה/קנייה של לבוש מסורתי",p:"",q:"kimono shop Gion Kyoto"}]}
+ ]},
+ {city:"אוסקה",areas:[
+  {a:"מינאמי (נמבה/שינסאיבאשי)",it:[
+   {n:"ארקייד שינסאיבאשי-סוג'י",d:"600מ' שדרת קניות מקורה",p:"",q:"Shinsaibashi shopping street"},
+   {n:"Don Quijote דוטונבורי",d:"דונקי · הגלגל הענק על הגג",p:"",q:"Don Quijote Dotonbori"},
+   {n:"Namba Parks / Namba CITY",d:"קניון עם גג-גן מדורג",p:"",q:"Namba Parks"},
+   {n:"Den Den Town",d:"'אקיהברה של אוסקה' · אנימה ואלקטרוניקה",p:"",q:"Den Den Town Nipponbashi"}]},
+  {a:"קיטה (אומדה)",it:[
+   {n:"Grand Front / Hankyu / Yodobashi",d:"קניונים ענקיים סביב תחנת אוסקה/אומדה",p:"",q:"Grand Front Osaka"},
+   {n:"Pokemon Center + Nintendo (Daimaru)",d:"חנויות רשמיות בדאימארו אומדה",p:"",q:"Pokemon Center Osaka Daimaru Umeda"}]}
+ ]},
+ {city:"קאו לק (תאילנד)",areas:[
+  {a:"שווקים וחנויות",it:[
+   {n:"שוק לילה בנג ניאנג",d:"מזכרות, בגדים ואוכל · הכי שווה",p:"",q:"Bang Niang Night Market"},
+   {n:"חנויות לאורך כביש Petchkasem",d:"מרכז קאו לק · מזכרות, בגדי ים, ספא",p:"",q:"Khao Lak town shops Petchkasem"},
+   {n:"שוק מקומי לאם קאן",d:"שוק טרי מקומי · פירות וירקות",p:"",q:"Lam Kaen market Khao Lak"}]}
+ ]}
+];
+
 function initRecos(){
-  renderRecos("seeList",SEE);renderRecos("shopList",SHOP);renderFood();
-  document.querySelectorAll(".foodtab").forEach(b=>b.addEventListener("click",()=>setFoodView(b.dataset.v)));
+  const seeCities=[{city:"טוקיו",areas:SEE.concat(SEE_TOKYO_EXTRA)}].concat(SEE_MORE);
+  const shopCities=[{city:"טוקיו",areas:SHOP}].concat(SHOP_MORE);
+  const foodCities=[{city:"טוקיו",areas:groupFoodByArea(FOODITEMS.concat(FOOD_TOKYO_EXTRA))}].concat(FOOD_MORE);
+  ["seeList","shopList","eatList"].forEach(id=>openCities.add(id+"|טוקיו")); // Tokyo open by default
+  renderCityAccordion("seeList",seeCities);
+  renderCityAccordion("shopList",shopCities);
+  renderCityAccordion("eatList",foodCities);
 }
 
 
