@@ -236,6 +236,10 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-num{flex:none;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--violet) 22%,var(--card));border:1px solid color-mix(in srgb,var(--violet) 50%,transparent);display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
 .pl-date{font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;line-height:1.25}
 .pl-city{font-size:12px;color:var(--violet)}
+.pl-city-wrap{display:flex;align-items:center;gap:5px}
+.pl-city-edit{flex:none;background:none;border:none;cursor:pointer;font-size:11px;opacity:.5;padding:0 2px;line-height:1}
+.pl-city-edit:hover{opacity:1}
+.pl-city[contenteditable=true]{outline:1px solid var(--violet);border-radius:4px;padding:0 4px;min-width:24px;color:#fff}
 .pl-chev{color:var(--muted);font-size:14px;transition:.25s}
 .pl-day.open .pl-chev{transform:rotate(180deg)}
 .pl-body{display:none;padding:0 14px 14px}
@@ -1778,7 +1782,7 @@ function renderPlanner(){
     const suggHTML=sugg.length?`<div class="pl-sugg-lbl">הוספה מהירה:</div><div class="pl-sugg">${sugg.map(t=>`<button class="pl-chip" data-key="${day.key}" data-t="${esc(t)}">＋ ${esc(t)}</button>`).join("")}</div>`:"";
     return `<div class="pl-day ${open?"open":""}">
       <div class="pl-head" data-key="${day.key}">
-        <div class="pl-h-left"><span class="pl-num">${day.n}</span><div><div class="pl-date">יום ${day.wd}׳ · ${esc(day.label)}</div><div class="pl-city">${esc(DAY_AREAS[day.key]||day.city)}</div></div></div>
+        <div class="pl-h-left"><span class="pl-num">${day.n}</span><div><div class="pl-date">יום ${day.wd}׳ · ${esc(day.label)}</div><div class="pl-city-wrap"><span class="pl-city" data-key="${day.key}">${esc(dd.cityName||DAY_AREAS[day.key]||day.city)}</span><button class="pl-city-edit" data-key="${day.key}" title="שנה שם">✏️</button></div></div></div>
         <span class="pl-chev">▾</span>
       </div>
       <div class="pl-body">
@@ -1803,10 +1807,26 @@ function renderPlanner(){
   attachPlanner();
 }
 function attachPlanner(){
-  document.querySelectorAll(".pl-head").forEach(el=>el.addEventListener("click",()=>{
+  document.querySelectorAll(".pl-head").forEach(el=>el.addEventListener("click",(e)=>{
+    if(e.target.closest(".pl-city-edit")||e.target.closest("[contenteditable=true]"))return;
     const k=el.dataset.key, card=el.closest(".pl-day");
     if(openDays.has(k)){openDays.delete(k);card.classList.remove("open");}
     else{openDays.add(k);card.classList.add("open");}
+  }));
+  document.querySelectorAll(".pl-city-edit").forEach(el=>el.addEventListener("click",e=>{
+    e.stopPropagation();
+    const wrap=el.closest(".pl-city-wrap"); const span=wrap&&wrap.querySelector(".pl-city"); if(!span)return;
+    const key=el.dataset.key;
+    span.setAttribute("contenteditable","true"); span.focus();
+    const rng=document.createRange(); rng.selectNodeContents(span); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(rng);
+    const save=()=>{
+      span.removeAttribute("contenteditable");
+      const o=dayObj(key); const v=span.textContent.trim();
+      if(v){o.cityName=v; saveState();}
+      else{delete o.cityName; saveState(); renderPlanner();}
+    };
+    span.addEventListener("blur",save,{once:true});
+    span.addEventListener("keydown",ev=>{ if(ev.key==="Enter"){ev.preventDefault(); span.blur();} });
   }));
   document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
     if(e.target.closest(".pl-del")||e.target.closest(".pl-map")||e.target.closest(".pl-edit")||e.target.closest("[contenteditable=true]"))return;
