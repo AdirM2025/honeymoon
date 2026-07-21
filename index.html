@@ -191,18 +191,6 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .panel{margin-top:38px;border:1px solid var(--line);border-radius:22px;padding:24px 22px;background:linear-gradient(180deg,rgba(255,210,119,.08),rgba(20,16,42,.9))}
 .panel h3{font-family:var(--serif);font-size:24px;font-weight:900;margin-bottom:6px;color:#fff}
 .panel .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
-.rc-city{border:1px solid var(--line);border-radius:16px;margin-top:14px;overflow:hidden;background:rgba(255,255,255,.03)}
-.rc-city-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;cursor:pointer;gap:10px}
-.rc-city-name{font-family:var(--serif);font-size:21px;font-weight:900;color:#fff}
-.rc-city-meta{display:flex;align-items:center;gap:10px;flex:none}
-.rc-city-count{font-size:11.5px;font-weight:700;color:var(--gold);background:rgba(255,210,119,.12);border:1px solid rgba(255,210,119,.3);border-radius:20px;padding:2px 10px;white-space:nowrap}
-.rc-chev{color:var(--muted);transition:transform .25s;font-size:13px}
-.rc-city.open .rc-chev{transform:rotate(180deg)}
-.rc-city-body{display:none;padding:0 16px 14px}
-.rc-city.open .rc-city-body{display:block}
-.rc-area{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
-.rc-area:first-child{border-top:none;margin-top:4px}
-.rc-area-h{font-family:var(--serif);font-size:16px;font-weight:800;color:var(--violet);margin-bottom:2px}
 .tr-box{border:1px solid var(--line);border-radius:14px;padding:14px 15px;margin-bottom:12px;background:rgba(255,255,255,.03)}
 .tr-box-h{font-weight:800;font-size:15px;margin-bottom:7px;color:#fff}
 .tr-box p{font-size:13.5px;color:var(--text);opacity:.92;line-height:1.7}
@@ -248,10 +236,6 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-num{flex:none;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--violet) 22%,var(--card));border:1px solid color-mix(in srgb,var(--violet) 50%,transparent);display:grid;place-items:center;font-weight:800;font-size:13px;color:#fff}
 .pl-date{font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;line-height:1.25}
 .pl-city{font-size:12px;color:var(--violet)}
-.pl-city-wrap{display:flex;align-items:center;gap:5px}
-.pl-city-edit{flex:none;background:none;border:none;cursor:pointer;font-size:11px;opacity:.5;padding:0 2px;line-height:1}
-.pl-city-edit:hover{opacity:1}
-.pl-city[contenteditable=true]{outline:1px solid var(--violet);border-radius:4px;padding:0 4px;min-width:24px;color:#fff}
 .pl-chev{color:var(--muted);font-size:14px;transition:.25s}
 .pl-day.open .pl-chev{transform:rotate(180deg)}
 .pl-body{display:none;padding:0 14px 14px}
@@ -280,6 +264,25 @@ body{font-family:var(--sans);background:#070617;color:var(--text);line-height:1.
 .pl-item.done .pl-t{text-decoration:line-through;color:var(--muted)}
 .pl-del{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
 .pl-edit{flex:none;background:none;border:none;cursor:pointer;font-size:13px;opacity:.55;padding:2px 4px}
+.pl-drag{flex:none;cursor:grab;font-size:15px;opacity:.45;padding:2px 3px;touch-action:none;user-select:none;-webkit-user-select:none}
+.pl-drag:active{cursor:grabbing;opacity:.9}
+.pl-item.dragging{opacity:.9;border-color:var(--violet);background:rgba(176,124,255,.16);box-shadow:0 10px 26px rgba(0,0,0,.55)}
+.pl-timeedit{flex:none;font-family:inherit;font-size:11.5px;font-weight:800;color:#ffd277;background:rgba(255,210,119,.14);border:1px solid rgba(255,210,119,.3);border-radius:7px;padding:3px 5px;outline:none;font-variant-numeric:tabular-nums;width:76px;cursor:pointer}
+.pl-timeedit::-webkit-calendar-picker-indicator{filter:invert(85%) sepia(60%) saturate(500%) hue-rotate(350deg);cursor:pointer;opacity:.9}
+.reco-add{flex:none;background:rgba(176,124,255,.16);border:1px solid rgba(176,124,255,.4);color:#d9c8ff;border-radius:8px;font-size:15px;font-weight:800;line-height:1;padding:5px 9px;cursor:pointer;font-family:inherit}
+.reco-add:hover{background:rgba(176,124,255,.32);color:#fff}
+.pa-modal{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(6,3,12,.74)}
+.pa-modal.show{display:flex}
+.pa-box{width:100%;max-width:380px;background:linear-gradient(150deg,#1d1430,#150d24);border:1px solid var(--line);border-radius:18px;padding:20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.pa-h{font-family:var(--serif);font-size:19px;font-weight:900;color:#fff}
+.pa-name{font-size:13.5px;color:#ffd277;font-weight:700;margin-top:4px}
+.pa-lbl{font-size:12px;color:var(--muted);margin:14px 0 5px}
+.pa-sel,.pa-time{width:100%;font-family:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:10px 11px;outline:none}
+.pa-sel option{background:#1d1430;color:#fff}
+.pa-time::-webkit-calendar-picker-indicator{filter:invert(85%) sepia(60%) saturate(500%) hue-rotate(350deg);cursor:pointer}
+.pa-btns{display:flex;gap:9px;margin-top:18px}
+.pa-ok{flex:1;background:var(--violet);border:none;color:#fff;font-family:inherit;font-weight:800;font-size:14px;padding:11px;border-radius:10px;cursor:pointer}
+.pa-cancel{flex:none;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);font-family:inherit;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px;cursor:pointer}
 .pl-edit:hover{opacity:1}
 .pl-del:hover{opacity:1}
 .pl-empty{font-size:12.5px;color:var(--muted);padding:4px 2px;font-style:italic}
@@ -495,44 +498,9 @@ body{padding-bottom:74px}
 .cnc-answer{border-radius:14px;border:1px solid rgba(63,232,255,.3);background:rgba(63,232,255,.06);padding:16px 18px;font-size:14.5px;line-height:1.7;color:#eaf8ff;min-height:40px}
 .cnc-answer.empty{color:var(--muted);border-style:dashed;text-align:center}
 .cnc-answer b{color:var(--cyan)}
-/* ===== login overlay ===== */
-#loginOverlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;
-  background:linear-gradient(160deg,#3a1f2b 0%,#5a2d33 45%,#7a3f34 100%);direction:rtl}
-#loginOverlay .login-card{width:100%;max-width:360px;background:rgba(255,255,255,.97);border-radius:22px;
-  padding:34px 26px 30px;box-shadow:0 24px 60px rgba(0,0,0,.35);text-align:center;font-family:inherit}
-#loginOverlay .login-emoji{font-size:44px;line-height:1;margin-bottom:6px}
-#loginOverlay .login-title{margin:0 0 6px;font-size:26px;font-weight:800;color:#5a2d33;letter-spacing:.5px}
-#loginOverlay .login-sub{margin:0 0 22px;font-size:14px;color:#8a6d66;line-height:1.5}
-#loginOverlay .login-input{width:100%;box-sizing:border-box;padding:13px 15px;margin-bottom:12px;border:1.5px solid #e3d5cf;
-  border-radius:12px;font-size:16px;font-family:inherit;background:#fbf7f5;color:#3a2b28;outline:none;transition:border-color .15s}
-#loginOverlay .login-input:focus{border-color:#b8615a}
-#loginOverlay .login-err{display:none;color:#c0392b;font-size:13.5px;margin:2px 0 12px;font-weight:600}
-#loginOverlay .login-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:17px;font-weight:700;color:#fff;
-  cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#b8615a,#8a3f3a);box-shadow:0 8px 20px rgba(138,63,58,.35);
-  transition:transform .1s,opacity .15s}
-#loginOverlay .login-btn:active{transform:scale(.98)}
-#loginOverlay .login-btn:disabled{opacity:.6;cursor:default}
-#logoutBtn{position:fixed;top:calc(8px + env(safe-area-inset-top));left:10px;z-index:900;font-family:inherit;font-size:11px;color:#fff;opacity:.5;
-  background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:5px 11px;cursor:pointer}
-#logoutBtn:hover{opacity:.9}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<div id="loginOverlay">
-  <div class="login-card">
-    <div class="login-emoji">🍁</div>
-    <h1 class="login-title">ירח דבש</h1>
-    <p class="login-sub">התחברו כדי לראות ולעדכן את התוכנית המשותפת</p>
-    <input id="loginEmail" class="login-input" type="email" inputmode="email" autocomplete="username" placeholder="אימייל">
-    <input id="loginPass" class="login-input" type="password" autocomplete="current-password" placeholder="סיסמה">
-    <div id="loginErr" class="login-err"></div>
-    <button id="loginBtn" class="login-btn">כניסה</button>
-  </div>
-</div>
-<button id="logoutBtn" style="display:none">התנתק</button>
 <div class="bg"></div><div class="pattern"></div><div id="leaves"></div>
 
 <main id="app">
@@ -830,7 +798,11 @@ body{padding-bottom:74px}
   <section class="screen" id="screen-eat">
   <div class="wrap">
   <div class="screen-head">🍜 מסעדות</div>
-  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי עיר ← אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
+  <div class="hint" style="text-align:center;margin-bottom:2px">המלצות לפי אזור · ¥=זול ¥¥¥=יקר · 📍 גוגל מפות</div>
+  <div style="display:flex;gap:8px;justify-content:center;margin:2px 0 10px">
+    <button class="foodtab on" data-v="meal" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי ארוחה</button>
+    <button class="foodtab" data-v="area" style="background:rgba(160,107,255,.18);color:#fff;border:1px solid var(--line);border-radius:20px;padding:7px 16px;font-family:var(--sans);font-weight:700;font-size:13px;cursor:pointer">לפי אזור</button>
+  </div>
   <div id="eatList"></div>
   </div>
   </section>
@@ -854,6 +826,20 @@ body{padding-bottom:74px}
     <button class="tab" data-screen="eat"><span class="ti">🍜</span><span class="tl2">מסעדות</span></button>
     <button class="tab" data-screen="shop"><span class="ti">🛍️</span><span class="tl2">קניות</span></button>
   </nav>
+<div class="pa-modal" id="pa-modal">
+  <div class="pa-box">
+    <div class="pa-h">הוספה לתכנון היומי</div>
+    <div class="pa-name" id="pa-title"></div>
+    <div class="pa-lbl">לאיזה יום?</div>
+    <select class="pa-sel" id="pa-day"></select>
+    <div class="pa-lbl">שעה (אופציונלי)</div>
+    <input type="time" class="pa-time" id="pa-time">
+    <div class="pa-btns">
+      <button class="pa-ok" id="pa-ok">הוסף לתכנון</button>
+      <button class="pa-cancel" id="pa-cancel">ביטול</button>
+    </div>
+  </div>
+</div>
 <div class="saved" id="saved">נשמר ✓</div>
 <div class="install-bar" id="installBar"><span>📲 התקינו כאפליקציה למסך הבית</span><button id="installBtn">התקן</button><button class="x" id="installX">✕</button></div>
 <div class="modal" id="installModal"><div class="modal-box"><div class="modal-title">📲 שמירה כאפליקציה</div><div id="installSteps"></div><button class="modal-close" id="installClose">הבנתי 👍</button></div></div>
@@ -965,55 +951,8 @@ const store={
 async function loadState(){try{const r=await store.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
 let svT=null;
 async function saveState(flash=true){
-  const blob=JSON.stringify(state);
-  try{await store.set(KEY,blob);}catch(e){}
-  try{fsPush(blob);}catch(e){}
+  try{await store.set(KEY,JSON.stringify(state));}catch(e){}
   if(flash){const s=document.getElementById("saved");s.classList.add("show");clearTimeout(svT);svT=setTimeout(()=>s.classList.remove("show"),1100);}
-}
-
-/* ===== Firebase sync (Firestore + Auth) ===== */
-const firebaseConfig={
-  apiKey:"AIzaSyDs0y7uyOsiVX8YX9xCWIgkBEK68Kxs1w0",
-  authDomain:"spendsmart-79a6a.firebaseapp.com",
-  projectId:"spendsmart-79a6a",
-  storageBucket:"spendsmart-79a6a.firebasestorage.app",
-  messagingSenderId:"1061760536516",
-  appId:"1:1061760536516:web:3d3737391b1aee1511de91"
-};
-let fdb=null,fauth=null,currentUser=null,fsUnsub=null,booted=false,pendingRemote=null;
-try{
-  firebase.initializeApp(firebaseConfig);
-  fauth=firebase.auth();
-  fdb=firebase.firestore();
-  try{fauth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);}catch(e){}
-  try{fdb.enablePersistence({synchronizeTabs:true});}catch(e){}
-}catch(e){console.warn("Firebase init failed",e);}
-function fsRef(){return fdb.collection("trips").doc("honeymoon");}
-async function fsPush(blob){
-  if(!fdb||!currentUser)return;
-  try{await fsRef().set({blob:blob,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),by:(currentUser.email||"")});}catch(e){}
-}
-function renderAll(){
-  ["render","renderCheck","renderFlights","renderBookings","renderLetters","renderJournal","renderConcierge","renderPlanner","renderExpenses","renderPackList","renderBudget","updateProgress"]
-    .forEach(fn=>{try{window[fn]&&window[fn]();}catch(e){}});
-}
-function applyRemote(blob){
-  if(blob==null)return;
-  if(blob===JSON.stringify(state))return; // no change / our own echo
-  const ae=document.activeElement;
-  if(ae&&(ae.tagName==="INPUT"||ae.tagName==="TEXTAREA"||ae.isContentEditable)){pendingRemote=blob;return;}
-  try{
-    const incoming=JSON.parse(blob);
-    state=Object.assign(DEF(),incoming);
-    try{localStorage.setItem(KEY,blob);}catch(e){}
-    renderAll();
-  }catch(e){}
-}
-document.addEventListener("focusout",()=>{if(pendingRemote!=null){const b=pendingRemote;pendingRemote=null;setTimeout(()=>applyRemote(b),60);}});
-function startSync(){
-  if(!fdb)return;
-  if(fsUnsub)fsUnsub();
-  fsUnsub=fsRef().onSnapshot(snap=>{if(snap.exists){const d=snap.data()||{};applyRemote(d.blob);}},err=>{console.warn("snapshot error",err);});
 }
 function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function fmt(n){return n.toLocaleString("en-US")+" ₪";}
@@ -1200,6 +1139,9 @@ function render(){
           <div class="lbl">מלון — לבחור אחד</div>
           ${hotelsHTML(s)}
           <div class="tip">${esc(s.tip)}</div>
+          ${ticksHTML(s)}
+          <div class="lbl" style="margin-top:14px">📝 הערות אוכל משלכם</div>
+          <textarea class="notes food" data-seg="${s.id}" data-field="food" placeholder="מאכלים ומסעדות נוספים שבא לכם...">${esc(st.food!==undefined?st.food:s.food)}</textarea>
           <div class="imgrow"><span style="font-size:16px">📷</span><input type="url" data-seg="${s.id}" placeholder="קישור לתמונה (יופיע ברקע)" value="${esc(img)}"></div>
           <textarea class="notes" data-seg="${s.id}" data-field="notes" placeholder="הערות, לינקים, רעיונות...">${esc(st.notes||"")}</textarea>
           <div class="row"><label class="booked ${booked?"on":""}" data-seg="${s.id}"><span class="box"></span><span class="txt">המלון סגור ומוזמן</span></label></div>
@@ -1639,13 +1581,25 @@ function setupPWA(){
 /* ===== TABS ===== */
 function setupTabs(){
   const tabs=document.querySelectorAll(".tab"), screens=document.querySelectorAll(".screen");
+  let cur=null, sp={}, sTimer=null;
+  try{sp=JSON.parse(localStorage.getItem("tabscroll")||"{}")||{};}catch(e){sp={};}
+  window.addEventListener("scroll",()=>{
+    if(!cur||sTimer)return;
+    sTimer=setTimeout(()=>{
+      sTimer=null; sp[cur]=window.scrollY||0;
+      try{localStorage.setItem("tabscroll",JSON.stringify(sp));}catch(e){}
+    },200);
+  },{passive:true});
   function go(name){
+    if(cur)sp[cur]=window.scrollY||0;
     screens.forEach(s=>s.classList.toggle("active",s.id==="screen-"+name));
     tabs.forEach(t=>t.classList.toggle("active",t.dataset.screen===name));
     document.querySelectorAll("#screen-"+name+" .seg").forEach(s=>s.classList.add("in"));
     const lv=document.getElementById("leaves"); if(lv)lv.style.display=name==="home"?"":"none";
-    window.scrollTo(0,0);
-    try{localStorage.setItem("lasttab",name);}catch(e){}
+    cur=name;
+    const y=sp[name]||0;
+    requestAnimationFrame(()=>{requestAnimationFrame(()=>{window.scrollTo(0,y);});});
+    try{localStorage.setItem("lasttab",name);localStorage.setItem("tabscroll",JSON.stringify(sp));}catch(e){}
   }
   tabs.forEach(t=>t.addEventListener("click",()=>go(t.dataset.screen)));
   let last="home"; try{last=localStorage.getItem("lasttab")||"home";}catch(e){}
@@ -1742,6 +1696,7 @@ function plCleanName(t){
   return (latin||parts[0]||"").trim();
 }
 function plMapHref(it,seg){
+  if(it.q)return mapHref(it.q,seg);
   const nm=plCleanName(it.t);
   if(nm&&nm.length>=2)return mapHref(nm,seg);
   if(it.lat!=null&&it.lon!=null)return "https://www.google.com/maps/search/?api=1&query="+it.lat+","+it.lon;
@@ -1783,11 +1738,11 @@ function renderPlanner(){
     const dd=state.days[day.key]||{}; const items=dd.items||[];
     const open=openDays.has(day.key);
     const sugg=((EXTRAS[day.seg]&&EXTRAS[day.seg].see)||[]).slice(0,6);
-    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-box"></span>${it.time?`<span class="pl-time">${esc(it.time)}</span>`:""}<span class="pl-t">${esc(it.t)}</span><button class="pl-edit" data-key="${day.key}" data-idx="${idx}">✏️</button><a class="pl-map" href="${plMapHref(it,day.seg)}" target="_blank" rel="noopener">📍</a><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
+    const itemsHTML=items.length?items.map((it,idx)=>`<div class="pl-item ${it.done?"done":""}" data-key="${day.key}" data-idx="${idx}"><span class="pl-drag" title="גרירה לשינוי סדר">⠿</span><span class="pl-box"></span><input type="time" class="pl-timeedit" data-key="${day.key}" data-idx="${idx}" value="${esc(it.time||"")}" title="הגדרת שעה"><span class="pl-t">${esc(it.t)}</span><button class="pl-edit" data-key="${day.key}" data-idx="${idx}">✏️</button><a class="pl-map" href="${plMapHref(it,day.seg)}" target="_blank" rel="noopener">📍</a><button class="pl-del" data-key="${day.key}" data-idx="${idx}">🗑</button></div>`).join(""):`<div class="pl-empty">עוד לא תוכנן כלום ליום הזה</div>`;
     const suggHTML=sugg.length?`<div class="pl-sugg-lbl">הוספה מהירה:</div><div class="pl-sugg">${sugg.map(t=>`<button class="pl-chip" data-key="${day.key}" data-t="${esc(t)}">＋ ${esc(t)}</button>`).join("")}</div>`:"";
     return `<div class="pl-day ${open?"open":""}">
       <div class="pl-head" data-key="${day.key}">
-        <div class="pl-h-left"><span class="pl-num">${day.n}</span><div><div class="pl-date">יום ${day.wd}׳ · ${esc(day.label)}</div><div class="pl-city-wrap"><span class="pl-city" data-key="${day.key}">${esc(dd.cityName||DAY_AREAS[day.key]||day.city)}</span><button class="pl-city-edit" data-key="${day.key}" title="שנה שם">✏️</button></div></div></div>
+        <div class="pl-h-left"><span class="pl-num">${day.n}</span><div><div class="pl-date">יום ${day.wd}׳ · ${esc(day.label)}</div><div class="pl-city">${esc(DAY_AREAS[day.key]||day.city)}</div></div></div>
         <span class="pl-chev">▾</span>
       </div>
       <div class="pl-body">
@@ -1810,28 +1765,105 @@ function renderPlanner(){
     </div>`;
   }).join("");
   attachPlanner();
+  attachPlannerExtras();
+}
+function attachPlannerExtras(){
+  document.querySelectorAll(".pl-timeedit").forEach(el=>{
+    el.addEventListener("click",e=>e.stopPropagation());
+    el.addEventListener("change",e=>{
+      e.stopPropagation();
+      const o=dayObj(el.dataset.key), i=+el.dataset.idx;
+      if(!o.items[i])return;
+      if(el.value)o.items[i].time=el.value; else delete o.items[i].time;
+      sortDayItems(o); saveState(); renderPlanner();
+    });
+  });
+  document.querySelectorAll(".pl-items").forEach(list=>{
+    list.querySelectorAll(".pl-drag").forEach(handle=>{
+      handle.addEventListener("pointerdown",e=>{
+        e.preventDefault(); e.stopPropagation();
+        const item=handle.closest(".pl-item"); if(!item)return;
+        const key=item.dataset.key;
+        item.classList.add("dragging");
+        try{handle.setPointerCapture(e.pointerId);}catch(err){}
+        const move=ev=>{
+          const y=ev.clientY;
+          const sibs=Array.from(list.querySelectorAll(".pl-item:not(.dragging)"));
+          let placed=false;
+          for(const sb of sibs){
+            const r=sb.getBoundingClientRect();
+            if(y<r.top+r.height/2){list.insertBefore(item,sb);placed=true;break;}
+          }
+          if(!placed)list.appendChild(item);
+        };
+        const up=()=>{
+          handle.removeEventListener("pointermove",move);
+          handle.removeEventListener("pointerup",up);
+          handle.removeEventListener("pointercancel",up);
+          item.classList.remove("dragging");
+          const o=dayObj(key);
+          const order=Array.from(list.querySelectorAll(".pl-item")).map(el=>+el.dataset.idx);
+          const arr=order.map(i=>o.items[i]).filter(Boolean);
+          if(arr.length===o.items.length){o.items=arr;saveState();}
+          renderPlanner();
+        };
+        handle.addEventListener("pointermove",move);
+        handle.addEventListener("pointerup",up);
+        handle.addEventListener("pointercancel",up);
+      });
+    });
+  });
+}
+/* ===== ADD TO DAY PLAN (from reco tabs) ===== */
+let paCtx=null;
+function planToast(msg){
+  const el=document.getElementById("saved"); if(!el)return;
+  el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>{el.classList.remove("show");setTimeout(()=>{el.textContent="נשמר ✓";},350);},1500);
+}
+function openPlanAdd(name,q){
+  paCtx={name:name,q:q||""};
+  const sel=document.getElementById("pa-day"); if(!sel)return;
+  sel.innerHTML=tripDays().map(d=>`<option value="${esc(d.key)}">יום ${esc(d.wd)}׳ · ${esc(d.label)} — ${esc(DAY_AREAS[d.key]||d.city)}</option>`).join("");
+  const ttl=document.getElementById("pa-title"); if(ttl)ttl.textContent=name;
+  const tm=document.getElementById("pa-time"); if(tm)tm.value="";
+  const md=document.getElementById("pa-modal"); if(md)md.classList.add("show");
+}
+function closePlanAdd(){
+  const md=document.getElementById("pa-modal"); if(md)md.classList.remove("show");
+  paCtx=null;
+}
+function confirmPlanAdd(){
+  if(!paCtx)return;
+  const k=document.getElementById("pa-day").value;
+  const t=document.getElementById("pa-time").value;
+  const o=dayObj(k);
+  const it={t:paCtx.name,done:false};
+  if(paCtx.q)it.q=paCtx.q;
+  if(t)it.time=t;
+  o.items.push(it);
+  if(t)sortDayItems(o);
+  openDays.add(k);
+  saveState(); renderPlanner();
+  closePlanAdd();
+  planToast("נוסף לתכנון ✓");
+}
+function setupPlanAdd(){
+  document.addEventListener("click",e=>{
+    const b=e.target.closest&&e.target.closest(".reco-add");
+    if(!b)return;
+    e.preventDefault(); e.stopPropagation();
+    openPlanAdd(b.dataset.n,b.dataset.q);
+  });
+  const ok=document.getElementById("pa-ok"); if(ok)ok.addEventListener("click",confirmPlanAdd);
+  const cn=document.getElementById("pa-cancel"); if(cn)cn.addEventListener("click",closePlanAdd);
+  const md=document.getElementById("pa-modal"); if(md)md.addEventListener("click",e=>{if(e.target===md)closePlanAdd();});
 }
 function attachPlanner(){
-  document.querySelectorAll(".pl-head").forEach(el=>el.addEventListener("click",(e)=>{
-    if(e.target.closest(".pl-city-edit")||e.target.closest("[contenteditable=true]"))return;
+  document.querySelectorAll(".pl-head").forEach(el=>el.addEventListener("click",()=>{
     const k=el.dataset.key, card=el.closest(".pl-day");
     if(openDays.has(k)){openDays.delete(k);card.classList.remove("open");}
     else{openDays.add(k);card.classList.add("open");}
-  }));
-  document.querySelectorAll(".pl-city-edit").forEach(el=>el.addEventListener("click",e=>{
-    e.stopPropagation();
-    const wrap=el.closest(".pl-city-wrap"); const span=wrap&&wrap.querySelector(".pl-city"); if(!span)return;
-    const key=el.dataset.key;
-    span.setAttribute("contenteditable","true"); span.focus();
-    const rng=document.createRange(); rng.selectNodeContents(span); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(rng);
-    const save=()=>{
-      span.removeAttribute("contenteditable");
-      const o=dayObj(key); const v=span.textContent.trim();
-      if(v){o.cityName=v; saveState();}
-      else{delete o.cityName; saveState(); renderPlanner();}
-    };
-    span.addEventListener("blur",save,{once:true});
-    span.addEventListener("keydown",ev=>{ if(ev.key==="Enter"){ev.preventDefault(); span.blur();} });
   }));
   document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
     if(e.target.closest(".pl-del")||e.target.closest(".pl-map")||e.target.closest(".pl-edit")||e.target.closest("[contenteditable=true]"))return;
@@ -2104,7 +2136,7 @@ function renderPackList(){
 /* ===== AREA RECOMMENDATIONS (see/eat/shop) ===== */
 function recoMap(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent((q||"")+" Tokyo");}
 function recoRow(x,badge){
-  return `<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)"><a href="${recoMap(x.q||x.n)}" target="_blank" rel="noopener" style="text-decoration:none;font-size:17px;line-height:1.2">📍</a><div style="flex:1"><div style="font-weight:800;color:#fff;font-size:14.5px">${esc(x.n)}${x.p?` <span style="color:var(--gold);font-weight:700;font-size:11.5px">· ${esc(x.p)}</span>`:""}${badge?` <span style="background:rgba(160,107,255,.22);color:#c9b4ff;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin-inline-start:4px">${esc(badge)}</span>`:""}</div><div style="color:var(--muted);font-size:12.5px;margin-top:2px">${esc(x.d)}</div></div></div>`;
+  return `<div style="display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)"><a href="${recoMap(x.q||x.n)}" target="_blank" rel="noopener" style="text-decoration:none;font-size:17px;line-height:1.2">📍</a><button class="reco-add" data-n="${esc(x.n)}" data-q="${esc(x.q||x.n)}" title="הוסף לתכנון היומי">＋</button><div style="flex:1"><div style="font-weight:800;color:#fff;font-size:14.5px">${esc(x.n)}${x.p?` <span style="color:var(--gold);font-weight:700;font-size:11.5px">· ${esc(x.p)}</span>`:""}${badge?` <span style="background:rgba(160,107,255,.22);color:#c9b4ff;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:9px;margin-inline-start:4px">${esc(badge)}</span>`:""}</div><div style="color:var(--muted);font-size:12.5px;margin-top:2px">${esc(x.d)}</div></div></div>`;
 }
 function renderRecos(listId,data){
   const w=document.getElementById(listId); if(!w)return;
@@ -2343,250 +2375,9 @@ function renderFood(){
   w.innerHTML=keys.map(g=>`<section class="panel"><h3>${esc(g)}</h3>${groups[g].map(x=>recoRow(x,x[bk])).join("")}</section>`).join("");
 }
 function setFoodView(v){foodView=v;document.querySelectorAll(".foodtab").forEach(b=>b.classList.toggle("on",b.dataset.v===v));renderFood();}
-/* ===== city-grouped recommendations (accordion) ===== */
-const openCities=new Set();
-function renderCityAccordion(listId,cities){
-  const w=document.getElementById(listId); if(!w)return;
-  w.innerHTML=cities.map(cg=>{
-    const key=listId+"|"+cg.city;
-    const open=openCities.has(key);
-    const count=(cg.areas||[]).reduce((s,a)=>s+((a.it||[]).length),0);
-    const areasHTML=(cg.areas||[]).map(g=>`<div class="rc-area"><h4 class="rc-area-h">${esc(g.a)}</h4>${(g.it||[]).map(x=>recoRow(x,x.meal||"")).join("")}</div>`).join("");
-    return `<div class="rc-city ${open?"open":""}"><div class="rc-city-head" data-key="${esc(key)}"><div class="rc-city-name">${esc(cg.city)}</div><div class="rc-city-meta"><span class="rc-city-count">${count} 📍</span><span class="rc-chev">▾</span></div></div><div class="rc-city-body">${areasHTML}</div></div>`;
-  }).join("");
-  w.querySelectorAll(".rc-city-head").forEach(el=>el.addEventListener("click",()=>{
-    const k=el.dataset.key,card=el.closest(".rc-city");
-    if(openCities.has(k)){openCities.delete(k);card.classList.remove("open");}
-    else{openCities.add(k);card.classList.add("open");}
-  }));
-}
-function groupFoodByArea(items){
-  const g={},order=[];
-  items.forEach(x=>{ if(!g[x.area]){g[x.area]=[];order.push(x.area);} g[x.area].push(x); });
-  return order.map(a=>({a,it:g[a]}));
-}
-
-/* Tokyo gap-fills (previously only inside the מסלול blocks) */
-const SEE_TOKYO_EXTRA=[
- {a:"שלכת ונקודות עונתיות",it:[
-  {n:"גן ריקוגיֵן",d:"גן אדו קלאסי · תאורת שלכת לילה מרהיבה (נוב')",p:"¥300",q:"Rikugien Garden Tokyo"},
-  {n:"שדרת הגינקו · מייג'י גאיין",d:"מנהרת עצי גינקו זהובים · סוף נובמבר",p:"חינם",q:"Meiji Jingu Gaien Ginkgo Avenue"},
-  {n:"הר טאקאו (Mt Takao)",d:"טיול יום קליל · שלכת ונוף פוג'י",p:"~¥1,000",q:"Mount Takao"}]}
-];
-const FOOD_TOKYO_EXTRA=[
- {n:"Gonpachi Nishi-Azabu",area:"רופונגי / אזאבו",meal:"ערב",p:"¥¥¥",q:"Gonpachi Nishi-Azabu",d:"האיזקאיה שהשראה ל-Kill Bill"},
- {n:"Tsuta (蔦)",area:"רשת / כללי",meal:"צהריים",p:"¥¥",q:"Tsuta Ramen Tokyo",d:"ראמן מכוכב מישלן · שויו עם שמן כמהין"},
- {n:"דפאצ'יקה · Ginza Six",area:"גינזה",meal:"רחוב ומתוקים",p:"¥¥",q:"Ginza Six depachika",d:"מרתף מזון יוקרתי · מתוקים וטעימות"}
-];
-
-/* Non-Tokyo cities — attractions */
-const SEE_MORE=[
- {city:"פוג'י (קוואגוצ'יקו)",areas:[
-  {a:"קוואגוצ'יקו",it:[
-   {n:"פגודת צ'ורייטו (Arakura Sengen)",d:"הנוף האייקוני של פוג'י מאחורי הפגודה · ~400 מדרגות · לבוא לפני 8:00",p:"חינם",q:"Chureito Pagoda"},
-   {n:"אגם קוואגוצ'יקו",d:"השתקפות פוג'י במים · טיילת, אופניים וסירות ברבור",p:"חינם",q:"Lake Kawaguchiko"},
-   {n:"מסדרון המייפל (Momiji Kairo)",d:"שדרת מייפל אדומה על תעלה · שיא ותאורת לילה באמצע נובמבר",p:"חינם",q:"Kawaguchiko Maple Corridor Momiji Kairo"},
-   {n:"רכבל Mt Kachi Kachi",d:"תצפית פוג'י מעל האגם · נדנדת נוף",p:"¥900",q:"Mount Fuji Panoramic Ropeway"},
-   {n:"Oishi Park",d:"פארק על האגם · נוף פוג'י ופרחים עונתיים · יפה בשקיעה",p:"חינם",q:"Oishi Park Kawaguchiko"},
-   {n:"שייט אגם קוואגוצ'יקו",d:"שייט נופש עם נוף להר מהמים",p:"~¥1,000",q:"Lake Kawaguchiko sightseeing cruise"},
-   {n:"מקדש ארקורה פוג'י סנגן",d:"שער טורי עם פוג'י ברקע",p:"חינם",q:"Arakura Fuji Sengen Shrine"},
-   {n:"אושינו האקאי",d:"בריכות מי-מעיין צלולות · כפר מסורתי",p:"חינם",q:"Oshino Hakkai"},
-   {n:"כפר Saiko Iyashi-no-Sato",d:"כפר גגות קש שהפך למוזיאון פתוח · מלאכת יד",p:"~¥500",q:"Saiko Iyashi no Sato Nenba"},
-   {n:"Kawaguchiko Music Forest",d:"מוזיאון תיבות נגינה וגנים אירופיים",p:"¥¥",q:"Kawaguchiko Music Forest Museum"}]},
-  {a:"פוג'יושידה / יאמאנקה",it:[
-   {n:"רחוב Honcho",d:"נוף פוג'י בקצה רחוב רטרו · תמונה מפורסמת",p:"חינם",q:"Honcho Street Fujiyoshida"},
-   {n:"Fuji-Q Highland",d:"פארק שעשועים עם רכבות הרים ונוף פוג'י",p:"מתקן ¥¥",q:"Fuji-Q Highland"},
-   {n:"אגם יאמאנקה",d:"האגם הגדול בחמשת האגמים · שקט וברבורים",p:"חינם",q:"Lake Yamanaka"}]},
-  {a:"האקונה (אופציונלי)",it:[
-   {n:"Hakone Open-Air Museum",d:"מוזיאון פיסול תחת כיפת השמיים",p:"¥2,000",q:"Hakone Open Air Museum"},
-   {n:"שייט אגם אשי + Torii of Peace",d:"ספינת שודדים ושער אדום במים",p:"¥¥",q:"Lake Ashi Hakone torii"},
-   {n:"Owakudani",d:"עמק געשי · ביצים שחורות ('חיים ארוכים')",p:"רכבל ¥¥",q:"Owakudani"},
-   {n:"מקדש האקונה",d:"מקדש ביער עם שער במים",p:"חינם",q:"Hakone Shrine"}]}
- ]},
- {city:"קיוטו",areas:[
-  {a:"גיון / היגשיאמה",it:[
-   {n:"קיומיזו-דרה",d:"מקדש עץ על מדרון · נוף לעיר · שלכת · לבוא מוקדם",p:"¥400",q:"Kiyomizu-dera"},
-   {n:"רובע גיון",d:"סמטאות גיישות ובתי תה מסורתיים · מאיקו ~17:30",p:"חינם",q:"Gion Kyoto"},
-   {n:"סנֵן-זקה ונינֵן-זקה",d:"סמטאות מרוצפות · חנויות ומאצ'ה",p:"חינם",q:"Sannenzaka Ninenzaka"},
-   {n:"פגודת יאסקה (Hokan-ji)",d:"פגודת עץ בת 5 קומות · הרחוב הכי מצולם בקיוטו",p:"חינם מבחוץ",q:"Yasaka Pagoda Hokanji"},
-   {n:"מקדש יאסקה + פארק מארויאמה",d:"מקדש מרכזי · פנסים בערב",p:"חינם",q:"Yasaka Shrine"},
-   {n:"Sanjusangendo",d:"אולם עם 1,001 פסלי קאנון · מרשים",p:"¥600",q:"Sanjusangendo"},
-   {n:"Kodai-ji",d:"מקדש זן · תאורת לילה עונתית",p:"¥600",q:"Kodai-ji Temple"}]},
-  {a:"ארשייאמה",it:[
-   {n:"חורש הבמבוק",d:"שביל במבוק אייקוני · מוקדם בבוקר (לפני 8:00)",p:"חינם",q:"Arashiyama Bamboo Grove"},
-   {n:"גשר טוגצוקיו",d:"גשר עם נוף הרים ונהר",p:"חינם",q:"Togetsukyo Bridge"},
-   {n:"מקדש טנריו-ג'י",d:"גן זן מהיפים ביפן (UNESCO)",p:"¥500",q:"Tenryu-ji"},
-   {n:"וילת Okochi Sanso",d:"וילה וגן עם נוף · שקט אחרי הבמבוק · כולל תה",p:"¥1,000",q:"Okochi Sanso Villa"},
-   {n:"פארק הקופים איוואטאיאמה",d:"קופים חופשיים ונוף פנורמי לקיוטו",p:"¥600",q:"Iwatayama Monkey Park"}]},
-  {a:"מרכז ונישיקי",it:[
-   {n:"שוק נישיקי",d:"'מטבח קיוטו' · אוכל רחוב וטעימות",p:"חינם",q:"Nishiki Market"},
-   {n:"מוזיאון נינטנדו",d:"מוזיאון האיקונים של נינטנדו · להזמין מראש (הגרלה)",p:"¥3,300",q:"Nintendo Museum Kyoto"},
-   {n:"טירת ניג'ו",d:"ארמון שוגון · רצפות זמיר (UNESCO)",p:"¥1,300",q:"Nijo Castle"},
-   {n:"מרכז האריגה נישיג'ין",d:"מופעי קימונו ואריגה מסורתית",p:"חינם",q:"Nishijin Textile Center"}]},
-  {a:"צפון (זהב/כסף)",it:[
-   {n:"קינקאקו-ג'י (הזהב)",d:"ביתן זהב על אגם · אייקון קיוטו",p:"¥500",q:"Kinkaku-ji"},
-   {n:"גינקאקו-ג'י (הכסף)",d:"מקדש זן וגן חול",p:"¥500",q:"Ginkaku-ji"},
-   {n:"שביל הפילוסוף",d:"טיילת תעלה · שלכת/סאקורה",p:"חינם",q:"Philosophers Path Kyoto"},
-   {n:"נאנזן-ג'י + אמת המים",d:"מקדש זן ענק ואקוודוקט לבנים רומנטי",p:"חינם/¥600",q:"Nanzen-ji aqueduct"},
-   {n:"אייקנדו (Eikando)",d:"אחד ממקדשי השלכת היפים · תאורת לילה בנובמבר",p:"¥1,000",q:"Eikando Zenrinji autumn"},
-   {n:"ריואן-ג'י",d:"גן הזן המפורסם (רוק גארדן)",p:"¥600",q:"Ryoan-ji"}]},
-  {a:"דרום (פושימי)",it:[
-   {n:"פושימי אינארי טאישה",d:"אלפי שערי טורי כתומים · הרים · פתוח 24ש'",p:"חינם",q:"Fushimi Inari Taisha"},
-   {n:"טופוקו-ג'י",d:"אחת השלכות היפות בקיוטו (גשר טופוקו)",p:"¥600",q:"Tofuku-ji"},
-   {n:"רובע הסאקה של פושימי",d:"מבשלות סאקה · טעימות ושייט Jikkokubune",p:"¥¥",q:"Fushimi sake district Kyoto"}]}
- ]},
- {city:"אוסקה",areas:[
-  {a:"מינאמי (נמבה/דוטונבורי)",it:[
-   {n:"דוטונבורי",d:"שלט Glico, ניאונים ותעלה · לב אוסקה · שיא 19:00-22:00",p:"חינם",q:"Dotonbori"},
-   {n:"שינסאיבאשי",d:"שדרת קניות מקורה ענקית",p:"חינם",q:"Shinsaibashi"},
-   {n:"Hozenji Yokocho",d:"סמטת אבן אווירתית עם מקדש מכוסה טחב",p:"חינם",q:"Hozenji Yokocho"},
-   {n:"מקדש Namba Yasaka",d:"במה בצורת ראש אריה ענק · ייחודי לצילום",p:"חינם",q:"Namba Yasaka Shrine"},
-   {n:"אמריקה-מורה",d:"רובע נוער · אופנה ותרבות רחוב",p:"חינם",q:"Amerikamura Osaka"}]},
-  {a:"קיטה (אומדה)",it:[
-   {n:"Umeda Sky Building",d:"תצפית 'גן צף' · שקיעה מעל אוסקה",p:"¥1,500",q:"Umeda Sky Building"},
-   {n:"HEP Five (גלגל ענק אדום)",d:"גלגל ענק על הגג במרכז אומדה",p:"¥600",q:"HEP Five Ferris Wheel"}]},
-  {a:"טירה ומרכז",it:[
-   {n:"טירת אוסקה + פארק",d:"טירה היסטורית וגנים נרחבים",p:"¥600",q:"Osaka Castle"},
-   {n:"מוזיאון ההיסטוריה של אוסקה",d:"נוף לטירה + תצוגות היסטוריה · ליד הטירה",p:"¥600",q:"Osaka Museum of History"},
-   {n:"שוק קורומון",d:"'מטבח אוסקה' · פירות ים ואוכל רחוב · 10:00-13:00",p:"חינם",q:"Kuromon Ichiba Market"}]},
-  {a:"שינסקאי / טנוג'י",it:[
-   {n:"שינסקאי + Tsutenkaku",d:"רובע רטרו · מגדל אייקוני וקושיקאצו",p:"מגדל ¥900",q:"Shinsekai Tsutenkaku"},
-   {n:"Abeno Harukas",d:"הבניין הגבוה ביפן · תצפית 300מ' (קומה 60)",p:"¥1,500",q:"Abeno Harukas observation"},
-   {n:"מקדש Shitennoji",d:"מהמקדשים העתיקים ביפן (1,400 שנה) · שוק פשפשים ב-21/22",p:"¥300",q:"Shitennoji Temple"},
-   {n:"Spa World",d:"קומפלקס אונסן ענק · אמבטיות בסגנונות עולם",p:"¥¥",q:"Spa World Osaka"}]},
-  {a:"מפרץ (Bay)",it:[
-   {n:"אקווריום קאיוקאן",d:"מהאקווריומים הגדולים בעולם · כריש לוויתני",p:"¥2,700",q:"Osaka Aquarium Kaiyukan"},
-   {n:"גלגל ענק Tempozan",d:"נוף למפרץ · לצד האקווריום",p:"¥900",q:"Tempozan Ferris Wheel"},
-   {n:"Universal Studios Japan",d:"פארק · Super Nintendo World · יום שלם · להזמין",p:"¥8,600+",q:"Universal Studios Japan"}]}
- ]},
- {city:"קאו לק (תאילנד)",areas:[
-  {a:"חופים",it:[
-   {n:"חוף קאו לק (Nang Thong)",d:"החוף המרכזי · שקיעות ומסעדות",p:"חינם",q:"Nang Thong Beach Khao Lak"},
-   {n:"Bang Sak Beach",d:"חוף שקט וארוך צפונה · צל של קזוארינות",p:"חינם",q:"Bang Sak Beach"},
-   {n:"חוף קוקוס (Coconut Beach)",d:"חוף שקט ורדוד · טוב לזוגות",p:"חינם",q:"Coconut Beach Khao Lak"},
-   {n:"Pak Weep / White Sand Beach",d:"חופים לבנים צפוניים · בתי קפה על החול",p:"חינם",q:"Pakweep Beach Khao Lak"},
-   {n:"כף פאקרנג (Pakarang)",d:"נקודת שקיעה · ריף וסירות",p:"חינם",q:"Pakarang Cape Khao Lak"}]},
-  {a:"טבע וטיולים",it:[
-   {n:"איי הסימילן",d:"שנורקל/צלילה במים צלולים · פתוח מ-15 באוקטובר",p:"טיול יום ฿฿฿",q:"Similan Islands"},
-   {n:"איי הסורין (Surin)",d:"שנורקל מעולה, פחות עמוס מסימילן · צ'אק לוקה",p:"טיול יום ฿฿฿",q:"Surin Islands"},
-   {n:"Khao Sok National Park",d:"אגם צ'או לאן · ג'ונגל, קאנו ולינה צפה",p:"฿฿฿",q:"Khao Sok National Park"},
-   {n:"מפל טון צ'ונג פא",d:"מפל מדורג · בריכות רחצה",p:"~฿100",q:"Ton Chong Fa Waterfall"},
-   {n:"שמורת קאו לק-לאם רו",d:"תצפית, מפלים ומסלולים",p:"~฿200",q:"Khao Lak Lam Ru National Park"},
-   {n:"מפל למפי (Lampi)",d:"מפל יפה בשמורה · פחות תיירים",p:"~฿200",q:"Lampi Waterfall"}]},
-  {a:"חוויות והיסטוריה",it:[
-   {n:"מקלט פילים אתי",d:"האכלה ורחצה · ללא רכיבה (בחרו אתי)",p:"฿฿฿",q:"Khao Lak elephant sanctuary ethical"},
-   {n:"מוזיאון הצונאמי + סירה 813",d:"אנדרטת סירת משמר החוף · היסטוריה 2004",p:"חינם",q:"Tsunami Memorial Boat 813 Khao Lak"},
-   {n:"פארק הזיכרון באן נאם קם",d:"אנדרטת גל · קהילה שנפגעה קשה",p:"חינם",q:"Ban Nam Khem Tsunami Memorial Park"},
-   {n:"מרכז שימור צבי ים",d:"צבי ים והצלה · ליד בנג ניאנג",p:"תרומה",q:"sea turtle conservation Bang Niang"},
-   {n:"עיסוי תאילנדי (Bussaba)",d:"מסאז' מעולה במחיר מקומי · לפנק אחרי טיול",p:"฿",q:"Bussaba Massage Khao Lak"}]},
-  {a:"טאקואה פא (עיירה עתיקה)",it:[
-   {n:"Little Amazon",d:"שייט קאנו/סירה בנהר בין עצי מנגרוב · 'אמזונס הקטן'",p:"฿฿",q:"Little Amazon Takua Pa"},
-   {n:"עיר עתיקה טאקואה פא",d:"רחוב סיני-פורטוגלי · שוק הליכה בימי ראשון",p:"חינם",q:"Takua Pa Old Town"}]}
- ]}
-];
-
-/* Non-Tokyo cities — restaurants */
-const FOOD_MORE=[
- {city:"פוג'י (קוואגוצ'יקו)",areas:[
-  {a:"קוואגוצ'יקו",it:[
-   {n:"Hoto Fudo",meal:"צהריים",p:"¥",q:"Hoto Fudo Kawaguchiko",d:"הוטו · אטריות שטוחות ברוטב מיסו וירקות"},
-   {n:"Kosaku",meal:"צהריים",p:"¥¥",q:"Kosaku Hoto Kawaguchiko",d:"הוטו ויאקיניקו · מוסד מקומי ותיק"},
-   {n:"Fuji Tempura Idaten",meal:"צהריים",p:"¥¥",q:"Fuji Tempura Idaten",d:"טמפורה טרייה ופריכה · פופולרי"},
-   {n:"Sanrokuen",meal:"ערב",p:"¥¥¥",q:"Sanrokuen Kawaguchiko",d:"צלייה על אירורי (אח מסורתי) · דגים ושיפודים"},
-   {n:"Japanese Dining Suzukiya",meal:"ערב",p:"¥¥¥",q:"Japanese Dining Suzukiya Kawaguchiko",d:"מסעדה יפנית מוקפדת · טובה לערב"},
-   {n:"らぁ麺 八葉 (ראמן האצ'יו)",meal:"צהריים",p:"¥",q:"Rahmen Hachiyo Kawaguchiko",d:"ראמן עשיר וטעים · ליד התחנה"},
-   {n:"% Arabica Fujikawaguchiko",meal:"קפה",p:"¥",q:"Arabica Fujikawaguchiko",d:"קפה עם נוף לאגם ולפוג'י"},
-   {n:"Lake Bake",meal:"קפה",p:"¥",q:"Lake Bake Kawaguchiko",d:"מאפייה על האגם · מאפים ודונאטס"},
-   {n:"Fujiyama Cookie",meal:"רחוב ומתוקים",p:"¥",q:"Fujiyama Cookie Kawaguchiko",d:"עוגיות בצורת פוג'י · מזכרת טעימה"}]}
- ]},
- {city:"קיוטו",areas:[
-  {a:"מרכז ונישיקי",it:[
-   {n:"שוק נישיקי (טעימות)",meal:"רחוב ומתוקים",p:"¥",q:"Nishiki Market Kyoto",d:"טופו, סושי, ממתקים ומאצ'ה"},
-   {n:"Nishiki Warai",meal:"צהריים",p:"¥¥",q:"Nishiki Warai Kyoto",d:"אוקונומיאקי/טפאניאקי מקומי"},
-   {n:"Honke Owariya",meal:"צהריים",p:"¥¥",q:"Honke Owariya Kyoto",d:"סובה בת מאות שנים · מוסד קיוטו"},
-   {n:"Katsukura",meal:"צהריים",p:"¥¥",q:"Katsukura Kyoto tonkatsu",d:"טונקצו מעולה · כרוב חופשי"},
-   {n:"Ippodo Tea (Kaboku)",meal:"קפה",p:"¥¥",q:"Ippodo Tea Kyoto",d:"בית תה ותיק · מאצ'ה משובחת"}]},
-  {a:"גיון / פונטוצ'ו",it:[
-   {n:"Kikunoi",meal:"ערב",p:"¥¥¥¥",q:"Kikunoi Kyoto",d:"קאיסקי מכוכבי מישלן · חוויה · להזמין"},
-   {n:"איזקאיה בפונטוצ'ו",meal:"ערב",p:"¥¥¥",q:"Pontocho alley Kyoto",d:"סמטה על הנהר · מסעדות ואיזקיות"},
-   {n:"Gion Tsujiri",meal:"רחוב ומתוקים",p:"¥¥",q:"Gion Tsujiri",d:"פרפה ומתוקי מאצ'ה מהמפורסמים"},
-   {n:"Gion Kappa",meal:"ערב",p:"¥¥",q:"Gion Kappa izakaya",d:"איזקאיה מקומית אותנטית"}]},
-  {a:"ארשייאמה",it:[
-   {n:"% Arabica ארשייאמה",meal:"קפה",p:"¥",q:"Arabica Arashiyama",d:"קפה עם נוף לנהר · תור"},
-   {n:"Yudofu Sagano",meal:"צהריים",p:"¥¥¥",q:"Yudofu Sagano Arashiyama",d:"טופו רותח מסורתי · ארוחה צמחונית"},
-   {n:"Omen (אודון)",meal:"צהריים",p:"¥¥",q:"Omen Arashiyama",d:"אודון קיוטו קלאסי"}]}
- ]},
- {city:"אוסקה",areas:[
-  {a:"דוטונבורי / נמבה",it:[
-   {n:"טקויאקי · Kukuru / Wanaka",meal:"רחוב ומתוקים",p:"¥",q:"Takoyaki Wanaka Namba",d:"כדורי תמנון · מאכל הדגל של אוסקה"},
-   {n:"אוקונומיאקי · Mizuno",meal:"ערב",p:"¥¥",q:"Mizuno Okonomiyaki Dotonbori",d:"אוקונומיאקי אגדי · תור שווה"},
-   {n:"Kani Doraku",meal:"ערב",p:"¥¥¥",q:"Kani Doraku Dotonbori",d:"מסעדת סרטנים · שלט הסרטן הנע"},
-   {n:"551 Horai",meal:"רחוב ומתוקים",p:"¥",q:"551 Horai Namba",d:"ניקומן (כיסני בשר) מהאהובים"},
-   {n:"Rikuro's (צ'יזקייק)",meal:"רחוב ומתוקים",p:"¥",q:"Rikuro Cheesecake Namba",d:"עוגת גבינה יפנית אוורירית ורוטטת"}]},
-  {a:"שינסקאי",it:[
-   {n:"קושיקאצו · Daruma",meal:"ערב",p:"¥¥",q:"Kushikatsu Daruma Shinsekai",d:"שיפודים מטוגנים · אל תטבלו פעמיים!"}]},
-  {a:"קורומון / כללי",it:[
-   {n:"שוק קורומון (טעימות)",meal:"רחוב ומתוקים",p:"¥¥",q:"Kuromon Market Osaka",d:"פירות ים על האש, בקר ופירות"},
-   {n:"Endo Sushi",meal:"ארוחת בוקר",p:"¥¥",q:"Endo Sushi Osaka fish market",d:"סושי בוקר בשוק הדגים · מוסד"},
-   {n:"בקר קובה / טפאניאקי",meal:"ערב",p:"¥¥¥¥",q:"Kobe beef teppanyaki Osaka",d:"סטייק ווגיו על הפלטה"},
-   {n:"Kinryu Ramen",meal:"צהריים",p:"¥",q:"Kinryu Ramen Dotonbori",d:"ראמן טונקוצו לילי · הדרקון הירוק"}]}
- ]},
- {city:"קאו לק (תאילנד)",areas:[
-  {a:"מרכז / בנג ניאנג",it:[
-   {n:"שוק לילה בנג ניאנג",meal:"רחוב ומתוקים",p:"฿",q:"Bang Niang Night Market",d:"אוכל רחוב תאילנדי (ב',ד',ה',שבת)"},
-   {n:"Nai Muang Khao Lak",meal:"ערב",p:"฿฿",q:"Nai Muang Khao Lak Michelin",d:"תאילנדי דרומי במדריך מישלן · אווירה רטרו · שווה"},
-   {n:"Ruen Mai",meal:"ערב",p:"฿฿",q:"Ruen Mai Restaurant Khao Lak",d:"תאילנדי מסורתי בגן · קארי ופירות ים"},
-   {n:"Jai Restaurant",meal:"ערב",p:"฿฿",q:"Jai Restaurant Khao Lak",d:"תאילנדי אהוב · מחירים הוגנים"},
-   {n:"Pinocchio / Peter Pan",meal:"ערב",p:"฿฿",q:"Pinocchio Restaurant Khao Lak",d:"איטלקי · פיצה ופסטה מהטובות באזור"},
-   {n:"Qcumber",meal:"צהריים",p:"฿",q:"Qcumber Khao Lak",d:"תאילנדי בריא, סלטים ושייקים · נעים"}]},
-  {a:"חוף",it:[
-   {n:"Coconut Seafood Restaurant & Bar",meal:"ערב",p:"฿฿",q:"Coconut Seafood Restaurant Khao Lak",d:"פירות ים עם הרגליים בחול"},
-   {n:"מסעדת פירות ים על החוף",meal:"ערב",p:"฿฿",q:"seafood restaurant Khao Lak beach",d:"דגים ופירות ים טריים מול הים"},
-   {n:"Pam's Restaurant & Bar",meal:"ערב",p:"฿฿",q:"Pams Restaurant Bar Khao Lak",d:"תאילנדי בגן פיות מוארת · רומנטי"},
-   {n:"קפה עם נוף לים",meal:"קפה",p:"฿",q:"beach cafe Khao Lak",d:"קפה/שייק מול השקיעה"}]}
- ]}
-];
-
-/* Non-Tokyo cities — shopping */
-const SHOP_MORE=[
- {city:"קיוטו",areas:[
-  {a:"מרכז",it:[
-   {n:"ארקייד נישיקי/טרמאצ'י/שינקיוגוקו",d:"שדרות קניות מקורות · הכל במקום אחד",p:"",q:"Teramachi Shinkyogoku shopping arcade"},
-   {n:"SOU · SOU",d:"מותג טקסטיל ואופנה יפני מודרני · גרבי טאבי",p:"",q:"SOU SOU Kyoto"},
-   {n:"Ippodo / Malebranche",d:"מאצ'ה ומתוקי מאצ'ה למזכרת",p:"",q:"Malebranche Kyoto matcha"},
-   {n:"Kyoto Handicraft Center",d:"מלאכת יד · קימונו, קרמיקה, תכשיטים",p:"",q:"Kyoto Handicraft Center"}]},
-  {a:"תחנת קיוטו / גיון",it:[
-   {n:"Kyoto Station (Isetan/Porta)",d:"כלבו וקניון תת-קרקעי בתחנה",p:"",q:"Kyoto Station Isetan"},
-   {n:"חנויות קימונו/יוקאטה בגיון",d:"השכרה/קנייה של לבוש מסורתי",p:"",q:"kimono shop Gion Kyoto"}]}
- ]},
- {city:"אוסקה",areas:[
-  {a:"מינאמי (נמבה/שינסאיבאשי)",it:[
-   {n:"ארקייד שינסאיבאשי-סוג'י",d:"600מ' שדרת קניות מקורה",p:"",q:"Shinsaibashi shopping street"},
-   {n:"Don Quijote דוטונבורי",d:"דונקי · הגלגל הענק על הגג",p:"",q:"Don Quijote Dotonbori"},
-   {n:"Doguyasuji Arcade",d:"סמטת כלי מטבח וסכינים · 'קפבשי של אוסקה'",p:"",q:"Doguyasuji Arcade Osaka"},
-   {n:"Namba Parks / Namba CITY",d:"קניון עם גג-גן מדורג",p:"",q:"Namba Parks"},
-   {n:"Den Den Town",d:"'אקיהברה של אוסקה' · אנימה ואלקטרוניקה",p:"",q:"Den Den Town Nipponbashi"}]},
-  {a:"קיטה (אומדה)",it:[
-   {n:"Grand Front / Hankyu / Yodobashi",d:"קניונים ענקיים סביב תחנת אוסקה/אומדה",p:"",q:"Grand Front Osaka"},
-   {n:"Pokemon Center + Nintendo (Daimaru)",d:"חנויות רשמיות בדאימארו אומדה",p:"",q:"Pokemon Center Osaka Daimaru Umeda"}]}
- ]},
- {city:"קאו לק (תאילנד)",areas:[
-  {a:"שווקים וחנויות",it:[
-   {n:"שוק לילה בנג ניאנג",d:"מזכרות, בגדים ואוכל · הכי שווה",p:"",q:"Bang Niang Night Market"},
-   {n:"Build Market (שוק קונטיינרים)",d:"שוק בקונטיינרים · אוכל ורכבת צעצוע · אווירה",p:"",q:"Build Market Khao Lak"},
-   {n:"חנויות לאורך כביש Petchkasem",d:"מרכז קאו לק · מזכרות, בגדי ים, ספא",p:"",q:"Khao Lak town shops Petchkasem"},
-   {n:"שוק מקומי לאם קאן",d:"שוק טרי מקומי · פירות וירקות",p:"",q:"Lam Kaen market Khao Lak"}]}
- ]}
-];
-
 function initRecos(){
-  const seeCities=[{city:"טוקיו",areas:SEE.concat(SEE_TOKYO_EXTRA)}].concat(SEE_MORE);
-  const shopCities=[{city:"טוקיו",areas:SHOP}].concat(SHOP_MORE);
-  const foodCities=[{city:"טוקיו",areas:groupFoodByArea(FOODITEMS.concat(FOOD_TOKYO_EXTRA))}].concat(FOOD_MORE);
-  ["seeList","shopList","eatList"].forEach(id=>openCities.add(id+"|טוקיו")); // Tokyo open by default
-  renderCityAccordion("seeList",seeCities);
-  renderCityAccordion("shopList",shopCities);
-  renderCityAccordion("eatList",foodCities);
+  renderRecos("seeList",SEE);renderRecos("shopList",SHOP);renderFood();
+  document.querySelectorAll(".foodtab").forEach(b=>b.addEventListener("click",()=>setFoodView(b.dataset.v)));
 }
 
 
@@ -2654,59 +2445,13 @@ function seedDefaults(){
   return changed;
 }
 
-async function bootApp(){
-  if(booted)return; booted=true;
-  let saved=null,hadCloud=false;
-  if(fdb){
-    try{const snap=await fsRef().get();if(snap.exists&&snap.data()&&snap.data().blob){saved=JSON.parse(snap.data().blob);hadCloud=true;}}catch(e){}
-  }
-  if(!saved){saved=await loadState();}
+(async function(){
+  const saved=await loadState();
   if(saved)state=Object.assign(DEF(),saved);
-  const seeded=seedDefaults();
-  if(!hadCloud){try{await fsPush(JSON.stringify(state));}catch(e){}}
-  else if(seeded){saveState(false);}
+  if(seedDefaults())saveState(false);
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
-  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather(); initRecos();
-  const lo=document.getElementById("logoutBtn"); if(lo)lo.style.display="block";
-  startSync();
-}
-
-/* ===== Auth gate ===== */
-function showLogin(show){const ov=document.getElementById("loginOverlay");if(ov)ov.style.display=show?"flex":"none";}
-function loginErr(msg){const e=document.getElementById("loginErr");if(e){e.textContent=msg||"";e.style.display=msg?"block":"none";}}
-async function doLogin(){
-  const em=((document.getElementById("loginEmail")||{}).value||"").trim();
-  const pw=(document.getElementById("loginPass")||{}).value||"";
-  const btn=document.getElementById("loginBtn");
-  if(!em||!pw){loginErr("נא למלא אימייל וסיסמה");return;}
-  loginErr(""); if(btn){btn.disabled=true;btn.textContent="מתחבר…";}
-  try{await fauth.signInWithEmailAndPassword(em,pw);}
-  catch(e){
-    const c=(e&&e.code)||""; let m="אירעה שגיאה, נסו שוב";
-    if(c.indexOf("wrong-password")>=0||c.indexOf("invalid-credential")>=0)m="אימייל או סיסמה שגויים";
-    else if(c.indexOf("user-not-found")>=0)m="המשתמש לא נמצא";
-    else if(c.indexOf("invalid-email")>=0)m="כתובת אימייל לא תקינה";
-    else if(c.indexOf("too-many-requests")>=0)m="יותר מדי ניסיונות, נסו מאוחר יותר";
-    else if(c.indexOf("network")>=0)m="אין חיבור לרשת";
-    loginErr(m);
-  }finally{if(btn){btn.disabled=false;btn.textContent="כניסה";}}
-}
-async function doLogout(){try{if(fsUnsub){fsUnsub();fsUnsub=null;}await fauth.signOut();}catch(e){}location.reload();}
-
-(function(){
-  const bindLogin=()=>{
-    const b=document.getElementById("loginBtn"); if(b)b.addEventListener("click",doLogin);
-    const p=document.getElementById("loginPass"); if(p)p.addEventListener("keydown",ev=>{if(ev.key==="Enter")doLogin();});
-    const lo=document.getElementById("logoutBtn"); if(lo)lo.addEventListener("click",doLogout);
-  };
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLogin);else bindLogin();
-  if(fauth){
-    fauth.onAuthStateChanged(user=>{currentUser=user||null;if(user){showLogin(false);bootApp();}else{showLogin(true);}});
-  }else{
-    // Firebase unavailable → local-only fallback so the app still works
-    showLogin(false); bootApp();
-  }
+  setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather(); initRecos(); setupPlanAdd();
 })();
 </script>
 </body>
