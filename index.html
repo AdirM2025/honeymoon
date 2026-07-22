@@ -1861,11 +1861,21 @@ function renderPlanner(){
 function attachPlannerExtras(){
   document.querySelectorAll(".pl-timeedit").forEach(el=>{
     el.addEventListener("click",e=>e.stopPropagation());
+    el.addEventListener("mousedown",e=>e.stopPropagation());
+    el.addEventListener("pointerdown",e=>e.stopPropagation());
+    el.addEventListener("keydown",e=>e.stopPropagation());
     el.addEventListener("change",e=>{
       e.stopPropagation();
       const o=dayObj(el.dataset.key), i=+el.dataset.idx;
       if(!o.items[i])return;
       if(el.value)o.items[i].time=el.value; else delete o.items[i].time;
+      el._plDirty=true;
+      saveState(false);
+    });
+    el.addEventListener("blur",()=>{
+      if(!el._plDirty)return;
+      el._plDirty=false;
+      const o=dayObj(el.dataset.key);
       sortDayItems(o); saveState(); renderPlanner();
     });
   });
@@ -1915,7 +1925,7 @@ function planToast(msg){
 function openPlanAdd(name,q){
   paCtx={name:name,q:q||""};
   const sel=document.getElementById("pa-day"); if(!sel)return;
-  sel.innerHTML=tripDays().map(d=>`<option value="${esc(d.key)}">יום ${esc(d.wd)}׳ · ${esc(d.label)} — ${esc(DAY_AREAS[d.key]||d.city)}</option>`).join("");
+  sel.innerHTML=tripDays().map(d=>`<option value="${esc(d.key)}">יום ${esc(d.wd)}׳ · ${esc(d.label)} — ${esc((state.days[d.key]&&state.days[d.key].cityName)||DAY_AREAS[d.key]||d.city)}</option>`).join("");
   const ttl=document.getElementById("pa-title"); if(ttl)ttl.textContent=name;
   const tm=document.getElementById("pa-time"); if(tm)tm.value="";
   const md=document.getElementById("pa-modal"); if(md)md.classList.add("show");
@@ -1973,7 +1983,7 @@ function attachPlanner(){
     span.addEventListener("keydown",ev=>{ if(ev.key==="Enter"){ev.preventDefault(); span.blur();} });
   }));
   document.querySelectorAll(".pl-item").forEach(el=>el.addEventListener("click",e=>{
-    if(e.target.closest(".pl-del")||e.target.closest(".pl-map")||e.target.closest(".pl-edit")||e.target.closest("[contenteditable=true]"))return;
+    if(e.target.closest(".pl-del")||e.target.closest(".pl-map")||e.target.closest(".pl-edit")||e.target.closest(".pl-timeedit")||e.target.closest(".pl-drag")||e.target.closest("[contenteditable=true]"))return;
     const o=dayObj(el.dataset.key), i=+el.dataset.idx;
     o.items[i].done=!o.items[i].done; el.classList.toggle("done",o.items[i].done); saveState();
   }));
