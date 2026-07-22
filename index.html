@@ -394,7 +394,7 @@ footer .sub{font-size:12px;color:var(--muted);margin-top:8px}
 .reset:hover{border-color:var(--magenta);color:var(--magenta)}
 .share-btn{background:linear-gradient(90deg,var(--magenta),var(--violet));color:#fff;border:none;font-family:var(--sans);font-size:13px;font-weight:700;padding:10px 22px;border-radius:99px;cursor:pointer;transition:.25s;box-shadow:0 4px 18px rgba(255,61,158,.35)}
 .share-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(255,61,158,.45)}
-.saved{position:fixed;bottom:18px;left:50%;transform:translate(-50%,40px);background:var(--gold);color:#1a1320;font-weight:700;font-size:13px;padding:9px 18px;border-radius:99px;opacity:0;transition:.4s;z-index:60;pointer-events:none}
+.saved{position:fixed;bottom:18px;left:50%;transform:translate(-50%,40px);background:var(--gold);color:#1a1320;font-weight:700;font-size:13px;padding:9px 18px;border-radius:22px;opacity:0;transition:.4s;z-index:95;pointer-events:none;max-width:min(92vw,430px);text-align:center;line-height:1.5}
 .saved.show{transform:translate(-50%,0);opacity:1}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes bob{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(7px);opacity:1}}
@@ -974,7 +974,7 @@ const CHECKLIST=[
 ];
 
 const KEY="honeymoon-v4";
-function DEF(){return{couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{},expenses:[],pack:{}};}let state=DEF();
+function DEF(){return{_rev:0,couple:null,tagline:null,lovemsg:null,lovestay:null,seg:{},check:{},flights:{},bookings:null,letterList:null,journal:[],tripcost:null,days:{},expenses:[],pack:{}};}let state=DEF();
 const openForms=new Set();
 const openDays=new Set();
 
@@ -997,7 +997,9 @@ const store={
 
 async function loadState(){try{const r=await store.get(KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
 let svT=null;
+function revOf(o){return (o&&typeof o._rev==="number")?o._rev:0;}
 async function saveState(flash=true){
+  state._rev=Math.max(Date.now(),revOf(state)+1);
   const blob=JSON.stringify(state);
   try{await store.set(KEY,blob);}catch(e){}
   try{fsPush(blob);}catch(e){}
@@ -1022,10 +1024,21 @@ try{
   try{fdb.enablePersistence({synchronizeTabs:true});}catch(e){}
 }catch(e){console.warn("Firebase init failed",e);}
 function fsRef(){return fdb.collection("trips").doc("honeymoon");}
+let fsPendingBlob=null,fsRetryT=null;
 async function fsPush(blob){
   if(!fdb||!currentUser)return;
-  try{await fsRef().set({blob:blob,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),by:(currentUser.email||"")});}catch(e){}
+  fsPendingBlob=blob;
+  try{
+    await fsRef().set({blob:blob,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),by:(currentUser.email||"")});
+    if(fsPendingBlob===blob)fsPendingBlob=null;
+  }catch(e){
+    console.warn("cloud save failed, will retry",e);
+    clearTimeout(fsRetryT);
+    fsRetryT=setTimeout(()=>{if(fsPendingBlob)fsPush(fsPendingBlob);},4000);
+  }
 }
+window.addEventListener("online",()=>{if(fsPendingBlob)fsPush(fsPendingBlob);});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&fsPendingBlob)fsPush(fsPendingBlob);});
 function renderAll(){
   ["render","renderCheck","renderFlights","renderBookings","renderLetters","renderJournal","renderConcierge","renderPlanner","renderExpenses","renderPackList","renderBudget","updateProgress"]
     .forEach(fn=>{try{window[fn]&&window[fn]();}catch(e){}});
@@ -1033,10 +1046,15 @@ function renderAll(){
 function applyRemote(blob){
   if(blob==null)return;
   if(blob===JSON.stringify(state))return; // no change / our own echo
+  let incoming=null;
+  try{incoming=JSON.parse(blob);}catch(e){return;}
+  if(revOf(incoming)<revOf(state)){ // stale cloud copy -> heal it instead of losing our data
+    try{fsPush(JSON.stringify(state));}catch(e){}
+    return;
+  }
   const ae=document.activeElement;
   if(ae&&(ae.tagName==="INPUT"||ae.tagName==="TEXTAREA"||ae.isContentEditable)){pendingRemote=blob;return;}
   try{
-    const incoming=JSON.parse(blob);
     state=Object.assign(DEF(),incoming);
     try{localStorage.setItem(KEY,blob);}catch(e){}
     renderAll();
@@ -1917,10 +1935,11 @@ function attachPlannerExtras(){
 }
 /* ===== ADD TO DAY PLAN (from reco tabs) ===== */
 let paCtx=null;
-function planToast(msg){
+function planToast(msg,ms){
   const el=document.getElementById("saved"); if(!el)return;
   el.textContent=msg; el.classList.add("show");
-  setTimeout(()=>{el.classList.remove("show");setTimeout(()=>{el.textContent="נשמר ✓";},350);},1500);
+  clearTimeout(el._pt);
+  el._pt=setTimeout(()=>{el.classList.remove("show");setTimeout(()=>{el.textContent="נשמר ✓";},350);},ms||1500);
 }
 function openPlanAdd(name,q){
   paCtx={name:name,q:q||""};
@@ -1946,8 +1965,14 @@ function confirmPlanAdd(){
   if(t)sortDayItems(o);
   openDays.add(k);
   saveState(); renderPlanner();
+  const added=((state.days[k]&&state.days[k].items)||[]).some(x=>x&&x.t===paCtx.name);
+  const d=tripDays().find(x=>x.key===k);
+  const area=(state.days[k]&&state.days[k].cityName)||DAY_AREAS[k]||(d&&d.city)||"";
+  const dayTxt=d?("יום "+d.wd+"׳ · "+d.label):k;
+  const nm=paCtx.name;
   closePlanAdd();
-  planToast("נוסף לתכנון ✓");
+  if(added)planToast("✓ "+nm+" נוסף בהצלחה ל"+dayTxt+(area?(" — "+area):""),3000);
+  else planToast("⚠ ההוספה נכשלה — נסו שוב",3000);
 }
 function setupPlanAdd(){
   document.addEventListener("click",e=>{
@@ -2805,15 +2830,22 @@ function seedDefaults(){
 
 async function bootApp(){
   if(booted)return; booted=true;
-  let saved=null,hadCloud=false;
+  let cloud=null,hadCloud=false;
   if(fdb){
-    try{const snap=await fsRef().get();if(snap.exists&&snap.data()&&snap.data().blob){saved=JSON.parse(snap.data().blob);hadCloud=true;}}catch(e){}
+    try{
+      let snap=null;
+      try{snap=await fsRef().get({source:"server"});}catch(e1){snap=await fsRef().get();}
+      if(snap&&snap.exists&&snap.data()&&snap.data().blob){cloud=JSON.parse(snap.data().blob);hadCloud=true;}
+    }catch(e){}
   }
-  if(!saved){saved=await loadState();}
+  const local=await loadState();
+  let saved=null,localNewer=false;
+  if(cloud&&local){ localNewer=revOf(local)>revOf(cloud); saved=localNewer?local:cloud; }
+  else { saved=cloud||local; localNewer=!!local&&!cloud; }
   if(saved)state=Object.assign(DEF(),saved);
   const seeded=seedDefaults();
   if(!hadCloud){try{await fsPush(JSON.stringify(state));}catch(e){}}
-  else if(seeded){saveState(false);}
+  else if(seeded||localNewer){saveState(false);}
   render(); renderCheck(); renderFlights(); renderBookings(); renderLetters(); renderJournal(); renderConcierge(); buildPhrases();
   ["couple","tagline","lovemsg","lovestay"].forEach(id=>setupEditable(id,id));
   setupCurrency(); setupPWA(); setupTabs(); countdown(); leaves(); renderPlanner(); renderExpenses(); renderPackList(); loadWeather(); initRecos(); setupPlanAdd();
