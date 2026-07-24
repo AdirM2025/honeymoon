@@ -1805,7 +1805,10 @@ function plCleanName(t){
   return (latin||parts[0]||"").trim();
 }
 function plMapHref(it,seg){
-  if(it.q)return mapHref(it.q,seg);
+  if(it.q){
+    if(it.qx||it.q.indexOf(",")>=0)return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(it.q);
+    return mapHref(it.q,seg);
+  }
   const nm=plCleanName(it.t);
   if(nm&&nm.length>=2)return mapHref(nm,seg);
   if(it.lat!=null&&it.lon!=null)return "https://www.google.com/maps/search/?api=1&query="+it.lat+","+it.lon;
@@ -2055,7 +2058,7 @@ function attachPlanner(){
     const name=(inp&&inp.value||"").trim(); if(!name)return;
     const o=dayObj(k); const it={t:name,done:false};
     if(tin&&tin.value)it.time=tin.value;
-    if(plPending[k]){it.lat=plPending[k].lat; it.lon=plPending[k].lon; if(plPending[k].q)it.q=plPending[k].q;}
+    if(plPending[k]){it.lat=plPending[k].lat; it.lon=plPending[k].lon; if(plPending[k].q){it.q=plPending[k].q; it.qx=true;}}
     o.items.push(it); if(it.time)sortDayItems(o); delete plPending[k];
     openDays.add(k); saveState(); renderPlanner();
   }));
