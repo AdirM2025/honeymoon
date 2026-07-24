@@ -1827,7 +1827,8 @@ function photonSearch(key,q,seg){
         box.innerHTML=feats.map(f=>{
           const p=f.properties||{}; const c=(f.geometry&&f.geometry.coordinates)||[];
           const label=[p.name,p.city||p.county||p.state,p.country].filter(Boolean).join(", ");
-          return '<button class="pl-ac-item" data-key="'+key+'" data-lat="'+c[1]+'" data-lon="'+c[0]+'" data-nm="'+esc(p.name||label)+'">'+esc(label)+'</button>';
+          const sel=[p.name,p.city||p.county||p.state].filter(Boolean).join(", ");
+          return '<button class="pl-ac-item" data-key="'+key+'" data-lat="'+c[1]+'" data-lon="'+c[0]+'" data-nm="'+esc(sel||label)+'">'+esc(label)+'</button>';
         }).join("");
       }).catch(()=>{box.innerHTML="";});
   },280);
@@ -2039,12 +2040,14 @@ function attachPlanner(){
     delete plPending[el.dataset.key];
     photonSearch(el.dataset.key,el.value,el.dataset.seg);
   }));
-  document.querySelectorAll(".pl-ac-item").forEach(el=>el.addEventListener("click",()=>{
+  document.querySelectorAll(".pl-ac").forEach(box=>box.addEventListener("pointerdown",e=>{
+    const el=e.target.closest&&e.target.closest(".pl-ac-item"); if(!el)return;
+    e.preventDefault();
     const k=el.dataset.key; const form=document.getElementById("addform-"+k);
     const inp=form&&form.querySelector(".pl-acinput");
     if(inp)inp.value=el.dataset.nm;
-    plPending[k]={lat:parseFloat(el.dataset.lat),lon:parseFloat(el.dataset.lon)};
-    const box=document.getElementById("ac-"+k); if(box)box.innerHTML="";
+    plPending[k]={lat:parseFloat(el.dataset.lat),lon:parseFloat(el.dataset.lon),q:el.dataset.nm,locked:true};
+    box.innerHTML="";
   }));
   document.querySelectorAll(".pl-addok").forEach(el=>el.addEventListener("click",()=>{
     const k=el.dataset.key; const form=document.getElementById("addform-"+k);
@@ -2052,8 +2055,8 @@ function attachPlanner(){
     const name=(inp&&inp.value||"").trim(); if(!name)return;
     const o=dayObj(k); const it={t:name,done:false};
     if(tin&&tin.value)it.time=tin.value;
-    if(plPending[k]){it.lat=plPending[k].lat; it.lon=plPending[k].lon;}
-    o.items.push(it); sortDayItems(o); delete plPending[k];
+    if(plPending[k]){it.lat=plPending[k].lat; it.lon=plPending[k].lon; if(plPending[k].q)it.q=plPending[k].q;}
+    o.items.push(it); if(it.time)sortDayItems(o); delete plPending[k];
     openDays.add(k); saveState(); renderPlanner();
   }));
   document.querySelectorAll(".pl-addcancel").forEach(el=>el.addEventListener("click",()=>{
